@@ -1,0 +1,5 @@
+digiformatter==0.5.7.2
+git+git://github.com/DigiDuncan/DigiColor
+toml==0.10.0
+pygame==1.9.6; platform_system != "Darwin"
+pygame==2.0.0dev10; platform_system == "Darwin"

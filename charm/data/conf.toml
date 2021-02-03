@@ -1,0 +1,4 @@
+[settings]
+scale = 4
+framerate = 60
+debug = true
