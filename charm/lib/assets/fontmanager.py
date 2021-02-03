@@ -3,12 +3,12 @@ from functools import lru_cache
 
 import pygame
 
-from lasergame.lib.assets.assetmanager import AssetManager
+from charm.lib.assets.assetmanager import AssetManager
 
 
 class FontManager(AssetManager):
     def __init__(self):
-        super().__init__("lasergame.data.fonts", "ttf")
+        super().__init__("charm.data.fonts", "ttf")
 
     @lru_cache(maxsize=None)
     def get(self, name=None, size=None):

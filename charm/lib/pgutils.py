@@ -4,7 +4,7 @@ import pygame
 
 from digicolor import colors
 
-from lasergame.lib.assets import fonts, sounds
+from charm.lib.assets import fonts, sounds
 
 
 def render_text(text,

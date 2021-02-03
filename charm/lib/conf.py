@@ -2,9 +2,9 @@ import importlib.resources as pkg_resources
 
 import toml
 
-import lasergame.data
-from lasergame.lib.attrdict import AttrDict
-from lasergame.lib.constants import game
+import charm.data
+from charm.lib.attrdict import AttrDict
+from charm.lib.constants import game
 
 
 settings = None
@@ -25,7 +25,7 @@ def loadsettings(data):
 
 def load():
     # Load constants toml file
-    data = toml.loads(pkg_resources.read_text(lasergame.data, "conf.toml"))
+    data = toml.loads(pkg_resources.read_text(charm.data, "conf.toml"))
     loadsettings(data)
 
 

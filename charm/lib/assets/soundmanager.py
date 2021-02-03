@@ -2,12 +2,12 @@ from functools import lru_cache
 
 import pygame
 
-from lasergame.lib.assets.assetmanager import AssetManager
+from charm.lib.assets.assetmanager import AssetManager
 
 
 class SoundManager(AssetManager):
     def __init__(self):
-        super().__init__("lasergame.data.sounds", "wav")
+        super().__init__("charm.data.sounds", "wav")
 
     @lru_cache(maxsize=None)
     def get(self, name):

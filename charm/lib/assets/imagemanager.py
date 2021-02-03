@@ -3,12 +3,12 @@ from functools import lru_cache
 import pygame
 from digicolor import colors
 
-from lasergame.lib.assets.assetmanager import AssetManager
+from charm.lib.assets.assetmanager import AssetManager
 
 
 class ImageManager(AssetManager):
     def __init__(self):
-        super().__init__("lasergame.data.images", "png")
+        super().__init__("charm.data.images", "png")
 
     @lru_cache(maxsize=None)
     def get(self, name):
