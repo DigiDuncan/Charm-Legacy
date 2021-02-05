@@ -1,0 +1,4 @@
+*.code-workspace
+*.pyc
+*.vscode
+.pytest_cache
