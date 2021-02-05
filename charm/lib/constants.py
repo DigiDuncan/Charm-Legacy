@@ -5,9 +5,7 @@ import toml
 import charm.data
 from charm.lib.attrdict import AttrDict
 
-buttons = None
 game = None
-zlayer = None
 
 
 def loadgame(data):
