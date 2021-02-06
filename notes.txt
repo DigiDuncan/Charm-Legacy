@@ -1,0 +1,8 @@
+tick distance at which notes become forced strums instead of HOPOs: 66/192 beat or further
+
+[PART VOCALS]
+960 = N 105 1800 // start phrase, phrase lasts 1800
+965 = N 50 112 // This next note is 112 ticks long with no pitch (50)
+965 = E Doo#  // An Event marker, on the same tick as the note to indicate text
+1080 = N 50 237
+1080 = E doo#
