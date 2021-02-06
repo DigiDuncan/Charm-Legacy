@@ -39,6 +39,24 @@ class Track:
 
 @jsonable
 @dataclass
+class Lyric:
+    word: str
+    next_syllable_connected: bool
+    append_space: bool
+    position: int
+    length: int
+
+
+@jsonable
+@dataclass
+class LyricPhrase:
+    position: int
+    length: int
+    lyrics: List[Lyric]
+
+
+@jsonable
+@dataclass
 class Song:
     name: str
     artist: str
@@ -50,3 +68,4 @@ class Song:
     track: int
     length: int
     tracks: List[Track]
+    lyricphrases: List[LyricPhrase]
