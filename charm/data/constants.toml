@@ -7,4 +7,4 @@ BLUE = 4
 ORANGE = 5
 
 [instruments]
-guitar = "GUITAR"
+GUITAR = "GUITAR"

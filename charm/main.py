@@ -1,6 +1,9 @@
 import pygame
+
 from charm.lib import nygame
+from charm.lib.constants import frets, instruments
 from charm.lib.display import display
+from charm.objects.note import Note
 
 
 class Game():
@@ -22,6 +25,9 @@ class Game():
             for event in events:
                 if event.type == pygame.QUIT:
                     self.running = False
+
+            note = Note(instruments.GUITAR, frets.OPEN)
+            self.screen.blit(note.image, (0, 0))
 
             # Final draw stage
             display.flip()
