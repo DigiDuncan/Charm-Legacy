@@ -5,3 +5,6 @@ RED = 2
 YELLOW = 3
 BLUE = 4
 ORANGE = 5
+
+[instruments]
+guitar = "GUITAR"
