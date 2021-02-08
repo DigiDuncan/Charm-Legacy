@@ -1,28 +1,7 @@
-[game]
-width = 426
-height = 240
-
-[buttons]
-UP = "K_w"
-LEFT = "K_a"
-RIGHT = "K_d"
-DOWN = "K_s"
-A = "K_p"
-B = "K_l"
-X = "K_o"
-Y = "K_k"
-L = "K_1"
-R = "K_MINUS"
-SELECT = "K_RSHIFT"
-START = "K_RETURN"
-FULLSCREEN = "K_F1"
-WINDOW = "K_F2"
-DEBUG = "K_BACKQUOTE"
-
-[zlayer]
-BACKGROUND = 0
-ENEMY = 1
-PROJECTILE = 2
-SHIP = 999
-TEXT = 1000
-DEBUG = 9999
+[frets]
+OPEN = 0
+GREEN = 1
+RED = 2
+YELLOW = 3
+BLUE = 4
+ORANGE = 5

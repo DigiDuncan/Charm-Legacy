@@ -5,23 +5,22 @@ import toml
 import charm.data
 from charm.lib.attrdict import AttrDict
 
-game = None
+frets = None
 
 
-def loadgame(data):
-    global game
-    gamedict = data.get("game", {})
+def loadfrets(data):
+    global frets
+    fretsdict = data.get("frets", {})
     # make all names lowercase
-    gamedict = {name.lower(): value for name, value in gamedict.items()}
+    fretsdict = {name.lower(): value for name, value in fretsdict.items()}
     # create the enum
-    game = AttrDict(gamedict)
-    game.center = (round(game.width / 2), round(game.height / 2))
+    frets = AttrDict(fretsdict)
 
 
 def load():
     # Load constants toml file
     data = toml.loads(pkg_resources.read_text(charm.data, "constants.toml"))
-    loadgame(data)
+    loadfrets(data)
 
 
 load()
