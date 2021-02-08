@@ -1,5 +1,5 @@
+from charm.classes.songdata import Note, Chord, Lyric, LyricPhrase, Track, Song
 from charm.lib.constants import frets
-from charm.objects.songdata import Note, Chord, Lyric, LyricPhrase, Track, Song
 
 example_song = Song(
     name = "Example Song",
