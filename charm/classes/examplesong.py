@@ -1,5 +1,6 @@
 from charm.classes.songdata import BPMEvent, Note, Chord, Lyric, LyricPhrase, Track, Song
-from charm.lib.constants import frets
+from charm.classes.gamedefinition import GameDefinition
+from charm.lib.constants import frets, instruments
 
 example_song = Song(
     name = "Example Song",
@@ -43,4 +44,21 @@ example_song = Song(
             ]
         )
     ]
+)
+
+example_game_definition = GameDefinition(
+    name = "gh",
+    instruments = [instruments.GUITAR],
+    lane_count = 5,
+    image_folder = "gh",
+    note_names = {
+        frets.OPEN: "open",
+        frets.GREEN: "green",
+        frets.RED: "red",
+        frets.YELLOW: "yellow",
+        frets.BLUE: "blue",
+        frets.ORANGE: "orange"
+    },
+    note_flags = ["hopo", "tap"],
+    sprite_size = (64, 64)
 )
