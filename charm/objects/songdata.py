@@ -8,7 +8,7 @@ from charm.lib.njson import jsonable
 @dataclass
 class Note:
     """A single note.
-    `fret: int`, 0 = open, 1-5 = green, red, yellow, blue, orange
+    `fret: int`, 0 = open, 1-5 = green, red, yellow, blue, orange, (or 1-6 for GHL, etc)
     `length: int` the length in ticks? of this note
     """
     fret: int
@@ -25,9 +25,9 @@ class Chord:
     `notes: List[Note]`, a list of notes.
     """
     position: int
-    flag: Literal["normal", "hopo", "tap"]
-    star_power: bool
+    flag: Literal["normal", "hopo", "tap", "forced"]
     notes: List[Note]
+    star_power: bool = False
 
 
 @jsonable
@@ -41,10 +41,9 @@ class Track:
 @dataclass
 class Lyric:
     word: str
-    next_syllable_connected: bool
-    append_space: bool
-    position: int
+    rel_position: int
     length: int
+    append_space: bool = True
 
 
 @jsonable
@@ -67,5 +66,7 @@ class Song:
     genre: str
     track: int
     length: int
+    resolution: int
+    offset: int
     tracks: List[Track]
     lyricphrases: List[LyricPhrase]
