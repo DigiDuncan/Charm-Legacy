@@ -29,12 +29,44 @@ class Chord:
     notes: List[Note]
     star_power: bool = False
 
+    @property
+    def longest_note_length(self):
+        ln = 0
+        for note in self.notes:
+            if note.length > ln:
+                ln - note.length
+        return ln
+
+
+@jsonable
+@dataclass
+class BPMEvent:
+    position: int
+    bpm: float
+
+
+@jsonable
+@dataclass
+class TSEvent:
+    position: int
+    time_sig: tuple
+
 
 @jsonable
 @dataclass
 class Track:
     instrument: str
     chords: List[Chord]
+    bpm_events: List[BPMEvent]
+    time_sig_events: List[TSEvent] = TSEvent(0, (4, 4))
+
+    @property
+    def last_chord(self) -> Chord:
+        lc = self.chords[0]
+        for chord in self.chords:
+            if chord.position > lc.position:
+                lc = chord
+        return lc
 
 
 @jsonable

@@ -1,17 +1,18 @@
-from charm.classes.songdata import Note, Chord, Lyric, LyricPhrase, Track, Song
+from charm.classes.songdata import BPMEvent, Note, Chord, Lyric, LyricPhrase, Track, Song
 from charm.lib.constants import frets
 
 example_song = Song(
     name = "Example Song",
     artist = "DigiDuncan",
     album = "The Best Album",
+    genre = "Example",
     difficulty = 3,
     charter = "DigiSoft",
     year = 2021,
     track = 1,
     length = 10000,
     resolution = 480,
-    offest = 0,
+    offset = 0,
     tracks = [
         Track(
             instrument = "GUITAR",
@@ -28,7 +29,8 @@ example_song = Song(
                     star_power = False,
                     notes = [Note(frets.RED, 480), Note(frets.YELLOW, 480)]
                 )
-            ]
+            ],
+            bpm_events = [BPMEvent(0, 120)]
         )
     ],
     lyricphrases = [
