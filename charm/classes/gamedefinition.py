@@ -14,3 +14,4 @@ class GameDefinition:
     note_names: Dict[int, str]
     note_flags: List[str]
     sprite_size: Tuple[int, int]
+    diff_names: Dict[int, str]

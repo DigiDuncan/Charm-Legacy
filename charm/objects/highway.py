@@ -10,11 +10,14 @@ from charm.objects.note import Note as GameNote
 
 
 class Highway:
-    def __init__(self, pixels_per_second, game_definition: GameDefinition, song: Song, track_id: int):
+    def __init__(self, pixels_per_second, game_definition: GameDefinition, song: Song, instrument: str, difficulty: int):
         self.pixels_per_second = pixels_per_second
         self.song = song
         self.resolution = song.resolution
-        self.track = song.tracks[track_id]
+        self.track = song.get_track(instrument, difficulty)
+
+        if self.track is None:
+            raise ValueError(f"Track with instrument {instrument} and difficulty {difficulty} does not exist!")
 
         self.game_definition = game_definition
         self.note_size = self.game_definition.sprite_size

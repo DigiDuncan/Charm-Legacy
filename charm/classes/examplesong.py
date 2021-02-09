@@ -1,6 +1,6 @@
 from charm.classes.songdata import BPMEvent, Note, Chord, Lyric, LyricPhrase, Track, Song
 from charm.classes.gamedefinition import GameDefinition
-from charm.lib.constants import frets, instruments
+from charm.lib.constants import difficulties, frets, instruments
 
 example_song = Song(
     name = "Example Song",
@@ -16,18 +16,17 @@ example_song = Song(
     offset = 0,
     tracks = [
         Track(
-            instrument = "GUITAR",
+            instrument = instruments.GUITAR,
+            difficulty = difficulties.EXPERT,
             chords = [
                 Chord(
                     position = 480,
                     flag = "normal",
-                    star_power = False,
                     notes = [Note(frets.GREEN, 0)]
                 ),
                 Chord(
                     position = 720,
                     flag = "normal",
-                    star_power = False,
                     notes = [Note(frets.RED, 480), Note(frets.YELLOW, 480)]
                 )
             ],
@@ -60,5 +59,11 @@ example_game_definition = GameDefinition(
         frets.ORANGE: "orange"
     },
     note_flags = ["hopo", "tap"],
-    sprite_size = (64, 64)
+    sprite_size = (64, 64),
+    diff_names = {
+        difficulties.EASY: "Easy",
+        difficulties.MEDIUM: "Medium",
+        difficulties.HARD: "Hard",
+        difficulties.EXPERT: "Expert"
+    }
 )

@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List, Literal
 
 from charm.lib.njson import jsonable
@@ -27,7 +27,6 @@ class Chord:
     position: int
     flag: Literal["normal", "hopo", "tap", "forced"]
     notes: List[Note]
-    star_power: bool = False
 
     @property
     def longest_note_length(self):
@@ -54,10 +53,19 @@ class TSEvent:
 
 @jsonable
 @dataclass
+class SPEvent:
+    position: int
+    length: int
+
+
+@jsonable
+@dataclass
 class Track:
     instrument: str
+    difficulty: int
     chords: List[Chord]
     bpm_events: List[BPMEvent]
+    star_power_events: List[SPEvent] = field(default_factory=list)
     time_sig_events: List[TSEvent] = TSEvent(0, (4, 4))
 
     @property
@@ -102,3 +110,9 @@ class Song:
     offset: int
     tracks: List[Track]
     lyricphrases: List[LyricPhrase]
+
+    def get_track(self, instrument, difficulty):
+        for t in self.tracks:
+            if t.instrument == instrument and t.difficulty == difficulty:
+                return t
+        return None

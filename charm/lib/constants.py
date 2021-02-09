@@ -7,6 +7,7 @@ from charm.lib.attrdict import AttrDict
 
 frets = None
 instruments = None
+difficulties = None
 
 
 def loadfrets(data):
@@ -21,11 +22,18 @@ def loadinstruments(data):
     instruments = AttrDict(instrumentsdict)
 
 
+def loaddifficulties(data):
+    global difficulties
+    difficultiesdict = data.get("difficulties", {})
+    difficulties = AttrDict(difficultiesdict)
+
+
 def load():
     # Load constants toml file
     data = toml.loads(pkg_resources.read_text(charm.data, "constants.toml"))
     loadfrets(data)
     loadinstruments(data)
+    loaddifficulties(data)
 
 
 load()

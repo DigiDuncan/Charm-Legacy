@@ -2,7 +2,7 @@ import pygame
 
 from charm.classes import examplesong
 from charm.lib import nygame
-from charm.lib.constants import frets, instruments
+from charm.lib.constants import difficulties, frets, instruments
 from charm.lib.display import display
 from charm.objects.highway import Highway
 from charm.objects.note import Note
@@ -34,7 +34,7 @@ class Game():
             note = Note(instruments.GUITAR, frets.ORANGE)
             # self.screen.blit(note.image, (0, 0))
 
-            highway = Highway(1000, game_def, song, 0)
+            highway = Highway(1000, game_def, song, instruments.GUITAR, difficulties.EXPERT)
             self.screen.blit(highway.image, (0, (0 - highway.image.get_height() + self.screen.get_height())))
 
             # Final draw stage
