@@ -8,6 +8,7 @@ from charm.objects.highway import Highway
 from charm.objects.note import Note
 
 song = examplesong.example_song
+game_def = examplesong.example_game_definition
 
 
 class Game():
@@ -30,10 +31,10 @@ class Game():
                 if event.type == pygame.QUIT:
                     self.running = False
 
-            note = Note(instruments.GUITAR, frets.BLUE, flag = "tap")
+            note = Note(instruments.GUITAR, frets.ORANGE)
             # self.screen.blit(note.image, (0, 0))
 
-            highway = Highway(1000, song.resolution, song.tracks[0])
+            highway = Highway(1000, game_def, song, 0)
             self.screen.blit(highway.image, (0, (0 - highway.image.get_height() + self.screen.get_height())))
 
             # Final draw stage
