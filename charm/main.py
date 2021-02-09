@@ -1,3 +1,4 @@
+from charm.objects.songinfo import SongInfo
 import pygame
 
 from charm.classes import examplesong
@@ -36,6 +37,9 @@ class Game():
 
             highway = Highway(1000, game_def, song, instruments.GUITAR, difficulties.EXPERT)
             self.screen.blit(highway.image, (0, (0 - highway.image.get_height() + self.screen.get_height())))
+
+            songinfo = SongInfo(game_def, song, instruments.GUITAR, difficulties.EXPERT)
+            self.screen.blit(songinfo.image, (highway.image.get_width() + 5, 0))
 
             # Final draw stage
             display.flip()
