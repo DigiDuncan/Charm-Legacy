@@ -32,7 +32,7 @@ class Game():
                 if event.type == pygame.QUIT:
                     self.running = False
 
-            note = Note(instruments.GUITAR, frets.ORANGE)
+            # note = Note(instruments.GUITAR, frets.ORANGE)
             # self.screen.blit(note.image, (0, 0))
 
             highway = Highway(1000, game_def, song, instruments.GUITAR, difficulties.EXPERT)
