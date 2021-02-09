@@ -1,5 +1,8 @@
+import importlib.resources as pkg_resources
+
 import pygame
 
+import charm.data.fonts
 from charm.classes.gamedefinition import GameDefinition
 from charm.classes.songdata import Song
 
@@ -17,16 +20,16 @@ class SongInfo:
                 f"Album: {self.song.album}\n"
                 f"Year: {self.song.year}\n"
                 f"Charter: {self.song.charter}\n"
-                f"Difficulty Rating: {'*' * self.song.difficulty}\n"
-                f"Year: {self.song.year}\n"
+                f"Difficulty Rating: {'X' * self.song.difficulty}\n"
                 "\n"
                 f"Instrument: {self.track.instrument}\n"
                 f"Difficulty: {self.game_definition.diff_names[self.track.difficulty]}\n")
         surf = pygame.Surface((300, 600), pygame.SRCALPHA)
         current_height = 0
         for line in text.splitlines():
-            font = pygame.font.Font(pygame.font.get_default_font(), 16)
+            f = pkg_resources.open_binary(charm.data.fonts, "Exo-MediumItalic.ttf")
+            font = pygame.font.Font(f, 16)
             text_surf = font.render(line, True, "WHITE")
             current_height += text_surf.get_height() + 1
-            surf.blit(text_surf, (0, current_height))
+            surf.blit(text_surf, (surf.get_width() - text_surf.get_width(), current_height))
         return surf

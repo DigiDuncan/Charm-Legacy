@@ -39,7 +39,7 @@ class Game():
             self.screen.blit(highway.image, (0, (0 - highway.image.get_height() + self.screen.get_height())))
 
             songinfo = SongInfo(game_def, song, instruments.GUITAR, difficulties.EXPERT)
-            self.screen.blit(songinfo.image, (highway.image.get_width() + 5, 0))
+            self.screen.blit(songinfo.image, (self.screen.get_width() - songinfo.image.get_width() - 5, 0))
 
             # Final draw stage
             display.flip()
