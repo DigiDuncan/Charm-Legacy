@@ -8,16 +8,16 @@ A Song has some metadata on it's highest level, to define certain attributes for
 * `artist: str`, the name of the artist.
 * `album: str`, the name of the album.
 * `track`: The track index of the song on the album.
-* `year: int?`, the year the song was released. This is usually an `int` representing a year, but some charts have stupid ones like `"All The Time"` or something. Some games display non-integer values for `year` as `"Unknown Year"`, which helps with sorting, but ruins some jokes.
+* `year: int`<sup id="aq">[?](#fq)</sup>, the year the song was released. This is usually an `int` representing a year, but some charts have stupid ones like `"All The Time"` or something. Some games display non-integer values for `year` as `"Unknown Year"`, which helps with sorting, but ruins some jokes.
 * `genre: str`, the genre of the song.
 * `rating: int`, how hard the song is, usually a number between 0 and 6.
 * `charter: str`, the name of the person who charted (created the chart for) the song.
-* `length: int`, the amount of milliseconds<sup id="aq">?(#fq)</sup> the song lasts for. Used only<sup id="aq">?(#fq)</sup> for sorting.
+* `length: int`, the amount of milliseconds<sup id="aq">[?](#fq)</sup> the song lasts for. Used only<sup id="aq">[?](#fq)</sup> for sorting.
 
 And the more helpful data:
 
-* `resolution: int`, the "ticks per beat" of the charts contained in the song<sup id="a1">1(#f1)</sup>.
-* `offset: int`<sup id="a2">2(#f2)</sup>, the offset in milliseconds<sup id="aq">?(#fq)</sup> that the ticks are pushed forward. (An offset of 100 would mean tick 0 refers to the time 0.1s.)
+* `resolution: int`, the "ticks per beat" of the charts contained in the song<sup id="a1">[1](#f1)</sup>.
+* `offset: int`<sup id="a2">[2](#f2)</sup>, the offset in milliseconds<sup id="aq">[?](#fq)</sup> that the ticks are pushed forward. (An offset of 100 would mean tick 0 refers to the time 0.1s.)
 * `charts: List[Chart]`: Every chart associated with this song.
 * `lyricphrases: List[LyricPhrase]`: A list of LyricPhrases associated with this song, sorted by position.
 
@@ -27,16 +27,16 @@ And the more helpful data:
 
 ## Gamemode
 
-*Charm* can<sup id="a3">3(#f3)</sup> play charts from various games and gamemodes, not all of them from the *Guitar Hero* series. For this reason, Gamemode objects define the layout and gameplay style of various games/modes.
+*Charm* can<sup id="a3">[3](#f3)</sup> play charts from various games and gamemodes, not all of them from the *Guitar Hero* series. For this reason, Gamemode objects define the layout and gameplay style of various games/modes.
 
 * `name: str`, the name of this gamemode, and ID that isn't displayed to the user.
 * `instruments: List[str]`, a list of valid instruments that this gamemode encompasses.
 * `lane_count: int`, Since *Charm* plays VSRG (vertical-scrolling rhythm game)s, each game has an amount of lanes. 5 for *Guitar Hero* guitars, bass, and keys; 3 for *Guitar Hero: Live*, 4 for *Dance Dance Revolution*, etc.
 * `image_folder: str`, the name of the subfolder in `charm.data.images` that contains the sprites for notes in this gamemode.
-* `notes: Dict[int, dict]`<sup id="a4">4(#f4)</sup> a map of a fret ID and these keys;
+* `notes: Dict[int, dict]`<sup id="a4">[4](#f4)</sup> a map of a fret ID and these keys;
     * `name: str`, the name of this fret
     * `lane: int`, the lane this note shows up in
-* `sprite_size: Tuple[int, int]`: A Tuple of (width, height) for the size of the note images in this game mode.<sup id="a5">5(#f5)</sup>
+* `sprite_size: Tuple[int, int]`: A Tuple of (width, height) for the size of the note images in this game mode.<sup id="a5">[5](#f5)</sup>
 * `diff_names: Dict[int, str]`, a map of difficulty IDs and names.
 
 ## Note
