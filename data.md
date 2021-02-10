@@ -106,19 +106,19 @@ Charts are individual maps of notes and events. They are what the player selects
   * `flag: str`, the flag on this chord (e.g.: `"hopo"`, `"tap"`), which all notes will have.
 * `get_chords(start: TimeStamp, stop: TimeStamp) -> List[Chord]`, gets all the chords in a range of times, sorted by position.
 * `get_notes(start: TimeStamp, stop: TimeStamp) -> List[Note]`, gets all the notes in a range of times, sorted by position.
-* `get_events(start: TimeStamp, stop: TimeStamp, event_type: type = None) -> List[Even]`, gets all the events in a range of times, sorted by position, optionally of a certain type.
+* `get_events(start: TimeStamp, stop: TimeStamp, event_type: type = None) -> List[Event]`, gets all the events in a range of times, sorted by position, optionally of a certain type.
 
 ___
 ## Footnotes
 
 <b id="fq">?</b>: This is assumed but unknown. [↩](#aq)
 
-<b id="f1">1</b> : Can this not vary from chart to chart? [↩](#a1)
+<b id="f1">1</b>: Can this not vary from chart to chart? [↩](#a1)
 
-<b id="f2">2</b> : Can this be a float? [↩](#a2)
+<b id="f2">2</b>: Can this be a float? [↩](#a2)
 
-<b id="f3">3</b> : Well, not yet. [↩](#a3)
+<b id="f3">3</b>: Well, not yet. [↩](#a3)
 
-<b id="f4">4</b> : This is kinda clunky. [↩](#a4)
+<b id="f4">4</b>: This is kinda clunky. [↩](#a4)
 
-<b id="f5">5</b> : This might be changed to be more flexible? [↩](#a5)
+<b id="f5">5</b>: This might be changed to be more flexible? [↩](#a5)
