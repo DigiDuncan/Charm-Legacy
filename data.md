@@ -19,7 +19,7 @@ And the more helpful data:
 * `resolution: int`, the "ticks per beat" of the charts contained in the song[^1].
 * `offset: int`[^2], the offset in milliseconds<sup>?</sup> that the ticks are pushed forward. (An offset of 100 would mean tick 0 refers to the time 0.1s.)
 * `charts: List[Chart]`: Every chart associated with this song.
-* `lyricphrases: List[LyricPhrase]`: A list of LyricPhrases associated with this song.
+* `lyricphrases: List[LyricPhrase]`: A list of LyricPhrases associated with this song, sorted by position.
 
 ### Functions
 
@@ -63,7 +63,7 @@ Contains Lyrics, represents a "line" of text.
 
 * `position: TimeStamp`, where the phrase appears in the song.
 * `length: TimeDelta`, how long to show this phrase on screen.
-* lyrics: `List[Lyrics]`, all the Lyrics this phrase contains.
+* lyrics: `List[Lyrics]`, all the Lyrics this phrase contains, sorted by position.
 
 
 ## Events
@@ -95,18 +95,18 @@ Charts are individual maps of notes and events. They are what the player selects
 
 * `instrument: str`, what instrument this chart is for.
 * `difficulty: int`, the difficulty ID of this chart, representing something like Easy or Expert.
-* `notes: List[Note]`, the list of all notes in this chart.
-* `events: List[Event]`, the list of all events in this chart.
+* `notes: List[Note]`, the list of all notes in this chart, sorted by position.
+* `events: List[Event]`, the list of all events in this chart, sorted by position.
 
 ### Functions
 
-* `.chords -> List[Chord]`, a list of all Chords in the chart, a Chord being an object with the following properties:
-  * `notes: List[Note]`, a list of all notes in this chord (defined as starting at the same time as each other)
+* `.chords -> List[Chord]`, a list of all Chords in the chart sorted by position, a Chord being an object with the following properties:
+  * `notes: List[Note]`, a list of all notes in this chord sorted by position (defined as starting at the same time as each other)
   * `position: Timestamp`, the start time off all notes in this chord.
   * `flag: str`, the flag on this chord (e.g.: `"hopo"`, `"tap"`), which all notes will have.
-* `get_chords(start: TimeStamp, stop: TimeStamp) -> List[Chord]`, gets all the chords in a range of times.
-* `get_notes(start: TimeStamp, stop: TimeStamp) -> List[Note]`, gets all the notes in a range of times.
-* `get_events(start: TimeStamp, stop: TimeStamp, event_type: type = None) -> List[Even]`, gets all the events in a range of times, optionally of a certain type.
+* `get_chords(start: TimeStamp, stop: TimeStamp) -> List[Chord]`, gets all the chords in a range of times, sorted by position.
+* `get_notes(start: TimeStamp, stop: TimeStamp) -> List[Note]`, gets all the notes in a range of times, sorted by position.
+* `get_events(start: TimeStamp, stop: TimeStamp, event_type: type = None) -> List[Even]`, gets all the events in a range of times, sorted by position, optionally of a certain type.
 
 ___
 ## Footnotes
