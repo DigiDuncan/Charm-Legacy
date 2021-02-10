@@ -18,12 +18,8 @@ And the more helpful data:
 
 * `resolution: int`, the "ticks per beat" of the charts contained in the song<sup id="a1">[1](#f1)</sup>.
 * `offset: int`<sup id="a2">[2](#f2)</sup>, the offset in milliseconds<sup id="aq">[?](#fq)</sup> that the ticks are pushed forward. (An offset of 100 would mean tick 0 refers to the time 0.1s.)
-* `charts: List[Chart]`: Every chart associated with this song.
+* `charts: Dict[Tuple[str, int], Chart]`: Every chart associated with this song, keyed by (instrument, difficulty).
 * `lyricphrases: List[LyricPhrase]`: A list of LyricPhrases associated with this song, sorted by position.
-
-### Functions
-
-* `get_chart(instrument: str, difficulty: int) -> Chart | None`, get the chart that matches the input parameters, or None. 
 
 ## Gamemode
 
@@ -36,7 +32,7 @@ And the more helpful data:
 * `notes: Dict[int, dict]`<sup id="a4">[4](#f4)</sup> a map of a fret ID and these keys;
     * `name: str`, the name of this fret
     * `lane: int`, the lane this note shows up in
-* `sprite_size: Tuple[int, int]`: A Tuple of (width, height) for the size of the note images in this game mode.<sup id="a5">[5](#f5)</sup>
+* `lane_width: int`: The width of each lane (in px) in this game mode.<sup id="a5">[5](#f5)</sup>
 * `diff_names: Dict[int, str]`, a map of difficulty IDs and names.
 
 ## Note
