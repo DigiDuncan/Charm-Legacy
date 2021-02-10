@@ -1,5 +1,5 @@
 from charm.classes.songdata import BPMEvent, Note, Chord, Lyric, LyricPhrase, Track, Song
-from charm.classes.gamedefinition import GameDefinition
+from charm.classes.gamemode import Gamemode
 from charm.lib.constants import difficulties, frets, instruments
 
 example_song = Song(
@@ -45,7 +45,7 @@ example_song = Song(
     ]
 )
 
-example_game_definition = GameDefinition(
+example_gamemode = Gamemode(
     name = "gh",
     instruments = [instruments.GUITAR],
     lane_count = 5,

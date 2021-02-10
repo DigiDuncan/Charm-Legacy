@@ -3,15 +3,15 @@ import importlib.resources as pkg_resources
 import pygame
 
 import charm.data.fonts
-from charm.classes.gamedefinition import GameDefinition
+from charm.classes.gamemode import Gamemode
 from charm.classes.songdata import Song
 
 
 class SongInfo:
-    def __init__(self, game_definition: GameDefinition, song: Song, instrument: str, difficulty: str):
-        self.game_definition = game_definition
+    def __init__(self, gamemode: Gamemode, song: Song, instrument: str, difficulty: str):
+        self.gamemode = gamemode
         self.song = song
-        self.track = self.song.get_track(instrument, difficulty)
+        self.chart = self.song.get_chart(instrument, difficulty)
 
     @property
     def image(self):
@@ -22,8 +22,8 @@ class SongInfo:
                 f"Charter: {self.song.charter}\n"
                 f"Difficulty Rating: {'X' * self.song.difficulty}\n"
                 "\n"
-                f"Instrument: {self.track.instrument}\n"
-                f"Difficulty: {self.game_definition.diff_names[self.track.difficulty]}\n")
+                f"Instrument: {self.chart.instrument}\n"
+                f"Difficulty: {self.gamemode.diff_names[self.chart.difficulty]}\n")
         surf = pygame.Surface((300, 600), pygame.SRCALPHA)
         current_height = 0
         for line in text.splitlines():

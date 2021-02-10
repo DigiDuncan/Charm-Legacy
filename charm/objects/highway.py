@@ -4,39 +4,39 @@ from importlib import import_module
 
 import pygame
 
-from charm.classes.gamedefinition import GameDefinition
+from charm.classes.gamemode import Gamemode
 from charm.classes.songdata import Song
 from charm.objects.note import Note as GameNote
 
 
 class Highway:
-    def __init__(self, pixels_per_second, game_definition: GameDefinition, song: Song, instrument: str, difficulty: int):
+    def __init__(self, pixels_per_second, gamemode: Gamemode, song: Song, instrument: str, difficulty: int):
         self.pixels_per_second = pixels_per_second
         self.song = song
         self.resolution = song.resolution
-        self.track = song.get_track(instrument, difficulty)
+        self.chart = song.get_chart(instrument, difficulty)
 
-        if self.track is None:
-            raise ValueError(f"Track with instrument {instrument} and difficulty {difficulty} does not exist!")
+        if self.chart is None:
+            raise ValueError(f"Chart with instrument {instrument} and difficulty {difficulty} does not exist!")
 
-        self.game_definition = game_definition
-        self.note_size = self.game_definition.sprite_size
-        self.lane_count = self.game_definition.lane_count
-        self.fret_map = self.game_definition.note_names
+        self.gamemode = gamemode
+        self.note_size = self.gamemode.sprite_size
+        self.lane_count = self.gamemode.lane_count
+        self.fret_map = self.gamemode.note_names
 
         self.current_time = 0
 
     @property
     def notes(self):
         noteslist = []
-        for chord in self.track.chords:
+        for chord in self.chart.chords:
             for note in chord.notes:
                 noteslist.append(note)
         return noteslist
 
     @property
     def lasttick(self) -> int:
-        return self.track.last_chord.position + self.track.last_chord.longest_note_length
+        return self.chart.last_chord.position + self.chart.last_chord.longest_note_length
 
     @property
     def width(self) -> int:
@@ -48,7 +48,7 @@ class Highway:
 
     @property
     def image_folder(self):
-        return import_module("charm.data.images." + self.game_definition.image_folder)
+        return import_module("charm.data.images." + self.gamemode.image_folder)
 
     @property
     def strikeline(self) -> pygame.Surface:
@@ -79,7 +79,7 @@ class Highway:
         # Tack the strikeline on the bottom.
         surf.blit(self.strikeline, (self.note_size[0] / 4, self.height - (self.note_size[1] * 1.25)))
 
-        bpm_events = self.track.bpm_events
-        time_sig_events = self.track.time_sig_events
+        bpm_events = self.chart.bpm_events
+        time_sig_events = self.chart.time_sig_events
 
         return surf

@@ -9,7 +9,7 @@ from charm.objects.highway import Highway
 from charm.objects.note import Note
 
 song = examplesong.example_song
-game_def = examplesong.example_game_definition
+gamemode = examplesong.example_gamemode
 
 
 class Game():
@@ -35,10 +35,10 @@ class Game():
             # note = Note(instruments.GUITAR, frets.ORANGE)
             # self.screen.blit(note.image, (0, 0))
 
-            highway = Highway(1000, game_def, song, instruments.GUITAR, difficulties.EXPERT)
+            highway = Highway(1000, gamemode, song, instruments.GUITAR, difficulties.EXPERT)
             self.screen.blit(highway.image, (0, (0 - highway.image.get_height() + self.screen.get_height())))
 
-            songinfo = SongInfo(game_def, song, instruments.GUITAR, difficulties.EXPERT)
+            songinfo = SongInfo(gamemode, song, instruments.GUITAR, difficulties.EXPERT)
             self.screen.blit(songinfo.image, (self.screen.get_width() - songinfo.image.get_width() - 5, 0))
 
             # Final draw stage

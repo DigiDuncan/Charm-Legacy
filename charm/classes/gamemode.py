@@ -6,7 +6,7 @@ from charm.lib.njson import jsonable
 
 @jsonable
 @dataclass
-class GameDefinition:
+class Gamemode:
     name: str
     instruments: List[str]
     lane_count: int

@@ -19,7 +19,7 @@ class Note:
 @dataclass
 class Chord:
     """A chord (many notes together).
-    `position: int`, this chords position in the track.
+    `position: int`, this chords position in the chart.
     `flag: str`, either normal, hopo, or tap (can't be hopo and tap)
     `star_power: bool`, this note is part of a star power phrase
     `notes: List[Note]`, a list of notes.
@@ -60,7 +60,7 @@ class SPEvent:
 
 @jsonable
 @dataclass
-class Track:
+class Chart:
     instrument: str
     difficulty: int
     chords: List[Chord]
@@ -108,11 +108,11 @@ class Song:
     length: int
     resolution: int
     offset: int
-    tracks: List[Track]
+    charts: List[Chart]
     lyricphrases: List[LyricPhrase]
 
-    def get_track(self, instrument, difficulty):
-        for t in self.tracks:
-            if t.instrument == instrument and t.difficulty == difficulty:
-                return t
+    def get_chart(self, instrument, difficulty):
+        for c in self.charts:
+            if c.instrument == instrument and c.difficulty == difficulty:
+                return c
         return None
