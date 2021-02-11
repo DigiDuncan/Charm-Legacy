@@ -19,14 +19,14 @@ example_song = Song(
             song = ...,  # TODO: How to pass in reference of the Song we're making?
             instrument = instruments.GUITAR,
             difficulty = difficulties.EXPERT,
-            events = [..., ..., BPMEvent(0, 120),
-                      ..., ..., Note(Timestamp(480), frets.GREEN),
-                      ..., ..., Note(Timestamp(720), frets.RED, 480),
-                      ..., ..., Note(Timestamp(720), frets.YELLOW, 480)]
+            events = [..., ..., BPMEvent(..., 0, 120),
+                      ..., ..., Note(..., ..., Timestamp(480), frets.GREEN),
+                      ..., ..., Note(..., ..., Timestamp(720), frets.RED, 480),
+                      ..., ..., Note(..., ..., Timestamp(720), frets.YELLOW, 480)]
         )
     ],
     events = [
-        Section(position = 0, name = "The Section"),
+        Section(..., position = 0, name = "The Section"),
         LyricPhrase(
             song = ...,
             position = 480,
