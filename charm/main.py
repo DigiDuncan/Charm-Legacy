@@ -7,6 +7,7 @@ from charm.lib.constants import difficulties, frets, instruments
 from charm.lib.display import display
 from charm.objects.highway import Highway
 from charm.objects.note import Note
+from charm.test import chparse_test
 
 song = examplesong.example_song
 gamemode = examplesong.example_gamemode
@@ -48,8 +49,9 @@ class Game():
 
 
 def main():
-    g = Game()
-    g.run()
+    # g = Game()
+    # g.run()
+    chparse_test.test()
 
 
 # This is needed, or else calling `python -m <name>` will mean that main() is called twice.
