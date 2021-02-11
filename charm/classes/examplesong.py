@@ -1,5 +1,5 @@
-from charm.classes.songdata import BPMEvent, Note, Lyric, LyricPhrase, Chart, Song, TimeDelta, Timestamp
 from charm.classes.gamemode import Gamemode
+from charm.classes.songdata import BPMEvent, Chart, Lyric, LyricPhrase, Note, Section, Song, TimeDelta, Timestamp
 from charm.lib.constants import difficulties, frets, instruments
 
 example_song = Song(
