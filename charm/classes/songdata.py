@@ -14,6 +14,13 @@ class Timestamp:
     def time_to_ticks(self, song: "Song") -> int:
         return self.time * 440  # TODO: Placeholder
 
+    def to_json(self):
+        return {"ticks": self.ticks}
+
+    @classmethod
+    def from_json(cls, jsondata) -> Timestamp:
+        return Timestamp(ticks = jsondata["ticks"])
+
 
 class TimeDelta:
     def __init__(self, position: Timestamp, ticks: int):
@@ -22,17 +29,46 @@ class TimeDelta:
         self.length: float = None
     # TODO: This is not finished at all.
 
+    def to_json(self):
+        return {
+            "position": self.position,
+            "ticks": self.ticks
+        }
+
+    @classmethod
+    def from_json(cls, jsondata) -> TimeDelta:
+        return TimeDelta(
+            position = jsondata["position"],
+            ticks = jsondata["ticks"]
+        )
+
 
 class Event:
     def __init__(self, song: "Song", position: Timestamp):
         self.song = song
         self.position = position
 
+    def to_json(self):
+        return {"position": self.position}
+
+    @classmethod
+    def from_json(cls, jsondata) -> Event:
+        # TODO: This will fail because it has no song passed in. How fix?
+        return Event(position = jsondata["position"])
+
 
 class ChartEvent(Event):
     def __init__(self, song: "Song", chart: "Chart", position: Timestamp):
         self.chart = chart
         super().__init__(song, position)
+
+    def to_json(self):
+        # TODO: This will fail because it has no song or chart passed in. How fix?
+        return {"position": self.position}
+
+    @classmethod
+    def from_json(cls, jsondata) -> ChartEvent:
+        return ChartEvent(position = jsondata["position"])
 
 
 class Lyric(Event):
@@ -43,6 +79,23 @@ class Lyric(Event):
         self.length = length
         super().__init__(song, position)
 
+    def to_json(self):
+        return {
+            "position": self.position,
+            "word": self.word,
+            "partial": self.partial,
+            "length": self.length
+        }
+
+    @classmethod
+    def from_json(cls, jsondata) -> Lyric:
+        return Lyric(
+            position = Timestamp.from_json(jsondata["position"]),
+            word = jsondata["word"],
+            partial = jsondata["partial"],
+            length = TimeDelta.from_json(jsondata["partial"])
+        )
+
 
 class LyricPhrase(Event):
     def __init__(self, song: "Song", position: Timestamp,
@@ -51,12 +104,40 @@ class LyricPhrase(Event):
         self.lyrics = lyrics
         super().__init__(song, position)
 
+    def to_json(self):
+        return {
+            "position": Timestamp.to_json(self.position),
+            "length": self.length,
+            "lyrics": [lyric.to_json() for lyric in self.lyrics]
+        }
+
+    @classmethod
+    def from_json(cls, jsondata) -> LyricPhrase:
+        return LyricPhrase(
+            position = Timestamp.from_json(jsondata["position"]),
+            length = jsondata["length"],
+            lyrics = Lyric.from_json(jsondata["lyrics"])
+        )
+
 
 class BPMEvent(Event):
     def __init__(self, song: "Song", position: Timestamp,
                  bpm: float):
         self.bpm = bpm
         super().__init__(song, position)
+
+    def to_json(self):
+        return {
+            "position": Timestamp.to_json(self.position),
+            "bpm": self.bpm
+        }
+
+    @classmethod
+    def from_json(cls, jsondata) -> BPMEvent:
+        return BPMEvent(
+            position = Timestamp.from_json(jsondata["position"]),
+            bpm = jsondata["bpm"]
+        )
 
 
 class TSEvent(Event):
@@ -65,12 +146,38 @@ class TSEvent(Event):
         self.time_signature = time_signature
         super().__init__(song, position)
 
+    def to_json(self):
+        return {
+            "position": Timestamp.to_json(self.position),
+            "time_signature": self.time_signature
+        }
+
+    @classmethod
+    def from_json(cls, jsondata) -> TSEvent:
+        return TSEvent(
+            position = Timestamp.from_json(jsondata["position"]),
+            time_signature = jsondata["time_signature"]
+        )
+
 
 class GenericEvent(Event):
     def __init__(self, song: "Song", position: Timestamp,
                  data: dict):
         self.data = data
         super().__init__(song, position)
+
+    def to_json(self):
+        return {
+            "position": Timestamp.to_json(self.position),
+            "data": self.data
+        }
+
+    @classmethod
+    def from_json(cls, jsondata) -> GenericEvent:
+        return GenericEvent(
+            position = Timestamp.from_json(jsondata["position"]),
+            data = jsondata["data"]  # This might break if there are non-builtins in the data.
+        )
 
 
 class Note(ChartEvent):
@@ -81,6 +188,23 @@ class Note(ChartEvent):
         self.length = length
         super().__init__(song, chart, position)
 
+    def to_json(self):
+        return {
+            "position": Timestamp.to_json(self.position),
+            "fret": self.fret,
+            "flag": self.flag,
+            "length": TimeDelta.to_json(self.length)
+        }
+
+    @classmethod
+    def from_json(cls, jsondata) -> Note:
+        return Note(
+            position = Timestamp.from_json(jsondata["position"]),
+            fret = jsondata["fret"],
+            flag = jsondata["flag"],
+            length = TimeDelta.from_json(jsondata["length"])
+        )
+
 
 class Chord(ChartEvent):
     def __init__(self, song: "Song", chart: "Chart", position: Timestamp,
@@ -89,6 +213,19 @@ class Chord(ChartEvent):
         self.flag = self.notes[0].flag  # This might not work.
         super().__init__(song, chart, position)
 
+    def to_json(self):
+        return {
+            "position": Timestamp.to_json(self.position),
+            "notes": [note.to_json() for note in self.notes]
+        }
+
+    @classmethod
+    def from_json(cls, jsondata) -> Chord:
+        return Chord(
+            position = Timestamp.from_json(jsondata["position"]),
+            notes = [Note.from_json(d) for d in jsondata["notes"]]
+        )
+
 
 class SPEvent(ChartEvent):
     def __init__(self, song: "Song", chart: "Chart", position: Timestamp,
@@ -96,12 +233,38 @@ class SPEvent(ChartEvent):
         self.length = length
         super().__init__(song, chart, position)
 
+    def to_json(self):
+        return {
+            "position": Timestamp.to_json(self.position),
+            "length": self.length
+        }
+
+    @classmethod
+    def from_json(cls, jsondata) -> SPEvent:
+        return SPEvent(
+            position = Timestamp.from_json(jsondata["position"]),
+            length = jsondata["length"]
+        )
+
 
 class GenericChartEvent(ChartEvent):
     def __init__(self, song: "Song", chart: "Chart", position: Timestamp,
                  data: dict):
         self.data = data
         super().__init__(song, chart, position)
+
+    def to_json(self):
+        return {
+            "position": Timestamp.to_json(self.position),
+            "data": self.data
+        }
+
+    @classmethod
+    def from_json(cls, jsondata) -> GenericChartEvent:
+        return GenericChartEvent(
+            position = Timestamp.from_json(jsondata["position"]),
+            data = jsondata["data"]  # This might break if there are non-builtins in the data.
+        )
 
 
 class Chart:
@@ -138,6 +301,21 @@ class Chart:
     def get_events(self, start: Timestamp, stop: Timestamp) -> List[Event]:
         return [e for e in self.events if e >= start and e <= stop]
 
+    def to_json(self):
+        return {
+            "instrument": self.instrument,
+            "difficulty": self.difficulty,
+            "events": [e.to_json() for e in self.events]
+        }
+
+    @classmethod
+    def from_json(cls, jsondata) -> Chart:
+        return Chart(
+            instrument = jsondata["instrument"],
+            difficulty = jsondata["difficulty"],
+            events = ...  # TODO: Uhoh. How do you tell what kind of event it is?!
+        )
+
 
 class Song:
     def __init__(self, name: str, artist: str, album: str, track: int, year: str, genre: str, rating: int, charter: str, length: int,
@@ -164,3 +342,39 @@ class Song:
 
     def set_chart(self, instrument: str, difficulty: int, chart: Chart):
         self.charts[(instrument, difficulty)] = chart
+
+    def to_json(self):
+        return {
+            "name": self.name,
+            "alt_name": self.alt_name,
+            "artist": self.artist,
+            "album": self.album,
+            "track": self.track,
+            "year": self.year,
+            "genre": self.genre,
+            "rating": self.rating,
+            "charter": self.charter,
+            "length": self.length,
+            "resolution": self.resolution,
+            "offset": self.offset,
+            "charts": self.charts,
+            "lyricphrases": self.lyricphrases
+        }
+
+    def from_json(cls, jsondata):
+        return Song(
+            name = jsondata["name"],
+            alt_name = jsondata["alt_name"],
+            artist = jsondata["artist"],
+            album = jsondata["album"],
+            track = jsondata["track"],
+            year = jsondata["year"],
+            genre = jsondata["genre"],
+            rating = jsondata["rating"],
+            charter = jsondata["charter"],
+            length = jsondata["length"],
+            resolution = jsondata["resolution"],
+            offset = jsondata["offset"],
+            charts = [Chart.from_json(d) for d in jsondata["charts"]],
+            lyricphrases = [LyricPhrase.from_json(d) for d in jsondata["lyricphrases"]]
+        )
