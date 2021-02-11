@@ -301,6 +301,9 @@ class Chart:
     def get_events(self, start: Timestamp, stop: Timestamp) -> List[Event]:
         return [e for e in self.events if e >= start and e <= stop]
 
+    def get_non_note_events(self, start: Timestamp, stop: Timestamp) -> List[Event]:
+        return [e for e in self.events if e not in self.notes and e >= start and e <= stop]
+
     def to_json(self):
         return {
             "instrument": self.instrument,
