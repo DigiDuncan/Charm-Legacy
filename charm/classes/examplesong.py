@@ -1,4 +1,4 @@
-from charm.classes.songdata import BPMEvent, Note, Chord, Lyric, LyricPhrase, Track, Song
+from charm.classes.songdata import BPMEvent, Note, Lyric, LyricPhrase, Chart, Song, TimeDelta, Timestamp
 from charm.classes.gamemode import Gamemode
 from charm.lib.constants import difficulties, frets, instruments
 
@@ -6,40 +6,33 @@ example_song = Song(
     name = "Example Song",
     artist = "DigiDuncan",
     album = "The Best Album",
-    genre = "Example",
-    difficulty = 3,
-    charter = "DigiSoft",
-    year = 2021,
     track = 1,
+    year = 2021,
+    genre = "Example",
+    rating = 3,
+    charter = "DigiSoft",
     length = 10000,
     resolution = 480,
     offset = 0,
-    tracks = [
-        Track(
+    charts = [
+        Chart(
+            song = ...,  # TODO: How to pass in reference of the Song we're making?
             instrument = instruments.GUITAR,
             difficulty = difficulties.EXPERT,
-            chords = [
-                Chord(
-                    position = 480,
-                    flag = "normal",
-                    notes = [Note(frets.GREEN, 0)]
-                ),
-                Chord(
-                    position = 720,
-                    flag = "normal",
-                    notes = [Note(frets.RED, 480), Note(frets.YELLOW, 480)]
-                )
-            ],
-            bpm_events = [BPMEvent(0, 120)]
+            events = [..., ..., BPMEvent(0, 120),
+                      ..., ..., Note(Timestamp(480), frets.GREEN),
+                      ..., ..., Note(Timestamp(720), frets.RED, 480),
+                      ..., ..., Note(Timestamp(720), frets.YELLOW, 480)]
         )
     ],
     lyricphrases = [
         LyricPhrase(
+            song = ...,
             position = 480,
             length = 480,
             lyrics = [
-                Lyric(word = "Wow,", rel_position = 0, length = 200),
-                Lyric(word = "cool!", rel_position = 200, length = 200)
+                Lyric(..., Timestamp(480), word = "Wow,", length = TimeDelta(Timestamp(480), 200)),
+                Lyric(..., Timestamp(600), word = "cool!", length = TimeDelta(Timestamp(600), 200))
             ]
         )
     ]
@@ -59,6 +52,14 @@ example_gamemode = Gamemode(
         frets.ORANGE: "orange"
     },
     note_flags = ["hopo", "tap"],
+    note_positions = {
+        frets.OPEN: 3,
+        frets.GREEN: 1,
+        frets.RED: 2,
+        frets.YELLOW: 3,
+        frets.BLUE: 4,
+        frets.ORANGE: 5
+    },
     sprite_size = (64, 64),
     diff_names = {
         difficulties.EASY: "Easy",

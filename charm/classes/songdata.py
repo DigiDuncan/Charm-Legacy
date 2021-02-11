@@ -73,7 +73,7 @@ class ChartEvent(Event):
 
 class Lyric(Event):
     def __init__(self, song: "Song", position: Timestamp,
-                 word: str, partial: bool, length: TimeDelta):
+                 word: str, length: TimeDelta, partial: bool = False):
         self.word = word
         self.partial = partial
         self.length = length
@@ -182,7 +182,7 @@ class GenericEvent(Event):
 
 class Note(ChartEvent):
     def __init__(self, song: "Song", chart: "Chart", position: Timestamp,
-                 fret: int, flag: str, length: TimeDelta):
+                 fret: int, length: TimeDelta = TimeDelta(position, 0), flag: str = "normal"):  # Can't reference position here?
         self.fret = fret
         self.flag = flag  # Flags might need to be bytes? ¯\_(ツ)_/¯
         self.length = length

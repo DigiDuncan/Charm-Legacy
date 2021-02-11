@@ -13,5 +13,6 @@ class Gamemode:
     image_folder: str
     note_names: Dict[int, str]
     note_flags: List[str]
+    note_positions: Dict[int, int]
     sprite_size: Tuple[int, int]
     diff_names: Dict[int, str]
