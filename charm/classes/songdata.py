@@ -182,7 +182,7 @@ class GenericEvent(Event):
 
 class Note(ChartEvent):
     def __init__(self, song: "Song", chart: "Chart", position: Timestamp,
-                 fret: int, length: TimeDelta = TimeDelta(position, 0), flag: str = "normal"):  # Can't reference position here?
+                 fret: int, length: TimeDelta = TimeDelta(position, 0), flag: str = "normal"):  # TODO: Can't reference position here?
         self.fret = fret
         self.flag = flag  # Flags might need to be bytes? ¯\_(ツ)_/¯
         self.length = length
