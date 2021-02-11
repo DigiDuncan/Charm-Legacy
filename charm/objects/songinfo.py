@@ -20,7 +20,7 @@ class SongInfo:
                 f"Album: {self.song.album}\n"
                 f"Year: {self.song.year}\n"
                 f"Charter: {self.song.charter}\n"
-                f"Difficulty Rating: {'X' * self.song.difficulty}\n"
+                f"Difficulty Rating: {'X' * self.song.rating}\n"
                 "\n"
                 f"Instrument: {self.chart.instrument}\n"
                 f"Difficulty: {self.gamemode.diff_names[self.chart.difficulty]}\n")
