@@ -25,7 +25,8 @@ example_song = Song(
                       ..., ..., Note(Timestamp(720), frets.YELLOW, 480)]
         )
     ],
-    lyricphrases = [
+    events = [
+        Section(position = 0, name = "The Section"),
         LyricPhrase(
             song = ...,
             position = 480,

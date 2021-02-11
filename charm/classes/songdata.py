@@ -120,6 +120,26 @@ class LyricPhrase(Event):
         )
 
 
+class Section(Event):
+    def __init__(self, song: "Song", position: Timestamp,
+                 name: str):
+        self.name = name
+        super().__init__(song, position)
+
+    def to_json(self):
+        return {
+            "position": Timestamp.to_json(self.position),
+            "name": self.name
+        }
+
+    @classmethod
+    def from_json(cls, jsondata) -> Section:
+        return Section(
+            position = Timestamp.from_json(jsondata["position"]),
+            name = jsondata["name"]
+        )
+
+
 class BPMEvent(Event):
     def __init__(self, song: "Song", position: Timestamp,
                  bpm: float):
