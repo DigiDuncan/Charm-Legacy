@@ -298,10 +298,10 @@ class Chart:
     def get_chords(self, start: Timestamp, stop: Timestamp) -> List[Chord]:
         return [c for c in self.chords if c >= start and c <= stop]
 
-    def get_events(self, start: Timestamp, stop: Timestamp) -> List[Event]:
+    def get_events(self, start: Timestamp, stop: Timestamp) -> List[ChartEvent]:
         return [e for e in self.events if e >= start and e <= stop]
 
-    def get_non_note_events(self, start: Timestamp, stop: Timestamp) -> List[Event]:
+    def get_non_note_events(self, start: Timestamp, stop: Timestamp) -> List[ChartEvent]:
         return [e for e in self.events if e not in self.notes and e >= start and e <= stop]
 
     def to_json(self):
@@ -322,7 +322,7 @@ class Chart:
 
 class Song:
     def __init__(self, name: str, artist: str, album: str, track: int, year: str, genre: str, rating: int, charter: str, length: int,
-                 resolution: int, offset: int, charts: Dict[Tuple[str, int], Chart] = None, lyricphrases: List[LyricPhrase] = None,
+                 resolution: int, offset: int, charts: Dict[Tuple[str, int], Chart] = None, events: List[Event] = None,
                  alt_name: str = None):
         self.name = name
         self.alt_name = alt_name  # Some songs in some games (DDR, etc.) have an alt-name, usually a Romanji version.
@@ -338,13 +338,24 @@ class Song:
         self.resolution = resolution
         self.offset = offset
         self.charts = charts
-        self.lyricphrases = lyricphrases
+        self.events = events
+
+    @property
+    def lyricphrases(self):
+        return [e for e in self.events if isinstance(e, LyricPhrase)]
 
     def get_chart(self, instrument: str, difficulty: int) -> Chart:
         return self.charts[(instrument, difficulty)]
 
     def set_chart(self, instrument: str, difficulty: int, chart: Chart):
+        chart.song = self
         self.charts[(instrument, difficulty)] = chart
+
+    def get_lyricphrases(self, start: Timestamp, stop: Timestamp) -> List[LyricPhrase]:
+        return [c for c in self.lyricphrases if c >= start and c <= stop]
+
+    def get_events(self, start: Timestamp, stop: Timestamp) -> List[Event]:
+        return [e for e in self.events if e >= start and e <= stop]
 
     def to_json(self):
         return {
