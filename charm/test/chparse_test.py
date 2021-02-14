@@ -65,4 +65,10 @@ for e in sorted(errors, key=errors.get, reverse=True):
 if errors == {}:
     print("No errors!")
 print("\n=== TOTALS ===")
-print(f".charts: {chart_c}\n.mids: {mid_c}\nOthers: {other_c}\nTotal Charts: {chart_c + mid_c}\nTotal: {chart_c + mid_c + other_c}\nErrors: {len(raw_errors)}")
+print(f".charts: {chart_c}\n"
+      f".mids: {mid_c}\n"
+      f"Others: {other_c}\n"
+      f"Total Charts: {chart_c + mid_c}\n"
+      f"Total: {chart_c + mid_c + other_c}\n"
+      f"Errors: {len(raw_errors)}"
+      f"Success Rate: {round((chart_c + mid_c - len(raw_errors)) / (chart_c + mid_c) * 100, 3)}%")
