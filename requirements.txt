@@ -2,3 +2,4 @@ digiformatter==0.5.7.2
 git+git://github.com/DigiDuncan/DigiColor
 toml==0.10.0
 pygame==2.0.1
+git+git://github.com/nfearnley/chparse
