@@ -72,7 +72,7 @@ sources = {}
 full_errors = {}
 
 print("\nProcessing errors...")
-for (chart_path, e, exp) in tqdm.tqdm(bad_charts.items(), unit = " errors"):
+for (chart_path, e, exp) in tqdm.tqdm(bad_charts, unit = " errors"):
     new_path = chart_path.parent.relative_to(chart_root)
     sources[new_path + ".chart"] = c
     full_errors[new_path + ".error"] = exp
