@@ -73,7 +73,7 @@ full_errors = {}
 print("\nProcessing errors...")
 for (chart_path, e, exp) in tqdm.tqdm(bad_charts, unit = " errors"):
     new_path = chart_path.parent.relative_to(chart_root)
-    sources[" - ".join(new_path.with_suffix(".chart").parts)] = c
+    sources[" - ".join(new_path.with_suffix(".chart").parts)] = chart_path
     full_errors[" - ".join(new_path.with_suffix(".error").parts)] = exp
 
     raw_errors.append((new_path, type(e)))
