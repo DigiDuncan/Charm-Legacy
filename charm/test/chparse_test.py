@@ -1,4 +1,3 @@
-import re
 from pathlib import Path
 from traceback import format_exc
 from typing import DefaultDict
@@ -74,8 +73,8 @@ full_errors = {}
 print("\nProcessing errors...")
 for (chart_path, e, exp) in tqdm.tqdm(bad_charts, unit = " errors"):
     new_path = chart_path.parent.relative_to(chart_root)
-    sources[new_path + ".chart"] = c
-    full_errors[new_path + ".error"] = exp
+    sources[" - ".join(new_path.with_suffix(".chart").parts)] = c
+    full_errors[" - ".join(new_path.with_suffix(".error").parts)] = exp
 
     raw_errors.append((new_path, type(e)))
     error_counts[type(e)] += 1
