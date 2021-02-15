@@ -22,10 +22,10 @@ def zip_all(dst, *, copy=None, create=None):
             z.writestr(newname, data)
 
 
-in_path = input("Recursively search what directory for charts? > ")
+in_path = Path(input("Recursively search what directory for charts? > "))
 in_limit = input("Limit number of charts scanned to... (hit ENTER for no limit) > ")
 if in_limit != "":
-    in_number = in_limit
+    in_number = int(in_limit)
     in_limit = int(in_limit)
 else:
     in_number = input("How many charts are you expecting? (hit ENTER for unknown) > ")
@@ -35,7 +35,7 @@ else:
     else:
         in_number = int(in_number)
 
-charts = Path(in_path).rglob("notes.*")  # Clone Hero requires charts be named "notes.chart" or "notes.mid[i]."
+charts = in_path.rglob("notes.*")  # Clone Hero requires charts be named "notes.chart" or "notes.mid[i]."
 
 bad_charts = {}
 bad_charts_expanded = {}
@@ -73,11 +73,10 @@ full_errors = {}
 
 print("\nProcessing errors...")
 for c, e in tqdm.tqdm(bad_charts.items(), unit = " errors"):
-    test_path = in_path.replace("\\", "/")
-    full_path = c.replace("\\", "/")
-    new_path = re.search(f"{test_path}/(.*)/notes", full_path).group(1).replace("/", " - ")
-    sources[new_path + ".chart"] = c
-    full_errors[new_path + ".error"] = bad_charts_expanded[c]
+    full_path = Path(c)
+    new_path = " - ".join(c.parent.relative_to(full_path).parts)
+    sources[f"{new_path}.chart"] = c
+    full_errors[f"{new_path}.error"] = bad_charts_expanded[c]
 
     raw_errors[new_path] = type(e)
     if type(e) in errors.keys():
