@@ -79,11 +79,11 @@ for c, e in tqdm.tqdm(bad_charts.items(), unit = " errors"):
     sources[new_path + ".chart"] = c
     full_errors[new_path + ".error"] = bad_charts_expanded[c]
 
-    raw_errors[new_path] = str(e)
-    if str(e) in errors.keys():
-        errors[str(e)] += 1
+    raw_errors[new_path] = type(e)
+    if type(e) in errors.keys():
+        errors[type(e)] += 1
     else:
-        errors[str(e)] = 1
+        errors[type(e)] = 1
 
 print("\nGenerating output file...")
 
