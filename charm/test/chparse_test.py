@@ -1,6 +1,7 @@
 import re
 from pathlib import Path
 from traceback import format_exc
+from typing import DefaultDict
 from zipfile import ZipFile, ZIP_DEFLATED
 
 import chparse
@@ -22,10 +23,10 @@ def zip_all(dst, *, copy=None, create=None):
             z.writestr(newname, data)
 
 
-in_path = Path(input("Recursively search what directory for charts? > "))
+chart_root = Path(input("Recursively search what directory for charts? > "))
 in_limit = input("Limit number of charts scanned to... (hit ENTER for no limit) > ")
-if in_limit != "":
-    in_number = int(in_limit)
+if in_limit:
+    in_number = in_limit
     in_limit = int(in_limit)
 else:
     in_number = input("How many charts are you expecting? (hit ENTER for unknown) > ")
@@ -35,9 +36,9 @@ else:
     else:
         in_number = int(in_number)
 
-charts = in_path.rglob("notes.*")  # Clone Hero requires charts be named "notes.chart" or "notes.mid[i]."
+charts = chart_root.rglob("notes.*")  # Clone Hero requires charts be named "notes.chart" or "notes.mid[i]."
 
-bad_charts = {}
+bad_charts = []
 bad_charts_expanded = {}
 
 i = 0
@@ -47,55 +48,50 @@ mid_c = 0
 other_c = 0
 
 print("Processing charts...")
-for chart in tqdm.tqdm(charts, unit = " charts", total = in_number):
+for chart_path in tqdm.tqdm(charts, unit = " charts", total = in_number):
     i += 1
     if in_limit is not None and i > in_limit:
         break
-    if chart.suffix.lower() in [".mid", ".midi"]:  # midis are so old sometimes the extension is uppercase
+    if chart_path.suffix.lower() in [".mid", ".midi"]:  # midis are so old sometimes the extension is uppercase
         mid_c += 1
-    elif chart.suffix == ".chart":
+    elif chart_path.suffix == ".chart":
         chart_c += 1
         try:
-            with chart.open(encoding = "utf-8 sig") as f:
+            with chart_path.open(encoding = "utf-8 sig") as f:
                 c = chparse.parse.load(f)
             if c is None:
                 raise ValueError("Don't be None!")
         except Exception as e:
-            bad_charts[str(chart.absolute())] = e
-            bad_charts_expanded[str(chart.absolute())] = format_exc()
+            bad_charts.append((chart_path, e, format_exc()))
     else:  # .bak, .backup, .eof
         other_c += 1
 
-errors = {}
-raw_errors = {}
+error_counts = DefaultDict(lambda: 0)
+raw_errors = []
 sources = {}
 full_errors = {}
 
 print("\nProcessing errors...")
-for c, e in tqdm.tqdm(bad_charts.items(), unit = " errors"):
-    full_path = Path(c)
-    new_path = " - ".join(c.parent.relative_to(full_path).parts)
-    sources[f"{new_path}.chart"] = c
-    full_errors[f"{new_path}.error"] = bad_charts_expanded[c]
+for (chart_path, e, exp) in tqdm.tqdm(bad_charts.items(), unit = " errors"):
+    new_path = chart_path.parent.relative_to(chart_root)
+    sources[new_path + ".chart"] = c
+    full_errors[new_path + ".error"] = exp
 
-    raw_errors[new_path] = type(e)
-    if type(e) in errors.keys():
-        errors[type(e)] += 1
-    else:
-        errors[type(e)] = 1
+    raw_errors.append((new_path, type(e)))
+    error_counts[type(e)] += 1
 
 print("\nGenerating output file...")
 
 out = ""
 out += ("=== RAW ERRORS ===\n")
-for name, error in raw_errors.items():
+for name, error in raw_errors:
     out += (f"\"{name}\": {error}\n")
-if raw_errors == {}:
+if not raw_errors:
     out += ("No errors!\n")
 out += ("\n\n=== ERROR COUNT ===\n")
-for e in sorted(errors, key=errors.get, reverse=True):
-    out += (f"{e}: {errors[e]}\n")
-if errors == {}:
+for e in sorted(error_counts, key=error_counts.get, reverse=True):
+    out += (f"{e}: {error_counts[e]}\n")
+if not error_counts:
     out += ("No errors!\n")
 out += ("\n\n=== TOTALS ===\n")
 out += (f".charts: {chart_c}\n"
