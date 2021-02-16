@@ -65,10 +65,14 @@ class LyricAnimator:
         self.width = size[0]
         self.height = size[1]
         self.font = font
+        self.start = None
 
     @property
     def current_time(self):
-        return nygame.time.get_ticks_sec()
+        ticks = nygame.time.get_ticks_sec()
+        if self.start is None:
+            self.start = ticks
+        return ticks - self.start
 
     @property
     def image(self) -> pygame.Surface:

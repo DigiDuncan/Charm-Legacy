@@ -42,7 +42,8 @@ class Game():
 
             # songinfo = SongInfo(gamemode, song, instruments.GUITAR, difficulties.EXPERT)
             # self.screen.blit(songinfo.image, (self.screen.get_width() - songinfo.image.get_width() - 5, 0))
-
+            pygame.mixer.music.load("stillalive.ogg")
+            pygame.mixer.music.play(0)
             la = LyricAnimator(self.clock)
             self.screen.blit(la.image, (0, 0))
 
