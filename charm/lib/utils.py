@@ -1,6 +1,18 @@
 from typing import Tuple
 
 
+def nice_time(seconds: float, milliseconds = False):
+    ms = seconds % 1
+    ms = int(ms * 1000)
+    m, s = divmod(seconds, 60)
+    h, m = divmod(m, 60)
+    h, m, s = int(h), int(m), int(s)
+    o = f'{h:}:{m:02}:{s:02d}'
+    if milliseconds:
+        o += f'.{ms:03d}'
+    return o
+
+
 def clamp(minVal, val, maxVal):
     if minVal is None:
         minVal = float("-inf")

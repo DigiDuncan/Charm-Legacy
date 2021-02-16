@@ -1,3 +1,4 @@
+from charm.lib.utils import nice_time
 from charm.lib import nygame
 
 import pygame
@@ -47,7 +48,7 @@ lyrics = [
 
 class LyricAnimator:
     def __init__(self, clock: nygame.time.Clock, phrases: list = lyrics, *,
-                 size: tuple = (600, 400), font = "Arial"):
+                 size: tuple = (600, 400), font = "Lato Medium"):
         self.clock = clock
         self.phrases = phrases
         self.width = size[0]
@@ -103,7 +104,7 @@ class LyricAnimator:
             )
 
         time_font = pygame.font.SysFont(self.font, 24)
-        time_surf = time_font.render(str(self.current_time), True, (0, 255, 0))
+        time_surf = time_font.render(nice_time(self.current_time, True), True, (0, 255, 0))
 
         surf.blit(time_surf, (0, 0))
         surf.blit(text_surf, (
