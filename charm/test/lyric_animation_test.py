@@ -74,10 +74,7 @@ class LyricAnimator:
 
     @property
     def current_time(self):
-        ticks = nygame.time.get_ticks_sec()
-        if self.start is None:
-            self.start = ticks
-        return ticks - self.start
+        return pygame.mixer.music.get_pos() / 1000
 
     def get_current_phrase(self):
         now = self.current_time

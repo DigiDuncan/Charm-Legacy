@@ -1,5 +1,7 @@
 # from charm.objects.songinfo import SongInfo
 import pygame
+from pygame.constants import K_SPACE
+from pygame.key import key_code
 
 from charm.classes import examplesong
 from charm.lib import nygame
@@ -35,7 +37,13 @@ class Game():
             # Window close button
             events = pygame.event.get()
             for event in events:
-                if event.type == pygame.QUIT:
+                if event.type == pygame.KEYDOWN:
+                    if event.key == K_SPACE:
+                        if pygame.mixer.music.get_busy() == 1:
+                            pygame.mixer.music.pause()
+                        else:
+                            pygame.mixer.music.unpause()
+                elif event.type == pygame.QUIT:
                     self.running = False
 
             # note = Note(instruments.GUITAR, frets.ORANGE)
