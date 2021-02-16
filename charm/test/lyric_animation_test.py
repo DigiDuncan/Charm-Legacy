@@ -47,7 +47,7 @@ class LyricAnimator:
 
         current_phrase = None
         for p in self.phrases:
-            if p["time"] <= self.current_time <= p["end_time"]:
+            if p["time"] <= self.current_time <= (p["end_time"] + 1):
                 current_phrase = p
 
         current_line = ""
@@ -56,7 +56,7 @@ class LyricAnimator:
                 current_line += w["word"]
 
         current_font = None
-        current_size = 24
+        current_size = 48
         while current_font is None and current_size > 4:
             font = pygame.font.SysFont(self.font, current_size)
             if font.size(current_line)[0] <= (self.width * 0.75):
@@ -80,6 +80,10 @@ class LyricAnimator:
 
             text_surf.blit(on_surf, (0, 0))
             text_surf.blit(off_surf, (on_surf.get_width(), 0))
+
+            text_surf.set_alpha(
+                255 - (max(0, self.current_time - current_phrase["end_time"]) * 255)
+            )
 
         time_surf = current_font.render(str(self.current_time), True, (0, 255, 0))
 
