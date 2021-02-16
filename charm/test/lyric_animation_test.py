@@ -4,8 +4,8 @@ import pygame
 
 lyrics = [
     {
-        "time": 5,
-        "end_time": 6.5,
+        "time": 3,
+        "end_time": 4.5,
         "words": [
             {"time": 0, "word": "Wow, "},
             {"time": 0.5, "word": "this "},
@@ -14,14 +14,32 @@ lyrics = [
         ]
     },
     {
-        "time": 8,
-        "end_time": 10,
+        "time": 5.5,
+        "end_time": 8,
         "words": [
             {"time": 0, "word": "I "},
             {"time": 0.5, "word": "real"},
             {"time": 0.75, "word": "ly "},
             {"time": 1, "word": "like "},
             {"time": 1.25, "word": "it!"}
+        ]
+    },
+    {
+        "time": 9,
+        "end_time": 10.5,
+        "words": [
+            {"time": 0, "word": "This "},
+            {"time": 0.1, "word": "is "},
+            {"time": 0.2, "word": "way "},
+            {"time": 0.3, "word": "too "},
+            {"time": 0.4, "word": "long, "},
+            {"time": 0.5, "word": "thus "},
+            {"time": 0.6, "word": "it "},
+            {"time": 0.7, "word": "must "},
+            {"time": 0.8, "word": "be "},
+            {"time": 0.9, "word": "shrunk "},
+            {"time": 1.0, "word": "in "},
+            {"time": 1.1, "word": "size!"},
         ]
     }
 ]
@@ -61,8 +79,7 @@ class LyricAnimator:
             font = pygame.font.SysFont(self.font, current_size)
             if font.size(current_line)[0] <= (self.width * 0.75):
                 current_font = font
-                break
-            current_size - 2
+            current_size -= 2
 
         text_surf = pygame.Surface(current_font.size(current_line), pygame.SRCALPHA)
 
@@ -85,7 +102,8 @@ class LyricAnimator:
                 255 - (max(0, self.current_time - current_phrase["end_time"]) * 255)
             )
 
-        time_surf = current_font.render(str(self.current_time), True, (0, 255, 0))
+        time_font = pygame.font.SysFont(self.font, 24)
+        time_surf = time_font.render(str(self.current_time), True, (0, 255, 0))
 
         surf.blit(time_surf, (0, 0))
         surf.blit(text_surf, (
