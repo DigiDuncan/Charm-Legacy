@@ -29,7 +29,7 @@ lyrics = [
 
 class LyricAnimator:
     def __init__(self, clock: nygame.time.Clock, phrases: list = lyrics, *,
-                 size: tuple = (600, 400), font = "Lato Medium"):
+                 size: tuple = (600, 400), font = "Arial"):
         self.clock = clock
         self.phrases = phrases
         self.width = size[0]
