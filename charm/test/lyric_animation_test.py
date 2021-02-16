@@ -1,3 +1,5 @@
+from operator import itemgetter
+
 from charm.lib.utils import nice_time
 from charm.lib import nygame
 from charm.test.lyrics.stillalive import lyrics
@@ -5,10 +7,10 @@ from charm.test.lyrics.stillalive import lyrics
 import pygame
 
 
-def clean_lyric(word: str, last_word = False):
+def clean_lyric(word: str):
     if word.endswith("-"):
-        word = word[:-1]
-    elif last_word is False:
+        word = word.removesuffix("-")
+    else:
         word = word + " "
     word = word.replace("=", "-").replace("''", "\"")
     return word
@@ -61,11 +63,14 @@ class LyricAnimator:
     def __init__(self, clock: nygame.time.Clock, phrases: list = lyrics, *,
                  size: tuple = (600, 400), font = "Lato Medium"):
         self.clock = clock
-        self.phrases = phrases
+        self.phrases = sorted(phrases, key=itemgetter("time"))
         self.width = size[0]
         self.height = size[1]
         self.font = font
         self.start = None
+
+        prep_phrases(self.phrases)
+        precache_fonts(font)
 
     @property
     def current_time(self):
@@ -74,59 +79,89 @@ class LyricAnimator:
             self.start = ticks
         return ticks - self.start
 
+    def get_current_phrase(self):
+        now = self.current_time
+        try:
+            phrase = next(p for p in self.phrases if p["time"] <= now < p["end_time"] + p["fade"])
+        except StopIteration:
+            phrase = None
+        return phrase
+
+    def draw_phrase_surf(self):
+        current_phrase = self.get_current_phrase()
+
+        if current_phrase is None:
+            return None
+
+        phrase_offset = self.current_time - current_phrase["time"]
+        words = current_phrase["words"]
+        off_text = "".join(w["clean"] for w in words).rstrip()
+        on_text = "".join(w["clean"] for w in words if w["time"] <= phrase_offset).rstrip()
+
+        font = fit_text(off_text, self.font, self.width)
+
+        text_surf = pygame.Surface(font.size(off_text), pygame.SRCALPHA)
+
+        off_surf = font.render(off_text, True, (128, 128, 128))
+        on_surf = font.render(on_text, True, (255, 255, 0))
+
+        text_surf.blit(off_surf, (0, 0))
+        text_surf.blit(on_surf, (0, 0))
+
+        if current_phrase["fade"]:
+            text_surf.set_alpha(
+                (1 - (max(0, self.current_time - current_phrase["end_time"]) / current_phrase["fade"])) * 255
+            )
+        return text_surf
+
+    def draw_time_surf(self):
+        time_font = pygame.font.SysFont(self.font, 24)
+        return time_font.render(f"{nice_time(self.current_time, True)} | {self.clock.get_fps():.1f}FPS", True, (0, 255, 0))
+
     @property
     def image(self) -> pygame.Surface:
         surf = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
         surf.fill((0, 0, 0))
 
-        current_phrase = None
-        for p in self.phrases:
-            if p["time"] <= self.current_time <= (p["end_time"] + 1):
-                current_phrase = p
+        surf.blit(self.draw_time_surf(), (0, 0))
 
-        current_line = ""
-        if current_phrase:
-            for w in current_phrase["words"]:
-                current_line += clean_lyric(w["word"])
-        current_line = current_line.rstrip()
+        text_surf = self.draw_phrase_surf()
 
-        current_font = None
-        current_size = 48
-        while current_font is None and current_size > 4:
-            font = pygame.font.SysFont(self.font, current_size)
-            if font.size(current_line)[0] <= (self.width * 0.75):
-                current_font = font
-            current_size -= 2
-
-        text_surf = pygame.Surface(current_font.size(current_line), pygame.SRCALPHA)
-
-        if current_phrase:
-            on = ""
-            off = ""
-            for w in current_phrase["words"]:
-                if w["time"] <= (self.current_time - current_phrase["time"]):
-                    on += clean_lyric(w["word"])
-                else:
-                    off += clean_lyric(w["word"])
-            off = off.rstrip()
-
-            on_surf = current_font.render(on, True, (255, 255, 0))
-            off_surf = current_font.render(off, True, (128, 128, 128))
-
-            text_surf.blit(on_surf, (0, 0))
-            text_surf.blit(off_surf, (on_surf.get_width(), 0))
-
-            text_surf.set_alpha(
-                255 - (max(0, self.current_time - current_phrase["end_time"]) * 255)
-            )
-
-        time_font = pygame.font.SysFont(self.font, 24)
-        time_surf = time_font.render(f"{nice_time(self.current_time, True)} | {self.clock.get_fps():.1f}FPS", True, (0, 255, 0))
-
-        surf.blit(time_surf, (0, 0))
-        surf.blit(text_surf, (
-            (surf.get_width() - text_surf.get_width()) / 2,
-            (surf.get_height() - text_surf.get_height()) / 2
-        ))
+        if text_surf:
+            surf.blit(text_surf, (
+                (surf.get_width() - text_surf.get_width()) / 2,
+                (surf.get_height() - text_surf.get_height()) / 2
+            ))
 
         return surf
+
+
+fonts = {}
+
+
+def get_font(name, size):
+    if (name, size) not in fonts:
+        fonts[(name, size)] = pygame.font.SysFont(name, size)
+    return fonts[(name, size)]
+
+
+def precache_fonts(name):
+    for size in range(48, 4, -2):
+        get_font(name, size)
+
+
+def fit_text(text, fontname, width):
+    for size in range(48, 4, -2):
+        font = get_font(fontname, size)
+        if font.size(text)[0] <= (width * 0.75):
+            return font
+    return None
+
+
+def prep_phrases(phrases):
+    for phrase in phrases:
+        for word in phrase["words"]:
+            word["clean"] = clean_lyric(word["word"])
+    phrases[-1]["fade"] = 1
+    for p, np in zip(phrases[:-1], phrases[1:]):
+        p["fade"] = min(np["time"] - p["end_time"], 1)
