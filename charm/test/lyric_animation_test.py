@@ -121,7 +121,7 @@ class LyricAnimator:
             )
 
         time_font = pygame.font.SysFont(self.font, 24)
-        time_surf = time_font.render(nice_time(self.current_time, True), True, (0, 255, 0))
+        time_surf = time_font.render(f"{nice_time(self.current_time, True)} | {self.clock.get_fps():.1f}FPS", True, (0, 255, 0))
 
         surf.blit(time_surf, (0, 0))
         surf.blit(text_surf, (
