@@ -3,3 +3,6 @@ git+git://github.com/DigiDuncan/DigiColor
 toml==0.10.0
 pygame==2.0.1
 git+git://github.com/nfearnley/chparse
+pillow==8.1.0
+emoji==1.2.0
+twemoji-parser==0.4.3
