@@ -21,6 +21,7 @@ class Game():
         self.running = True
         self.size = (800, 600)
         self.clock = nygame.time.Clock()
+        self.paused = False
 
         self.screen = display.add_layer(pygame.Surface(self.size))
 
@@ -34,15 +35,18 @@ class Game():
         la = LyricAnimator(self.clock)
 
         while self.running:
+            # Clear the screen
+            self.screen.fill((0, 0, 0))
+
             # Window close button
             events = pygame.event.get()
             for event in events:
                 if event.type == pygame.KEYDOWN:
                     if event.key == K_SPACE:
                         if pygame.mixer.music.get_busy() == 1:
-                            pygame.mixer.music.pause()
+                            self.pause()
                         else:
-                            pygame.mixer.music.unpause()
+                            self.unpause()
                 elif event.type == pygame.QUIT:
                     self.running = False
 
@@ -57,10 +61,26 @@ class Game():
 
             self.screen.blit(la.image, (0, 0))
 
+            if self.paused:
+                pause_font = pygame.font.SysFont("Lato Medium", 24)
+                pause_screen = pause_font.render("|| PAUSED", True, (0, 255, 255))
+                self.screen.blit(pause_screen,
+                                 (self.screen.get_width() - pause_screen.get_width() - 5,
+                                  self.screen.get_height() - pause_screen.get_height() - 5)
+                                 )
+
             # Final draw stage
             display.flip()
             # Timing loop
             self.clock.tick_busy_loop(60)
+
+    def pause(self):
+        self.paused = True
+        pygame.mixer.music.pause()
+
+    def unpause(self):
+        self.paused = False
+        pygame.mixer.music.unpause()
 
 
 def main():
