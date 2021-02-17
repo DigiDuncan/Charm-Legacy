@@ -55,7 +55,24 @@ def clean_lyric(word: str):
 #             {"time": 1.0, "word": "in"},
 #             {"time": 1.1, "word": "size!"},
 #         ]
-#     }
+#     },
+#     {
+#         "time": 11.5,
+#         "end_time": 12.5,
+#         "words": [
+#             {"time": 0, "word": "fast"},
+#             {"time": 0.5, "word": "fade"}
+#         ]
+#     },
+#     {
+#         "time": 13,
+#         "end_time": 14,
+#         "words": [
+#             {"time": 0, "word": "<i>I-"},
+#             {"time": 0.25, "word": "tal-"},
+#             {"time": 0.5, "word": "ics</i>"},
+#         ]
+#     },
 # ]
 
 
@@ -156,9 +173,12 @@ def fit_text(text, fontname, width):
 
 
 def prep_phrases(phrases):
+    # Clean lyrics
     for phrase in phrases:
         for word in phrase["words"]:
             word["clean"] = clean_lyric(word["word"])
+
+    # Calculate fades
     phrases[-1]["fade"] = 1
     for p, np in zip(phrases[:-1], phrases[1:]):
         p["fade"] = min(np["time"] - p["end_time"], 1)
