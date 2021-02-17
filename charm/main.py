@@ -1,7 +1,6 @@
 # from charm.objects.songinfo import SongInfo
 import pygame
 from pygame.constants import K_SPACE
-from pygame.key import key_code
 
 from charm.classes import examplesong
 from charm.lib import nygame
