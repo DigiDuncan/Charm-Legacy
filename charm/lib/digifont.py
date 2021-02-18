@@ -11,8 +11,9 @@ def image_to_surface(img: Image):
         img.tobytes(), img.size, img.mode).convert()
 
 
-class Text:
-    def __init__(self, chars: str, size: int, *,
+class Span:
+    def __init__(self, chars: str, *,
+                 size: int = None,
                  color: Union[tuple, int, str] = 0x000000,
                  flags: dict = {}):
         self.chars = chars
@@ -73,7 +74,7 @@ class Text:
         self.flags.superscript = bool(value)
 
 
-def render(texts = List[Text], *,
+def render(spans = List[Span], *,
            size: Tuple[int, int] = None,  # size will just be "big enough the fix the text" by default
            justify = Literal["left", "center", "right"],
            wrap = False,
