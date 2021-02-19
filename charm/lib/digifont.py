@@ -13,6 +13,7 @@ def image_to_surface(img: Image):
 
 class Span:
     def __init__(self, chars: str, *,
+                 font: str = None,
                  size: int = None,
                  color: Union[tuple, int, str] = 0x000000,
                  flags: dict = {}):
@@ -73,18 +74,24 @@ class Span:
     def superscript(self, value: bool):
         self.flags.superscript = bool(value)
 
+    def render(self) -> pygame.Surface:
+        pass
+
 
 class Text:
     def __init__(self, spans = List[Span], *,
+                 font: str = None,
                  size: Tuple[int, int] = None,  # size will just be "big enough the fix the text" by default
-                 justify = Literal["left", "center", "right"],
-                 wrap = False,
-                 parse_emoji_shortcodes = False):
+                 justify: Literal["left", "center", "right"] = "left",
+                 wrap: bool = False,
+                 parse_emoji_shortcodes: bool = False):
         self.spans = spans
+        self.font = font
         self.size = size
         self.justify = justify
         self.wrap = wrap
         self.parse_emoji_shortcodes = False
 
     def render(self) -> pygame.Surface:
-        pass
+        for span in self.spans:
+            span.render()
