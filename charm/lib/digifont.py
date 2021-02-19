@@ -1,97 +1,100 @@
-from typing import List, Literal, Tuple, Union
+from typing import Tuple
+from enum import Enum
 
-import pygame
-from PIL import Image
+from pygame import Color
+from pygame.font import Font
+import pygame.draw
 
-from charm.lib.attrdict import AttrDict
-
-
-def image_to_surface(img: Image):
-    return pygame.image.fromstring(
-        img.tobytes(), img.size, img.mode).convert()
+# from PIL import Image
+# def image_to_surface(img: Image):
+#     return pygame.image.fromstring(
+#         img.tobytes(), img.size, img.mode).convert()
 
 
 class Span:
-    def __init__(self, chars: str, *,
-                 font: str = None,
-                 size: int = None,
-                 color: Union[tuple, int, str] = 0x000000,
-                 flags: dict = {}):
-        self.chars = chars
-        self.size = size
-        self.color = color
-        self.flags = AttrDict(flags)
+    def __init__(self, parent, text: str, *, font: Font = None, color: Color = None):
+        if font:
+            font.origin = True
+        self.parent = parent
+        self.text = text
+        self.font = font or parent.font
+        self.color = color or parent.color
 
     @property
-    def colour(self):
-        return self.color
+    def adv_x(self):
+        metrics = self.font.get_metrics(self.text)
+        HORIZONTAL_ADVANCE_X = 4
+        adv_x = sum(m[HORIZONTAL_ADVANCE_X] for m in metrics)
+        return adv_x
 
-    @property
-    def bold(self):
-        return bool(self.flags.bold)
+    def get_rect(self):
+        if self.text == "":
+            return pygame.rect.Rect(0, 0, 0, 0)
+        return self.font.get_rect(self.text)
 
-    @bold.setter
-    def bold(self, value: bool):
-        self.flags.bold = bool(value)
+    def render_to(self, surf, dest):
+        if self.text == "":
+            return 0
+        rect = self.font.render_to(surf, dest, self.text, self.color)
+        calcrect = self.get_rect()
+        calcrect.x = dest[0] + calcrect.x
+        calcrect.y = dest[1] - calcrect.y
+        pygame.draw.rect(surf, "blue", rect, width=1)
+        pygame.draw.rect(surf, "purple", calcrect, width=1)
+        #pygame.draw.line(surf, "orange", (dest[0] + self.adv_x, rect.top), (dest[0] + self.adv_x, rect.bottom))
+        #pygame.draw.line(surf, "green", (dest[0] + calcrect.w, rect.top), (dest[0] + calcrect.w, rect.bottom))
+        return self.adv_x
 
-    @property
-    def italic(self):
-        return bool(self.flags.italic)
 
-    @italic.setter
-    def bold(self, value: bool):
-        self.flags.italic = bool(value)
-
-    @property
-    def underline(self):
-        return bool(self.flags.underline)
-
-    @underline.setter
-    def underline(self, value: bool):
-        self.flags.underline = bool(value)
-
-    @property
-    def strikethrough(self):
-        return bool(self.flags.strikethrough)
-
-    @strikethrough.setter
-    def strikethrough(self, value: bool):
-        self.flags.strikethrough = bool(value)
-
-    @property
-    def subscript(self):
-        return bool(self.flags.subscript)
-
-    @subscript.setter
-    def subscript(self, value: bool):
-        self.flags.subscript = bool(value)
-
-    @property
-    def superscript(self):
-        return bool(self.flags.superscript)
-
-    @superscript.setter
-    def superscript(self, value: bool):
-        self.flags.superscript = bool(value)
-
-    def render(self) -> pygame.Surface:
-        pass
+class Direction(Enum):
+    left = "left"
+    center = "center"
+    right = "right"
 
 
 class Text:
-    def __init__(self, spans = List[Span], *,
-                 font: str = None,
-                 size: Tuple[int, int] = None,  # size will just be "big enough the fix the text" by default
-                 justify: Literal["left", "center", "right"] = "left",
-                 wrap: bool = False,
-                 parse_emoji_shortcodes: bool = False):
-        self.spans = spans
+    def __init__(
+        self,
+        *,
+        font = None,
+        size: Tuple[int, int] = None,  # size will just be "big enough the fix the text" by default
+        justify: Direction = Direction.left,
+        wrap: bool = False,
+        parse_emoji_shortcodes: bool = False
+    ):
+        self.spans = []
+        if font:
+            font.origin = True
         self.font = font
         self.size = size
-        self.justify = justify
+        self.justify = Direction(justify)
         self.wrap = wrap
-        self.parse_emoji_shortcodes = False
+        self.parse_emoji_shortcodes = parse_emoji_shortcodes
 
-    def render(self) -> pygame.Surface:
+    def get_rect(self):
+        if len(self.spans) == 0:
+            return None
+        rects = []
+        x = 0
         for span in self.spans:
-            span.render()
+            rect = span.get_rect()
+            rect.x = x
+            rect.y = -rect.y
+            rect.right = rect.x + span.adv_x
+            rects.append(rect)
+            x += span.adv_x
+        out = rects[0].unionall(rects)
+        return out
+
+    def add_span(self, *args, **kwargs):
+        self.spans.append(Span(self, *args, **kwargs))
+
+    def render_to(self, surf, dest=(0, 0)):
+        rect = self.get_rect()
+        rect.y = dest[1] + rect.y
+        pygame.draw.rect(surf, "#ff0000", rect)
+
+        x, y = dest
+        for span in self.spans:
+            w = span.render_to(surf, (x, y))
+            x += w

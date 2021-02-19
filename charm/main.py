@@ -30,7 +30,7 @@ class Game():
         display.set_mode(self.size)
 
         pygame.mixer.music.load("vocals.ogg")
-        pygame.mixed.music.volume(0.5)
+        pygame.mixer.music.set_volume(0.0)
         pygame.mixer.music.play(0)
         la = LyricAnimator(self.clock)
 
