@@ -9,15 +9,6 @@ import pygame.freetype
 import pygame.draw
 
 
-def clean_lyric(word: str):
-    if word.endswith("-"):
-        word = word.removesuffix("-")
-    else:
-        word = word + " "
-    word = word.replace("=", "-").replace("''", "\"")
-    return word
-
-
 # lyrics = [
 #     {
 #         "time": 3,
@@ -80,7 +71,7 @@ def clean_lyric(word: str):
 
 class LyricAnimator:
     def __init__(self, clock: nygame.time.Clock, phrases: list = lyrics, *,
-                 size: tuple = (600, 400), font = "Lato Medium"):
+                 size: tuple = (600, 500), font = "Lato Medium"):
         self.clock = clock
         self.phrases = sorted(phrases, key=itemgetter("time"))
         self.width = size[0]
@@ -93,28 +84,40 @@ class LyricAnimator:
 
     @property
     def current_time(self):
-        return pygame.mixer.music.get_pos() / 1000 + 5
+        return pygame.mixer.music.get_pos() / 1000
 
     def get_current_phrase(self):
         now = self.current_time
+        i = ((n, p) for n, p in enumerate(self.phrases) if p["time"] <= now < p["end_time"] + p["fade"])
         try:
-            phrase = next(p for p in self.phrases if p["time"] <= now < p["end_time"] + p["fade"])
+            n, phrase = next(i)
         except StopIteration:
-            phrase = None
-        return phrase
+            return None, None
+        try:
+            next_phrase = self.phrases[n + 1] if self.phrases[n + 1]["time"] <= phrase["end_time"] + 3 else None
+        except IndexError:
+            return phrase, None
+        return phrase, next_phrase
 
     def draw_phrase_to(self, surf, dest):
         surf.fill("#000000")
         current_phrase = self.get_current_phrase()
 
-        if current_phrase is None:
+        if current_phrase[0] is None:
             return None
 
-        phrase_offset = self.current_time - current_phrase["time"]
-        words = current_phrase["words"]
+        phrase_offset = self.current_time - current_phrase[0]["time"]
+        words = current_phrase[0]["words"]
         full_text = "".join(w["clean"] for w in words)
         on_text = "".join(w["clean"] for w in words if w["time"] <= phrase_offset)
         off_text = "".join(w["clean"] for w in words if w["time"] > phrase_offset)
+
+        if current_phrase[1] is not None:
+            next_words = current_phrase[1]["words"]
+            next_text = "".join(w["clean"] for w in next_words)
+            next_font = fit_text(next_text, self.font, self.width * 0.75, 24)
+            next_digitext = digifont.Text(font=next_font)
+            next_digitext.add_span(next_text, color="#505050")
 
         font = fit_text(full_text, self.font, self.width)
         digitext = digifont.Text(font=font)
@@ -129,6 +132,10 @@ class LyricAnimator:
         #    self.text_surf.set_alpha(
         #        (1 - (max(0, self.current_time - current_phrase["end_time"]) / current_phrase["fade"])) * 255
         #    )
+        if current_phrase[1] is not None:
+            next_rect = next_digitext.get_rect()
+            next_dest = ((surf.get_width() / 2) - (next_rect.w / 2), (surf.get_height() / 2) + 40)
+            next_digitext.render_to(surf, next_dest)
 
     def draw_time_surf(self):
         time_font = pygame.font.SysFont(self.font, 24)
@@ -147,6 +154,16 @@ class LyricAnimator:
 
 
 fonts = {}
+largest_font = 30
+
+
+def clean_lyric(word: str):
+    if word.endswith("-"):
+        word = word.removesuffix("-")
+    else:
+        word = word + " "
+    word = word.replace("=", "-").replace("''", "\"").replace("+", "").replace("#", "").replace("^", "")
+    return word
 
 
 def get_font(name, size):
@@ -156,14 +173,14 @@ def get_font(name, size):
 
 
 def precache_fonts(name):
-    for size in range(48, 4, -2):
+    for size in range(largest_font, 4, -2):
         get_font(name, size)
 
 
-def fit_text(text, fontname, width):
-    for size in range(36, 4, -2):
+def fit_text(text, fontname, width, maxsize = None):
+    for size in range(maxsize or largest_font, 4, -2):
         font = get_font(fontname, size)
-        if font.get_rect(text).w <= (width * 0.9):
+        if font.get_rect(text).w <= (width * 0.95):
             return font
     return None
 
