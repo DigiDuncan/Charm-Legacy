@@ -1,7 +1,7 @@
 from typing import Tuple
 from enum import Enum
 
-from pygame import Color
+from pygame import Color, Surface
 from pygame.font import Font
 import pygame.draw
 
@@ -35,14 +35,16 @@ class Span:
     def render_to(self, surf, dest):
         if self.text == "":
             return 0
-        rect = self.font.render_to(surf, dest, self.text, self.color)
-        calcrect = self.get_rect()
-        calcrect.x = dest[0] + calcrect.x
-        calcrect.y = dest[1] - calcrect.y
-        pygame.draw.rect(surf, "blue", rect, width=1)
-        pygame.draw.rect(surf, "purple", calcrect, width=1)
-        #pygame.draw.line(surf, "orange", (dest[0] + self.adv_x, rect.top), (dest[0] + self.adv_x, rect.bottom))
-        #pygame.draw.line(surf, "green", (dest[0] + calcrect.w, rect.top), (dest[0] + calcrect.w, rect.bottom))
+
+        self.font.render_to(surf, dest, self.text, self.color)
+        # rect = self.font.render_to(surf, dest, self.text, self.color)
+        # calcrect = self.get_rect()
+        # calcrect.x = dest[0] + calcrect.x
+        # calcrect.y = dest[1] - calcrect.y
+        # pygame.draw.rect(surf, "blue", rect, width=1)
+        # pygame.draw.rect(surf, "purple", calcrect, width=1)
+        # pygame.draw.line(surf, "orange", (dest[0] + self.adv_x, rect.top), (dest[0] + self.adv_x, rect.bottom))
+        # pygame.draw.line(surf, "green", (dest[0] + calcrect.w, rect.top), (dest[0] + calcrect.w, rect.bottom))
         return self.adv_x
 
 
@@ -90,11 +92,14 @@ class Text:
         self.spans.append(Span(self, *args, **kwargs))
 
     def render_to(self, surf, dest=(0, 0)):
-        rect = self.get_rect()
-        rect.y = dest[1] + rect.y
-        pygame.draw.rect(surf, "#ff0000", rect)
+        # pygame.draw.rect(surf, "#ff0000", rect)
 
         x, y = dest
         for span in self.spans:
             w = span.render_to(surf, (x, y))
             x += w
+
+    def get_surface(self):
+        surf = Surface(self.get_rect().size)
+        self.render_to(surf, (0, -self.get_rect().y))
+        return surf

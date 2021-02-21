@@ -2,7 +2,7 @@ from operator import itemgetter
 
 from charm.lib.utils import nice_time
 from charm.lib import nygame, digifont
-from charm.test.lyrics.stillalive import lyrics
+from charm.test.lyrics.run_around import lyrics
 
 import pygame
 import pygame.freetype
@@ -121,8 +121,11 @@ class LyricAnimator:
         digitext.add_span(on_text, color="#ffff00")
         digitext.add_span(off_text, color="#808080")
         pygame.draw.line(surf, "red", surf.get_rect().midleft, surf.get_rect().midright)
-        digitext.render_to(surf, surf.get_rect().midleft)
-        #if current_phrase["fade"]:
+        # digitext.render_to(surf, surf.get_rect().center)
+        rect = digitext.get_rect()
+        dest = ((surf.get_width() / 2) - (rect.w / 2), (surf.get_height() / 2))
+        digitext.render_to(surf, dest)
+        # if current_phrase["fade"]:
         #    self.text_surf.set_alpha(
         #        (1 - (max(0, self.current_time - current_phrase["end_time"]) / current_phrase["fade"])) * 255
         #    )
@@ -158,9 +161,9 @@ def precache_fonts(name):
 
 
 def fit_text(text, fontname, width):
-    for size in range(48, 4, -2):
+    for size in range(36, 4, -2):
         font = get_font(fontname, size)
-        if font.get_rect(text).w <= (width * 0.75):
+        if font.get_rect(text).w <= (width * 0.9):
             return font
     return None
 

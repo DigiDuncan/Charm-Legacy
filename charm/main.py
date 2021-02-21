@@ -59,7 +59,10 @@ class Game():
             # songinfo = SongInfo(gamemode, song, instruments.GUITAR, difficulties.EXPERT)
             # self.screen.blit(songinfo.image, (self.screen.get_width() - songinfo.image.get_width() - 5, 0))
 
-            self.screen.blit(la.image, (0, 0))
+            dest = la.image.get_rect()
+            dest.center = self.screen.get_rect().center
+
+            self.screen.blit(la.image, dest)
 
             if self.paused:
                 pause_font = pygame.font.SysFont("Lato Medium", 24)
