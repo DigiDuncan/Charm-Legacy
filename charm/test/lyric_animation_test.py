@@ -1,12 +1,14 @@
 from operator import itemgetter
 
 from charm.lib.utils import nice_time
-from charm.lib import nygame, digifont
-from charm.test.lyrics.run_around import lyrics
+from charm.test.lyrics.stillalive import lyrics
 
 import pygame
 import pygame.freetype
 import pygame.draw
+
+import nygame
+from nygame import DigiText as T
 
 
 # lyrics = [
@@ -112,21 +114,19 @@ class LyricAnimator:
         on_text = "".join(w["clean"] for w in words if w["time"] <= phrase_offset)
         off_text = "".join(w["clean"] for w in words if w["time"] > phrase_offset)
 
+        T.font = self.font
         if current_phrase[1] is not None:
             next_words = current_phrase[1]["words"]
             next_text = "".join(w["clean"] for w in next_words)
-            next_font = fit_text(next_text, self.font, self.width * 0.75, 24)
-            next_digitext = digifont.Text(font=next_font)
-            next_digitext.add_span(next_text, color="#505050")
+            next_fontsize = fit_text(next_text, self.font, self.width * 0.75, 24)
+            next_digitext = T(next_text, color="#505050", size=next_fontsize)
 
-        font = fit_text(full_text, self.font, self.width)
-        digitext = digifont.Text(font=font)
-        digitext.add_span(on_text, color="#ffff00")
-        digitext.add_span(off_text, color="#808080")
+        fontsize = fit_text(full_text, self.font, self.width)
+        digitext = T(on_text, color="#ffff00", size = fontsize) + T(off_text, color="#808080", size = fontsize)
         pygame.draw.line(surf, "red", surf.get_rect().midleft, surf.get_rect().midright)
         # digitext.render_to(surf, surf.get_rect().center)
         rect = digitext.get_rect()
-        dest = ((surf.get_width() / 2) - (rect.w / 2), (surf.get_height() / 2))
+        dest = ((surf.get_width() / 2) - (rect.w / 2), (surf.get_height() / 2))  # Causes wiggle
         digitext.render_to(surf, dest)
         # if current_phrase["fade"]:
         #    self.text_surf.set_alpha(
@@ -178,10 +178,11 @@ def precache_fonts(name):
 
 
 def fit_text(text, fontname, width, maxsize = None):
+    return 30
     for size in range(maxsize or largest_font, 4, -2):
         font = get_font(fontname, size)
         if font.get_rect(text).w <= (width * 0.95):
-            return font
+            return size
     return None
 
 
