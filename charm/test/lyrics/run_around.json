@@ -1,0 +1,4951 @@
+{
+    "ticks_per_beat": 192,
+    "beats_per_minute": 220,
+    "phrases": [
+        {
+            "tick_start": 2280,
+            "words": [
+                { "tick_word": 2304, "text": "." }
+            ],
+            "tick_end": 2328
+        },
+        {
+            "tick_start": 2328,
+            "words": [
+                { "tick_word": 2352, "text": ".." }
+            ],
+            "tick_end": 2376
+        },
+        {
+            "tick_start": 2376,
+            "words": [
+                { "tick_word": 2400, "text": "..." }
+            ],
+            "tick_end": 2424
+        },
+        {
+            "tick_start": 2424,
+            "words": [
+                { "tick_word": 2448, "text": "...." }
+            ],
+            "tick_end": 2472
+        },
+        {
+            "tick_start": 2472,
+            "words": [
+                { "tick_word": 2496, "text": "," }
+            ],
+            "tick_end": 2520
+        },
+        {
+            "tick_start": 2520,
+            "words": [
+                { "tick_word": 2544, "text": ",," }
+            ],
+            "tick_end": 2568
+        },
+        {
+            "tick_start": 2568,
+            "words": [
+                { "tick_word": 2592, "text": ",,," }
+            ],
+            "tick_end": 2616
+        },
+        {
+            "tick_start": 2616,
+            "words": [
+                { "tick_word": 2640, "text": ",,,," }
+            ],
+            "tick_end": 2664
+        },
+        {
+            "tick_start": 2664,
+            "words": [
+                { "tick_word": 2688, "text": "'" }
+            ],
+            "tick_end": 2712
+        },
+        {
+            "tick_start": 2712,
+            "words": [
+                { "tick_word": 2736, "text": "''" }
+            ],
+            "tick_end": 2760
+        },
+        {
+            "tick_start": 2760,
+            "words": [
+                { "tick_word": 2784, "text": "'''" }
+            ],
+            "tick_end": 2808
+        },
+        {
+            "tick_start": 2808,
+            "words": [
+                { "tick_word": 2832, "text": "''''" }
+            ],
+            "tick_end": 2856
+        },
+        {
+            "tick_start": 2856,
+            "words": [
+                { "tick_word": 2880, "text": "*" }
+            ],
+            "tick_end": 2904
+        },
+        {
+            "tick_start": 2904,
+            "words": [
+                { "tick_word": 2928, "text": "**" }
+            ],
+            "tick_end": 2952
+        },
+        {
+            "tick_start": 2952,
+            "words": [
+                { "tick_word": 2976, "text": "***" }
+            ],
+            "tick_end": 3000
+        },
+        {
+            "tick_start": 3000,
+            "words": [
+                { "tick_word": 3024, "text": "****" }
+            ],
+            "tick_end": 3072
+        },
+        {
+            "tick_start": 3072,
+            "words": [
+                { "tick_word": 3312, "text": "\\* M-" },
+                { "tick_word": 3456, "text": "r." },
+                { "tick_word": 3551, "text": ":sunglasses: we're so sorry!" }
+            ],
+            "tick_end": 3552
+        },
+        {
+            "tick_start": 3552,
+            "words": [
+                { "tick_word": 3553, "text": "\\* Mr. De-" },
+                { "tick_word": 3624, "text": "sign-" },
+                { "tick_word": 3744, "text": "er," },
+                { "tick_word": 3888, "text": "we’re" },
+                { "tick_word": 4020, "text": "so" },
+                { "tick_word": 4140, "text": "sor-" },
+                { "tick_word": 4176, "text": "ry-" },
+                { "tick_word": 4271, "text": "!" }
+            ],
+            "tick_end": 4272
+        },
+        {
+            "tick_start": 4272,
+            "words": [
+                { "tick_word": 4273, "text": "\\* Mr. Designer, we're so sorry! :person=bowing" },
+                { "tick_word": 4319, "text": ":" }
+            ],
+            "tick_end": 4320
+        },
+        {
+            "tick_start": 4320,
+            "words": [
+                { "tick_word": 4321, "text": "\\* Mr. Designer, we're so sorry! :person=bowing::sweat=drops:" }
+            ],
+            "tick_end": 4416
+        },
+        {
+            "tick_start": 4416,
+            "words": [
+                { "tick_word": 4512, "text": "This" },
+                { "tick_word": 4631, "text": ":musical=note: has all kinds of special characters :writing=hand: everywhere!" }
+            ],
+            "tick_end": 4632
+        },
+        {
+            "tick_start": 4632,
+            "words": [
+                { "tick_word": 4633, "text": "This song" },
+                { "tick_word": 4764, "text": "has" },
+                { "tick_word": 4907, "text": "all kinds of special characters :writing=hand: everywhere!" }
+            ],
+            "tick_end": 4908
+        },
+        {
+            "tick_start": 4908,
+            "words": [
+                { "tick_word": 4909, "text": "This song has ALL" },
+                { "tick_word": 5063, "text": "kinds of special characters :writing=hand: everywhere!" }
+            ],
+            "tick_end": 5064
+        },
+        {
+            "tick_start": 5064,
+            "words": [
+                { "tick_word": 5065, "text": "This song has all KINDS" },
+                { "tick_word": 5220, "text": "of special characters :writing=hand: everywhere!" }
+            ],
+            "tick_end": 5221
+        },
+        {
+            "tick_start": 5221,
+            "words": [
+                { "tick_word": 5222, "text": "This song has all kinds of" },
+                { "tick_word": 5316, "text": "spe-" },
+                { "tick_word": 5460, "text": "cial" },
+                { "tick_word": 5592, "text": "char-" },
+                { "tick_word": 5760, "text": "act-" },
+                { "tick_word": 5904, "text": "ers" },
+                { "tick_word": 6047, "text": ":writing=hand: everywhere!" }
+            ],
+            "tick_end": 6048
+        },
+        {
+            "tick_start": 6048,
+            "words": [
+                { "tick_word": 6049, "text": "This song has all kinds of special characters ap-" },
+                { "tick_word": 6144, "text": "pear-" },
+                { "tick_word": 6264, "text": "ing" },
+                { "tick_word": 6384, "text": "ev-" },
+                { "tick_word": 6516, "text": "ery-" },
+                { "tick_word": 6624, "text": "where! :sob:" }
+            ],
+            "tick_end": 6816
+        },
+        {
+            "tick_start": 6816,
+            "words": [
+                { "tick_word": 7020, "text": "Please" },
+                { "tick_word": 7104, "text": "keep" },
+                { "tick_word": 7212, "text": "the" },
+                { "tick_word": 7271, "text": ":page=with=curl:'s :pencil2: :sparkles:," }
+            ],
+            "tick_end": 7272
+        },
+        {
+            "tick_start": 7272,
+            "words": [
+                { "tick_word": 7273, "text": "Please keep the ly-" },
+                { "tick_word": 7380, "text": "ric" },
+                { "tick_word": 7464, "text": "sheet’s" },
+                { "tick_word": 7595, "text": ":pencil2: :sparkles:" }
+            ],
+            "tick_end": 7596
+        },
+        {
+            "tick_start": 7596,
+            "words": [
+                { "tick_word": 7597, "text": "Please keep the lyric sheet's book-" },
+                { "tick_word": 7692, "text": "let" },
+                { "tick_word": 7799, "text": ":sparkles:" }
+            ],
+            "tick_end": 7800
+        },
+        {
+            "tick_start": 7800,
+            "words": [
+                { "tick_word": 7801, "text": "Please keep the lyric sheet's booklet de-" },
+                { "tick_word": 7848, "text": "sign," }
+            ],
+            "tick_end": 7920
+        },
+        {
+            "tick_start": 7920,
+            "words": [
+                { "tick_word": 7992, "text": "I" },
+                { "tick_word": 8064, "text": "beg" },
+                { "tick_word": 8256, "text": "you~! :innocent::pray: *\\" }
+            ],
+            "tick_end": 8832
+        },
+        {
+            "tick_start": 8832,
+            "words": [
+                { "tick_word": 9024, "text": "Let-" },
+                { "tick_word": 9120, "text": "’s" },
+                { "tick_word": 9216, "text": "run" },
+                { "tick_word": 9408, "text": "a-" },
+                { "tick_word": 9504, "text": "round" },
+                { "tick_word": 9696, "text": "the" },
+                { "tick_word": 9888, "text": "char-" },
+                { "tick_word": 10080, "text": "act-" },
+                { "tick_word": 10176, "text": "e-" },
+                { "tick_word": 10272, "text": "r" },
+                { "tick_word": 10368, "text": "code!" }
+            ],
+            "tick_end": 10464
+        },
+        {
+            "tick_start": 10464,
+            "words": [
+                { "tick_word": 10559, "text": ":person=running::dash:" }
+            ],
+            "tick_end": 10560
+        },
+        {
+            "tick_start": 10560,
+            "words": [
+                { "tick_word": 10561, "text": "(bew!-" },
+                { "tick_word": 10751, "text": ")" }
+            ],
+            "tick_end": 10752
+        },
+        {
+            "tick_start": 10752,
+            "words": [
+                { "tick_word": 10753, "text": "(-" },
+                { "tick_word": 10943, "text": ":wave: :wave: :wave: :wave: :wave: :wave:)" }
+            ],
+            "tick_end": 10944
+        },
+        {
+            "tick_start": 10944,
+            "words": [
+                { "tick_word": 10945, "text": "(hey!" },
+                { "tick_word": 11135, "text": "hey! hey! hey! hey! hey!)" }
+            ],
+            "tick_end": 11136
+        },
+        {
+            "tick_start": 11136,
+            "words": [
+                { "tick_word": 11137, "text": "(:wave:" },
+                { "tick_word": 11327, "text": ":wave: :wave: :wave: :wave: :wave:)" }
+            ],
+            "tick_end": 11328
+        },
+        {
+            "tick_start": 11328,
+            "words": [
+                { "tick_word": 11329, "text": "(hey! hey!" },
+                { "tick_word": 11519, "text": "hey! hey! hey! hey!)" }
+            ],
+            "tick_end": 11520
+        },
+        {
+            "tick_start": 11520,
+            "words": [
+                { "tick_word": 11521, "text": "(:wave: :wave:" },
+                { "tick_word": 11711, "text": ":wave: :wave: :wave: :wave:)" }
+            ],
+            "tick_end": 11712
+        },
+        {
+            "tick_start": 11712,
+            "words": [
+                { "tick_word": 11713, "text": "(hey! hey! hey!" },
+                { "tick_word": 11903, "text": "hey! hey! hey!)" }
+            ],
+            "tick_end": 11904
+        },
+        {
+            "tick_start": 11904,
+            "words": [
+                { "tick_word": 11905, "text": "(:wave: :wave: :wave:" },
+                { "tick_word": 12095, "text": ":wave: :wave: :wave:)" }
+            ],
+            "tick_end": 12096
+        },
+        {
+            "tick_start": 12096,
+            "words": [
+                { "tick_word": 12097, "text": "(hey! hey! hey! hey!" },
+                { "tick_word": 12287, "text": "hey! hey!)" }
+            ],
+            "tick_end": 12288
+        },
+        {
+            "tick_start": 12288,
+            "words": [
+                { "tick_word": 12289, "text": "(:wave: :wave: :wave: :wave:" },
+                { "tick_word": 12479, "text": ":wave: :wave:)" }
+            ],
+            "tick_end": 12480
+        },
+        {
+            "tick_start": 12480,
+            "words": [
+                { "tick_word": 12481, "text": "(hey! hey! hey! hey! hey!" },
+                { "tick_word": 12671, "text": "hey!)" }
+            ],
+            "tick_end": 12672
+        },
+        {
+            "tick_start": 12672,
+            "words": [
+                { "tick_word": 12673, "text": "(:wave: :wave: :wave: :wave: :wave:" },
+                { "tick_word": 12863, "text": ":wave:)" }
+            ],
+            "tick_end": 12864
+        },
+        {
+            "tick_start": 12864,
+            "words": [
+                { "tick_word": 12865, "text": "(hey! hey! hey! hey! hey! hey!)" }
+            ],
+            "tick_end": 12960
+        },
+        {
+            "tick_start": 12960,
+            "words": [
+                { "tick_word": 13056, "text": "(:whi-" },
+                { "tick_word": 13152, "text": "rr:" },
+                { "tick_word": 13248, "text": ":whi-" },
+                { "tick_word": 13344, "text": "rr:" },
+                { "tick_word": 13440, "text": ":)pyon!-" },
+                { "tick_word": 13823, "text": ")" }
+            ],
+            "tick_end": 13824
+        },
+        {
+            "tick_start": 13824,
+            "words": [
+                { "tick_word": 13825, "text": "(-" },
+                { "tick_word": 14015, "text": ":wave: :wave: :wave: :wave:)" }
+            ],
+            "tick_end": 14016
+        },
+        {
+            "tick_start": 14016,
+            "words": [
+                { "tick_word": 14017, "text": "(hey!" },
+                { "tick_word": 14207, "text": "hey! hey! hey!)" }
+            ],
+            "tick_end": 14208
+        },
+        {
+            "tick_start": 14208,
+            "words": [
+                { "tick_word": 14209, "text": "(:wave:" },
+                { "tick_word": 14399, "text": ":wave: :wave: :wave:)" }
+            ],
+            "tick_end": 14400
+        },
+        {
+            "tick_start": 14400,
+            "words": [
+                { "tick_word": 14401, "text": "(hey! hey!" },
+                { "tick_word": 14591, "text": "hey! hey!)" }
+            ],
+            "tick_end": 14592
+        },
+        {
+            "tick_start": 14592,
+            "words": [
+                { "tick_word": 14593, "text": "(:wave :wave:" },
+                { "tick_word": 14783, "text": ":wave: :wave:)" }
+            ],
+            "tick_end": 14784
+        },
+        {
+            "tick_start": 14784,
+            "words": [
+                { "tick_word": 14785, "text": "(hey! hey! hey!" },
+                { "tick_word": 14975, "text": "hey!)" }
+            ],
+            "tick_end": 14976
+        },
+        {
+            "tick_start": 14976,
+            "words": [
+                { "tick_word": 14977, "text": "(:wave: :wave: :wave:" },
+                { "tick_word": 15167, "text": ":wave:)" }
+            ],
+            "tick_end": 15168
+        },
+        {
+            "tick_start": 15168,
+            "words": [
+                { "tick_word": 15169, "text": "(hey! hey! hey! hey!)" }
+            ],
+            "tick_end": 15264
+        },
+        {
+            "tick_start": 15264,
+            "words": [
+                { "tick_word": 15360, "text": "!-" },
+                { "tick_word": 15424, "text": "y-" },
+                { "tick_word": 15488, "text": "2-" },
+                { "tick_word": 15552, "text": "~" }
+            ],
+            "tick_end": 15680
+        },
+        {
+            "tick_start": 15680,
+            "words": [
+                { "tick_word": 15744, "text": "?-" },
+                { "tick_word": 15808, "text": "R-" },
+                { "tick_word": 15872, "text": "<-" },
+                { "tick_word": 15936, "text": "~" }
+            ],
+            "tick_end": 16064
+        },
+        {
+            "tick_start": 16064,
+            "words": [
+                { "tick_word": 16128, "text": "s-" },
+                { "tick_word": 16192, "text": "|-" },
+                { "tick_word": 16256, "text": "L-" },
+                { "tick_word": 16320, "text": "=" },
+                { "tick_word": 16384, "text": "~-" },
+                { "tick_word": 16448, "text": "h" }
+            ],
+            "tick_end": 16896
+        },
+        {
+            "tick_start": 16896,
+            "words": [
+                { "tick_word": 17280, "text": "+" }
+            ],
+            "tick_end": 17664
+        },
+        {
+            "tick_start": 17664,
+            "words": [
+                { "tick_word": 17855, "text": ":capital=abcd: a lot of :symbols:" }
+            ],
+            "tick_end": 17856
+        },
+        {
+            "tick_start": 17856,
+            "words": [
+                { "tick_word": 17857, "text": "If=" },
+                { "tick_word": 18047, "text": "abcd: a lot of :symbols:" }
+            ],
+            "tick_end": 18048
+        },
+        {
+            "tick_start": 18048,
+            "words": [
+                { "tick_word": 18049, "text": "If there’s" },
+                { "tick_word": 18240, "text": "a" },
+                { "tick_word": 18432, "text": "lot" },
+                { "tick_word": 18624, "text": "of" },
+                { "tick_word": 18719, "text": ":symbols:" }
+            ],
+            "tick_end": 18720
+        },
+        {
+            "tick_start": 18720,
+            "words": [
+                { "tick_word": 18721, "text": "If there's a lot of stuff" }
+            ],
+            "tick_end": 18912
+        },
+        {
+            "tick_start": 18912,
+            "words": [
+                { "tick_word": 19008, "text": "That" },
+                { "tick_word": 19200, "text": "you" },
+                { "tick_word": 19392, "text": "know" },
+                { "tick_word": 19584, "text": "how" },
+                { "tick_word": 19776, "text": "to" },
+                { "tick_word": 19967, "text": ":bookmark=tabs:" }
+            ],
+            "tick_end": 19968
+        },
+        {
+            "tick_start": 19968,
+            "words": [
+                { "tick_word": 19969, "text": "That you know how to read=" },
+                { "tick_word": 20159, "text": "tabs:" }
+            ],
+            "tick_end": 20160
+        },
+        {
+            "tick_start": 20160,
+            "words": [
+                { "tick_word": 20161, "text": "That you know how to read to-" },
+                { "tick_word": 20256, "text": "day" }
+            ],
+            "tick_end": 20736
+        },
+        {
+            "tick_start": 20736,
+            "words": [
+                { "tick_word": 20927, "text": ":smiley: :rage: :sob: :hotsprings:" }
+            ],
+            "tick_end": 20928
+        },
+        {
+            "tick_start": 20928,
+            "words": [
+                { "tick_word": 20929, "text": "All" },
+                { "tick_word": 21119, "text": ":rage: :sob: :hotsprings:" }
+            ],
+            "tick_end": 21120
+        },
+        {
+            "tick_start": 21120,
+            "words": [
+                { "tick_word": 21121, "text": "All our" },
+                { "tick_word": 21311, "text": ":sob: :hotsprings:" }
+            ],
+            "tick_end": 21312
+        },
+        {
+            "tick_start": 21312,
+            "words": [
+                { "tick_word": 21313, "text": "All our e-" },
+                { "tick_word": 21504, "text": "mo-" },
+                { "tick_word": 21696, "text": "tions" },
+                { "tick_word": 21791, "text": ":hotsprings:" }
+            ],
+            "tick_end": 21792
+        },
+        {
+            "tick_start": 21792,
+            "words": [
+                { "tick_word": 21793, "text": "All our emotions are" }
+            ],
+            "tick_end": 21984
+        },
+        {
+            "tick_start": 21984,
+            "words": [
+                { "tick_word": 22080, "text": "Gon-" },
+                { "tick_word": 22176, "text": "na" },
+                { "tick_word": 22272, "text": "rea-" },
+                { "tick_word": 22368, "text": "ch" },
+                { "tick_word": 22464, "text": "your" },
+                { "tick_word": 22560, "text": "way" },
+                { "tick_word": 22655, "text": "((1) (2))" }
+            ],
+            "tick_end": 22656
+        },
+        {
+            "tick_start": 22656,
+            "words": [
+                { "tick_word": 22657, "text": "Gonna reach your way (one!" },
+                { "tick_word": 22847, "text": "(2))" }
+            ],
+            "tick_end": 22848
+        },
+        {
+            "tick_start": 22848,
+            "words": [
+                { "tick_word": 22849, "text": "Gonna reach your way (one! two!)" }
+            ],
+            "tick_end": 22896
+        },
+        {
+            "tick_start": 22896,
+            "words": [
+                { "tick_word": 22943, "text": ":vibration=mode: them :100: ((3) (4))" }
+            ],
+            "tick_end": 22944
+        },
+        {
+            "tick_start": 22944,
+            "words": [
+                { "tick_word": 22945, "text": "Re-" },
+                { "tick_word": 23040, "text": "ceive" },
+                { "tick_word": 23136, "text": "them" },
+                { "tick_word": 23231, "text": ":100: ((3) (4))" }
+            ],
+            "tick_end": 23232
+        },
+        {
+            "tick_start": 23232,
+            "words": [
+                { "tick_word": 23233, "text": "Receive them to-" },
+                { "tick_word": 23328, "text": "day" },
+                { "tick_word": 23423, "text": "((3) (4))" }
+            ],
+            "tick_end": 23424
+        },
+        {
+            "tick_start": 23424,
+            "words": [
+                { "tick_word": 23425, "text": "Receive them today (san!" },
+                { "tick_word": 23615, "text": "(4))" }
+            ],
+            "tick_end": 23616
+        },
+        {
+            "tick_start": 23616,
+            "words": [
+                { "tick_word": 23617, "text": "Receive them today (san! shi!)" }
+            ],
+            "tick_end": 23808
+        },
+        {
+            "tick_start": 23808,
+            "words": [
+                { "tick_word": 24000, "text": "But" },
+                { "tick_word": 24192, "text": "now" },
+                { "tick_word": 24384, "text": "I" },
+                { "tick_word": 24576, "text": "got-" },
+                { "tick_word": 24768, "text": "ta" },
+                { "tick_word": 24864, "text": "say" }
+            ],
+            "tick_end": 25056
+        },
+        {
+            "tick_start": 25056,
+            "words": [
+                { "tick_word": 25152, "text": "<b>These" },
+                { "tick_word": 25344, "text": "feel-" },
+                { "tick_word": 25536, "text": "ings" },
+                { "tick_word": 25728, "text": "that" },
+                { "tick_word": 25920, "text": "I" },
+                { "tick_word": 26112, "text": "had" },
+                { "tick_word": 26304, "text": "to" },
+                { "tick_word": 26400, "text": "hide</b>" }
+            ],
+            "tick_end": 26880
+        },
+        {
+            "tick_start": 26880,
+            "words": [
+                { "tick_word": 27072, "text": "Are" },
+                { "tick_word": 27264, "text": "way" },
+                { "tick_word": 27456, "text": "too" },
+                { "tick_word": 27648, "text": "hard" },
+                { "tick_word": 27936, "text": "to" },
+                { "tick_word": 28224, "text": "tran-" },
+                { "tick_word": 28416, "text": "scribe" }
+            ],
+            "tick_end": 28608
+        },
+        {
+            "tick_start": 28608,
+            "words": [
+                { "tick_word": 28800, "text": "And" },
+                { "tick_word": 28992, "text": "it’s" },
+                { "tick_word": 29184, "text": "way" },
+                { "tick_word": 29376, "text": "too" },
+                { "tick_word": 29568, "text": "hard" },
+                { "tick_word": 29760, "text": "to" },
+                { "tick_word": 29952, "text": "do" }
+            ],
+            "tick_end": 30144
+        },
+        {
+            "tick_start": 30144,
+            "words": [
+                { "tick_word": 30336, "text": "When" },
+                { "tick_word": 30528, "text": "en-" },
+                { "tick_word": 30720, "text": "cod-" },
+                { "tick_word": 30912, "text": "ing" },
+                { "tick_word": 31008, "text": "to" },
+                { "tick_word": 31200, "text": "you-" },
+                { "tick_word": 31487, "text": "," }
+            ],
+            "tick_end": 31488
+        },
+        {
+            "tick_start": 31488,
+            "words": [
+                { "tick_word": 31489, "text": "(-" },
+                { "tick_word": 31535, "text": "???????? no' no,)" }
+            ],
+            "tick_end": 31536
+        },
+        {
+            "tick_start": 31536,
+            "words": [
+                { "tick_word": 31537, "text": "(M-" },
+                { "tick_word": 31583, "text": ",i.`*ZO no' no,)" }
+            ],
+            "tick_end": 31584
+        },
+        {
+            "tick_start": 31584,
+            "words": [
+                { "tick_word": 31585, "text": "(MO-" },
+                { "tick_word": 31631, "text": "r.7?V@ no' no,)" }
+            ],
+            "tick_end": 31632
+        },
+        {
+            "tick_start": 31632,
+            "words": [
+                { "tick_word": 31633, "text": "(MO-" },
+                { "tick_word": 31679, "text": "d|I.`j no' no,)" }
+            ],
+            "tick_end": 31680
+        },
+        {
+            "tick_start": 31680,
+            "words": [
+                { "tick_word": 31681, "text": "(MO-" },
+                { "tick_word": 31727, "text": "4r;~!M no' no,)" }
+            ],
+            "tick_end": 31728
+        },
+        {
+            "tick_start": 31728,
+            "words": [
+                { "tick_word": 31729, "text": "(MO-" },
+                { "tick_word": 31775, "text": ",5|3*L no' no,)" }
+            ],
+            "tick_end": 31776
+        },
+        {
+            "tick_start": 31776,
+            "words": [
+                { "tick_word": 31777, "text": "(MO-" },
+                { "tick_word": 31823, "text": "?)9s\\( no' no,)" }
+            ],
+            "tick_end": 31824
+        },
+        {
+            "tick_start": 31824,
+            "words": [
+                { "tick_word": 31825, "text": "(MO-" },
+                { "tick_word": 31871, "text": ":@b3C. no' no,)" }
+            ],
+            "tick_end": 31872
+        },
+        {
+            "tick_start": 31872,
+            "words": [
+                { "tick_word": 31873, "text": "(MOJ-" },
+                { "tick_word": 31919, "text": "8F:@| no' no,)" }
+            ],
+            "tick_end": 31920
+        },
+        {
+            "tick_start": 31920,
+            "words": [
+                { "tick_word": 31921, "text": "(MOJI-" },
+                { "tick_word": 31967, "text": "'<K= no' no,)" }
+            ],
+            "tick_end": 31968
+        },
+        {
+            "tick_start": 31968,
+            "words": [
+                { "tick_word": 31969, "text": "(MOJI-" },
+                { "tick_word": 32015, "text": "X!=> no' no,)" }
+            ],
+            "tick_end": 32016
+        },
+        {
+            "tick_start": 32016,
+            "words": [
+                { "tick_word": 32017, "text": "(MOJI-" },
+                { "tick_word": 32063, "text": "?4~g no' no,)" }
+            ],
+            "tick_end": 32064
+        },
+        {
+            "tick_start": 32064,
+            "words": [
+                { "tick_word": 32065, "text": "(MOJI-" },
+                { "tick_word": 32111, "text": "2U(` no' no,)" }
+            ],
+            "tick_end": 32112
+        },
+        {
+            "tick_start": 32112,
+            "words": [
+                { "tick_word": 32113, "text": "(MOJI-" },
+                { "tick_word": 32159, "text": "u*6| no' no,)" }
+            ],
+            "tick_end": 32160
+        },
+        {
+            "tick_start": 32160,
+            "words": [
+                { "tick_word": 32161, "text": "(MOJI-" },
+                { "tick_word": 32207, "text": "=E9$ no' no,)" }
+            ],
+            "tick_end": 32208
+        },
+        {
+            "tick_start": 32208,
+            "words": [
+                { "tick_word": 32209, "text": "(MOJI-" },
+                { "tick_word": 32255, "text": ")m\\. no' no,)" }
+            ],
+            "tick_end": 32256
+        },
+        {
+            "tick_start": 32256,
+            "words": [
+                { "tick_word": 32257, "text": "(MOJIB-" },
+                { "tick_word": 32303, "text": "7;s no' no,)" }
+            ],
+            "tick_end": 32304
+        },
+        {
+            "tick_start": 32304,
+            "words": [
+                { "tick_word": 32305, "text": "(MOJIBA-" },
+                { "tick_word": 32351, "text": "h& no' no,)" }
+            ],
+            "tick_end": 32352
+        },
+        {
+            "tick_start": 32352,
+            "words": [
+                { "tick_word": 32353, "text": "(MOJIBA-" },
+                { "tick_word": 32399, "text": "]2 no' no,)" }
+            ],
+            "tick_end": 32400
+        },
+        {
+            "tick_start": 32400,
+            "words": [
+                { "tick_word": 32401, "text": "(MOJIBA-" },
+                { "tick_word": 32447, "text": "*: no' no,)" }
+            ],
+            "tick_end": 32448
+        },
+        {
+            "tick_start": 32448,
+            "words": [
+                { "tick_word": 32449, "text": "(MOJIBA-" },
+                { "tick_word": 32495, "text": "?, no' no,)" }
+            ],
+            "tick_end": 32496
+        },
+        {
+            "tick_start": 32496,
+            "words": [
+                { "tick_word": 32497, "text": "(MOJIBAK-" },
+                { "tick_word": 32543, "text": "! no' no,)" }
+            ],
+            "tick_end": 32544
+        },
+        {
+            "tick_start": 32544,
+            "words": [
+                { "tick_word": 32545, "text": "(MOJIBAKE" },
+                { "tick_word": 32736, "text": "no'" },
+                { "tick_word": 32928, "text": "no,)" }
+            ],
+            "tick_end": 33216
+        },
+        {
+            "tick_start": 33216,
+            "words": [
+                { "tick_word": 33408, "text": "What" },
+                { "tick_word": 33600, "text": "am" },
+                { "tick_word": 33792, "text": "I" },
+                { "tick_word": 33984, "text": "sup-" },
+                { "tick_word": 34080, "text": "posed" },
+                { "tick_word": 34272, "text": "to" },
+                { "tick_word": 34560, "text": "do?" }
+            ],
+            "tick_end": 34656
+        },
+        {
+            "tick_start": 34656,
+            "words": [
+                { "tick_word": 34716, "text": "I’m" },
+                { "tick_word": 34787, "text": "(ESC) a writhing mess, :point=left:!" }
+            ],
+            "tick_end": 34788
+        },
+        {
+            "tick_start": 34788,
+            "words": [
+                { "tick_word": 34789, "text": "I'm not" },
+                { "tick_word": 34920, "text": "al-" },
+                { "tick_word": 34992, "text": "ways" },
+                { "tick_word": 35052, "text": "a" },
+                { "tick_word": 35159, "text": "writhing mess, :point=left:!" }
+            ],
+            "tick_end": 35160
+        },
+        {
+            "tick_start": 35160,
+            "words": [
+                { "tick_word": 35161, "text": "I'm not always a writ-" },
+                { "tick_word": 35280, "text": "ing" },
+                { "tick_word": 35400, "text": "mess," },
+                { "tick_word": 35567, "text": ":point=left:!" }
+            ],
+            "tick_end": 35568
+        },
+        {
+            "tick_start": 35568,
+            "words": [
+                { "tick_word": 35569, "text": "I'm not always a writing mess, you=" },
+                { "tick_word": 35771, "text": "left:!" }
+            ],
+            "tick_end": 35772
+        },
+        {
+            "tick_start": 35772,
+            "words": [
+                { "tick_word": 35773, "text": "I'm not always a writing mess, you know!" }
+            ],
+            "tick_end": 36096
+        },
+        {
+            "tick_start": 36096,
+            "words": [
+                { "tick_word": 36191, "text": "\\\\ n" }
+            ],
+            "tick_end": 36192
+        },
+        {
+            "tick_start": 36192,
+            "words": [
+                { "tick_word": 36193, "text": "\\\\ na-" },
+                { "tick_word": 36288, "text": "no!" }
+            ],
+            "tick_end": 36384
+        },
+        {
+            "tick_start": 36384,
+            "words": [
+                { "tick_word": 36479, "text": "\\\\ $" }
+            ],
+            "tick_end": 36480
+        },
+        {
+            "tick_start": 36480,
+            "words": [
+                { "tick_word": 36481, "text": "\\\\ do-" },
+                { "tick_word": 36576, "text": "ru!" }
+            ],
+            "tick_end": 36672
+        },
+        {
+            "tick_start": 36672,
+            "words": [
+                { "tick_word": 36767, "text": "\\\\ F" }
+            ],
+            "tick_end": 36768
+        },
+        {
+            "tick_start": 36768,
+            "words": [
+                { "tick_word": 36769, "text": "\\\\ fa-" },
+                { "tick_word": 36864, "text": "ra-" },
+                { "tick_word": 37056, "text": "d-" },
+                { "tick_word": 37152, "text": "do!" }
+            ],
+            "tick_end": 37248
+        },
+        {
+            "tick_start": 37248,
+            "words": [
+                { "tick_word": 37343, "text": "\\\\ W" }
+            ],
+            "tick_end": 37344
+        },
+        {
+            "tick_start": 37344,
+            "words": [
+                { "tick_word": 37345, "text": "\\\\ wa-" },
+                { "tick_word": 37536, "text": "tto!" }
+            ],
+            "tick_end": 37632
+        },
+        {
+            "tick_start": 37632,
+            "words": [
+                { "tick_word": 37727, "text": "\\\\ d" }
+            ],
+            "tick_end": 37728
+        },
+        {
+            "tick_start": 37728,
+            "words": [
+                { "tick_word": 37729, "text": "\\\\ de-" },
+                { "tick_word": 37824, "text": "shi!" }
+            ],
+            "tick_end": 37920
+        },
+        {
+            "tick_start": 37920,
+            "words": [
+                { "tick_word": 38015, "text": "\\\\ rem" }
+            ],
+            "tick_end": 38016
+        },
+        {
+            "tick_start": 38016,
+            "words": [
+                { "tick_word": 38017, "text": "\\\\ re-" },
+                { "tick_word": 38112, "text": "mu!" }
+            ],
+            "tick_end": 38208
+        },
+        {
+            "tick_start": 38208,
+            "words": [
+                { "tick_word": 38303, "text": "\\\\ ct" }
+            ],
+            "tick_end": 38304
+        },
+        {
+            "tick_start": 38304,
+            "words": [
+                { "tick_word": 38305, "text": "\\\\ ka-" },
+                { "tick_word": 38400, "text": "ra-" },
+                { "tick_word": 38592, "text": "t-" },
+                { "tick_word": 38688, "text": "to!" }
+            ],
+            "tick_end": 38784
+        },
+        {
+            "tick_start": 38784,
+            "words": [
+                { "tick_word": 38879, "text": "\\\\ c" }
+            ],
+            "tick_end": 38880
+        },
+        {
+            "tick_start": 38880,
+            "words": [
+                { "tick_word": 38881, "text": "\\\\ san-" },
+                { "tick_word": 39072, "text": "chiimu!" }
+            ],
+            "tick_end": 39552
+        },
+        {
+            "tick_start": 39552,
+            "words": [
+                { "tick_word": 39744, "text": "+" }
+            ],
+            "tick_end": 39936
+        },
+        {
+            "tick_start": 39936,
+            "words": [
+                { "tick_word": 40128, "text": "U-" },
+                { "tick_word": 40320, "text": "s-" },
+                { "tick_word": 40512, "text": "ing" },
+                { "tick_word": 40704, "text": "norm-" },
+                { "tick_word": 40896, "text": "al" },
+                { "tick_word": 40992, "text": "charact-" },
+                { "tick_word": 41184, "text": "ers" },
+                { "tick_word": 41375, "text": ":u7533: isn't enough" }
+            ],
+            "tick_end": 41376
+        },
+        {
+            "tick_start": 41376,
+            "words": [
+                { "tick_word": 41377, "text": "Using normal characters just" },
+                { "tick_word": 41568, "text": "is-" },
+                { "tick_word": 41664, "text": "n’t" },
+                { "tick_word": 41760, "text": "e-" },
+                { "tick_word": 41856, "text": "nough" }
+            ],
+            "tick_end": 41952
+        },
+        {
+            "tick_start": 41952,
+            "words": [
+                { "tick_word": 42048, "text": "To" },
+                { "tick_word": 42240, "text": "tell" },
+                { "tick_word": 42431, "text": ":love=letter: everything" }
+            ],
+            "tick_end": 42432
+        },
+        {
+            "tick_start": 42432,
+            "words": [
+                { "tick_word": 42433, "text": "(To" },
+                { "tick_word": 42624, "text": "tell!)" },
+                { "tick_word": 42815, "text": ":love=letter: everything" }
+            ],
+            "tick_end": 42816
+        },
+        {
+            "tick_start": 42816,
+            "words": [
+                { "tick_word": 42817, "text": "To tell you" },
+                { "tick_word": 43008, "text": "ev-" },
+                { "tick_word": 43104, "text": "er-" },
+                { "tick_word": 43200, "text": "y-" },
+                { "tick_word": 43296, "text": "thing" }
+            ],
+            "tick_end": 43584
+        },
+        {
+            "tick_start": 43584,
+            "words": [
+                { "tick_word": 43680, "text": "I’m" },
+                { "tick_word": 43776, "text": "real-" },
+                { "tick_word": 43872, "text": "ly" },
+                { "tick_word": 43967, "text": "getting overwhelmed" }
+            ],
+            "tick_end": 43968
+        },
+        {
+            "tick_start": 43968,
+            "words": [
+                { "tick_word": 43969, "text": "I'm real-" },
+                { "tick_word": 44064, "text": "ly*2" },
+                { "tick_word": 44159, "text": "getting overwhelmed" }
+            ],
+            "tick_end": 44160
+        },
+        {
+            "tick_start": 44160,
+            "words": [
+                { "tick_word": 44161, "text": "I'm real-" },
+                { "tick_word": 44256, "text": "ly*3" },
+                { "tick_word": 44351, "text": "getting overwhelmed" }
+            ],
+            "tick_end": 44352
+        },
+        {
+            "tick_start": 44352,
+            "words": [
+                { "tick_word": 44353, "text": "I'm real-" },
+                { "tick_word": 44448, "text": "ly*4" },
+                { "tick_word": 44544, "text": "get-" },
+                { "tick_word": 44736, "text": "ting" },
+                { "tick_word": 44928, "text": "o-" },
+                { "tick_word": 45120, "text": "ver-" },
+                { "tick_word": 45312, "text": "whelmed" }
+            ],
+            "tick_end": 45408
+        },
+        {
+            "tick_start": 45408,
+            "words": [
+                { "tick_word": 45503, "text": "(:wave: :wave: :wave: :wave:)" }
+            ],
+            "tick_end": 45504
+        },
+        {
+            "tick_start": 45504,
+            "words": [
+                { "tick_word": 45505, "text": "(hey!" },
+                { "tick_word": 45695, "text": "hey! hey! hey!)" }
+            ],
+            "tick_end": 45696
+        },
+        {
+            "tick_start": 45696,
+            "words": [
+                { "tick_word": 45697, "text": "(:wave:" },
+                { "tick_word": 45887, "text": ":wave: :wave: wave:)" }
+            ],
+            "tick_end": 45888
+        },
+        {
+            "tick_start": 45888,
+            "words": [
+                { "tick_word": 45889, "text": "(hey! hey!" },
+                { "tick_word": 46079, "text": "hey! hey!)" }
+            ],
+            "tick_end": 46080
+        },
+        {
+            "tick_start": 46080,
+            "words": [
+                { "tick_word": 46081, "text": "(:wave: :wave:" },
+                { "tick_word": 46271, "text": ":wave: :wave:)" }
+            ],
+            "tick_end": 46272
+        },
+        {
+            "tick_start": 46272,
+            "words": [
+                { "tick_word": 46273, "text": "There" },
+                { "tick_word": 46464, "text": "is" },
+                { "tick_word": 46656, "text": "a" },
+                { "tick_word": 46847, "text": ":book: that we still don't know within" }
+            ],
+            "tick_end": 46848
+        },
+        {
+            "tick_start": 46848,
+            "words": [
+                { "tick_word": 46849, "text": "There is a sto-" },
+                { "tick_word": 47040, "text": "ry" },
+                { "tick_word": 47136, "text": "that" },
+                { "tick_word": 47328, "text": "we" },
+                { "tick_word": 47520, "text": "still" },
+                { "tick_word": 47712, "text": "don’t" },
+                { "tick_word": 47808, "text": "know" },
+                { "tick_word": 47904, "text": "with-" },
+                { "tick_word": 48000, "text": "in" }
+            ],
+            "tick_end": 48096
+        },
+        {
+            "tick_start": 48096,
+            "words": [
+                { "tick_word": 48192, "text": "This" },
+                { "tick_word": 48384, "text": ":earth=asia:" },
+                { "tick_word": 48575, "text": "_that we :u6e80: :writing=hand:!" }
+            ],
+            "tick_end": 48576
+        },
+        {
+            "tick_start": 48576,
+            "words": [
+                { "tick_word": 48577, "text": "(This" },
+                { "tick_word": 48768, "text": "world!)" },
+                { "tick_word": 48959, "text": "that we :u6e80: :writing=hand:!" }
+            ],
+            "tick_end": 48960
+        },
+        {
+            "tick_start": 48960,
+            "words": [
+                { "tick_word": 48961, "text": "This world tha-" },
+                { "tick_word": 49056, "text": "t" },
+                { "tick_word": 49152, "text": "we" },
+                { "tick_word": 49247, "text": "have :writing=hand:!" }
+            ],
+            "tick_end": 49248
+        },
+        {
+            "tick_start": 49248,
+            "words": [
+                { "tick_word": 49249, "text": "This world that we have" },
+                { "tick_word": 49343, "text": ":writing=hand:!" }
+            ],
+            "tick_end": 49344
+        },
+        {
+            "tick_start": 49344,
+            "words": [
+                { "tick_word": 49345, "text": "This world that we have to" },
+                { "tick_word": 49440, "text": "write!" }
+            ],
+            "tick_end": 49920
+        },
+        {
+            "tick_start": 49920,
+            "words": [
+                { "tick_word": 50112, "text": "And" },
+                { "tick_word": 50304, "text": "by" },
+                { "tick_word": 50496, "text": "the" },
+                { "tick_word": 50688, "text": "time" },
+                { "tick_word": 50879, "text": ":incoming=envelope:, I hope :frowning2:=>:relaxed:" }
+            ],
+            "tick_end": 50880
+        },
+        {
+            "tick_start": 50880,
+            "words": [
+                { "tick_word": 50881, "text": "And by the time it" },
+                { "tick_word": 51072, "text": "has=" },
+                { "tick_word": 51263, "text": "envelope:, I hope :frowning2:=>:relaxed:" }
+            ],
+            "tick_end": 51264
+        },
+        {
+            "tick_start": 51264,
+            "words": [
+                { "tick_word": 51265, "text": "And by the time it has ar-" },
+                { "tick_word": 51456, "text": "rived," },
+                { "tick_word": 51744, "text": "I" },
+                { "tick_word": 52032, "text": "hope" },
+                { "tick_word": 52223, "text": ":frowning2:=>:relaxed:" }
+            ],
+            "tick_end": 52224
+        },
+        {
+            "tick_start": 52224,
+            "words": [
+                { "tick_word": 52225, "text": "And by the time it has arrive, I hope you-" },
+                { "tick_word": 52415, "text": "=>:relaxed:" }
+            ],
+            "tick_end": 52416
+        },
+        {
+            "tick_start": 52416,
+            "words": [
+                { "tick_word": 52417, "text": "And by the time it has arrive, I hope you will" },
+                { "tick_word": 52511, "text": ":relaxed:" }
+            ],
+            "tick_end": 52512
+        },
+        {
+            "tick_start": 52512,
+            "words": [
+                { "tick_word": 52513, "text": "And by the time it has arrive, I hope you will smile" }
+            ],
+            "tick_end": 52704
+        },
+        {
+            "tick_start": 52704,
+            "words": [
+                { "tick_word": 52800, "text": "Cause" },
+                { "tick_word": 52895, "text": ":soon: I'll be hopeful" }
+            ],
+            "tick_end": 52896
+        },
+        {
+            "tick_start": 52896,
+            "words": [
+                { "tick_word": 52897, "text": "Cause to-" },
+                { "tick_word": 52992, "text": "mor-" },
+                { "tick_word": 53088, "text": "row" },
+                { "tick_word": 53280, "text": "I’ll" },
+                { "tick_word": 53472, "text": "be" },
+                { "tick_word": 53664, "text": "ho-" },
+                { "tick_word": 53856, "text": "pe-" },
+                { "tick_word": 53952, "text": "ful" }
+            ],
+            "tick_end": 54144
+        },
+        {
+            "tick_start": 54144,
+            "words": [
+                { "tick_word": 54336, "text": "I’ll" },
+                { "tick_word": 54432, "text": "be" },
+                { "tick_word": 54528, "text": "spell-" },
+                { "tick_word": 54624, "text": "ing" },
+                { "tick_word": 54815, "text": ":pencil2: :blossom:" }
+            ],
+            "tick_end": 54816
+        },
+        {
+            "tick_start": 54816,
+            "words": [
+                { "tick_word": 54817, "text": "I'll be spelling some-" },
+                { "tick_word": 55008, "text": "thing" },
+                { "tick_word": 55199, "text": ":blossom:" }
+            ],
+            "tick_end": 55200
+        },
+        {
+            "tick_start": 55200,
+            "words": [
+                { "tick_word": 55201, "text": "I'll be spelling something co-" },
+                { "tick_word": 55392, "text": "lor-" },
+                { "tick_word": 55488, "text": "ful" }
+            ],
+            "tick_end": 55680
+        },
+        {
+            "tick_start": 55680,
+            "words": [
+                { "tick_word": 55872, "text": "Let-" },
+                { "tick_word": 55968, "text": "’s" },
+                { "tick_word": 56064, "text": "run" },
+                { "tick_word": 56256, "text": "a-" },
+                { "tick_word": 56352, "text": "round" },
+                { "tick_word": 56544, "text": "the" },
+                { "tick_word": 56736, "text": "char-" },
+                { "tick_word": 56928, "text": "act-" },
+                { "tick_word": 57024, "text": "e-" },
+                { "tick_word": 57120, "text": "r" },
+                { "tick_word": 57216, "text": "code!" }
+            ],
+            "tick_end": 57312
+        },
+        {
+            "tick_start": 57312,
+            "words": [
+                { "tick_word": 57407, "text": ":person=running::dash:" }
+            ],
+            "tick_end": 57408
+        },
+        {
+            "tick_start": 57408,
+            "words": [
+                { "tick_word": 57409, "text": "(bew!-" },
+                { "tick_word": 57599, "text": ")" }
+            ],
+            "tick_end": 57600
+        },
+        {
+            "tick_start": 57600,
+            "words": [
+                { "tick_word": 57601, "text": "(-" },
+                { "tick_word": 57791, "text": ":wave: :wave: :wave: :wave: :wave: :wave:)" }
+            ],
+            "tick_end": 57792
+        },
+        {
+            "tick_start": 57792,
+            "words": [
+                { "tick_word": 57793, "text": "(hey!" },
+                { "tick_word": 57983, "text": "hey! hey! hey! hey! hey!)" }
+            ],
+            "tick_end": 57984
+        },
+        {
+            "tick_start": 57984,
+            "words": [
+                { "tick_word": 57985, "text": "(:wave:" },
+                { "tick_word": 58175, "text": ":wave: :wave: :wave: :wave: :wave:)" }
+            ],
+            "tick_end": 58176
+        },
+        {
+            "tick_start": 58176,
+            "words": [
+                { "tick_word": 58177, "text": "(hey! hey!" },
+                { "tick_word": 58367, "text": "hey! hey! hey! hey!)" }
+            ],
+            "tick_end": 58368
+        },
+        {
+            "tick_start": 58368,
+            "words": [
+                { "tick_word": 58369, "text": "(:wave: :wave:" },
+                { "tick_word": 58559, "text": ":wave: :wave: :wave: :wave:)" }
+            ],
+            "tick_end": 58560
+        },
+        {
+            "tick_start": 58560,
+            "words": [
+                { "tick_word": 58561, "text": "(hey! hey! hey!" },
+                { "tick_word": 58751, "text": "hey! hey! hey!)" }
+            ],
+            "tick_end": 58752
+        },
+        {
+            "tick_start": 58752,
+            "words": [
+                { "tick_word": 58753, "text": "(:wave: :wave: :wave:" },
+                { "tick_word": 58943, "text": ":wave: :wave: :wave:)" }
+            ],
+            "tick_end": 58944
+        },
+        {
+            "tick_start": 58944,
+            "words": [
+                { "tick_word": 58945, "text": "(hey! hey! hey! hey!" },
+                { "tick_word": 59135, "text": "hey! hey!)" }
+            ],
+            "tick_end": 59136
+        },
+        {
+            "tick_start": 59136,
+            "words": [
+                { "tick_word": 59137, "text": "(:wave: :wave: :wave: :wave:" },
+                { "tick_word": 59327, "text": ":wave: :wave:)" }
+            ],
+            "tick_end": 59328
+        },
+        {
+            "tick_start": 59328,
+            "words": [
+                { "tick_word": 59329, "text": "(hey! hey! hey! hey! hey!" },
+                { "tick_word": 59519, "text": "hey!)" }
+            ],
+            "tick_end": 59520
+        },
+        {
+            "tick_start": 59520,
+            "words": [
+                { "tick_word": 59521, "text": "(:wave: :wave: :wave: :wave: :wave:" },
+                { "tick_word": 59711, "text": ":wave:)" }
+            ],
+            "tick_end": 59712
+        },
+        {
+            "tick_start": 59712,
+            "words": [
+                { "tick_word": 59713, "text": "(hey! hey! hey! hey! hey! hey!)" }
+            ],
+            "tick_end": 59808
+        },
+        {
+            "tick_start": 59808,
+            "words": [
+                { "tick_word": 59904, "text": "(:whi-" },
+                { "tick_word": 60000, "text": "rr:" },
+                { "tick_word": 60096, "text": ":whi-" },
+                { "tick_word": 60192, "text": "rr:" },
+                { "tick_word": 60288, "text": ":)pyon!-" },
+                { "tick_word": 60671, "text": ")" }
+            ],
+            "tick_end": 60672
+        },
+        {
+            "tick_start": 60672,
+            "words": [
+                { "tick_word": 60673, "text": "(-" },
+                { "tick_word": 60863, "text": ":wave: :wave: :wave: :wave:)" }
+            ],
+            "tick_end": 60864
+        },
+        {
+            "tick_start": 60864,
+            "words": [
+                { "tick_word": 60865, "text": "(hey!" },
+                { "tick_word": 61055, "text": "hey! hey! hey!)" }
+            ],
+            "tick_end": 61056
+        },
+        {
+            "tick_start": 61056,
+            "words": [
+                { "tick_word": 61057, "text": "(:wave:" },
+                { "tick_word": 61247, "text": ":wave: :wave: :wave:)" }
+            ],
+            "tick_end": 61248
+        },
+        {
+            "tick_start": 61248,
+            "words": [
+                { "tick_word": 61249, "text": "(hey! hey!" },
+                { "tick_word": 61439, "text": "hey! hey!)" }
+            ],
+            "tick_end": 61440
+        },
+        {
+            "tick_start": 61440,
+            "words": [
+                { "tick_word": 61441, "text": "(:wave :wave:" },
+                { "tick_word": 61631, "text": ":wave: :wave:)" }
+            ],
+            "tick_end": 61632
+        },
+        {
+            "tick_start": 61632,
+            "words": [
+                { "tick_word": 61633, "text": "(hey! hey! hey!" },
+                { "tick_word": 61823, "text": "hey!)" }
+            ],
+            "tick_end": 61824
+        },
+        {
+            "tick_start": 61824,
+            "words": [
+                { "tick_word": 61825, "text": "(:wave: :wave: :wave:" },
+                { "tick_word": 62015, "text": ":wave:)" }
+            ],
+            "tick_end": 62016
+        },
+        {
+            "tick_start": 62016,
+            "words": [
+                { "tick_word": 62017, "text": "(hey! hey! hey! hey!)" }
+            ],
+            "tick_end": 62112
+        },
+        {
+            "tick_start": 62112,
+            "words": [
+                { "tick_word": 62208, "text": "x-" },
+                { "tick_word": 62272, "text": "$-" },
+                { "tick_word": 62336, "text": ";-" },
+                { "tick_word": 62400, "text": "~" }
+            ],
+            "tick_end": 62528
+        },
+        {
+            "tick_start": 62528,
+            "words": [
+                { "tick_word": 62592, "text": "R-" },
+                { "tick_word": 62656, "text": "!-" },
+                { "tick_word": 62720, "text": "4-" },
+                { "tick_word": 62784, "text": "b-" },
+                { "tick_word": 62848, "text": "~" }
+            ],
+            "tick_end": 62912
+        },
+        {
+            "tick_start": 62912,
+            "words": [
+                { "tick_word": 62976, "text": "(-" },
+                { "tick_word": 63040, "text": "J-" },
+                { "tick_word": 63104, "text": "&-" },
+                { "tick_word": 63168, "text": "<-" },
+                { "tick_word": 63232, "text": "~-" },
+                { "tick_word": 63296, "text": "h" }
+            ],
+            "tick_end": 63744
+        },
+        {
+            "tick_start": 63744,
+            "words": [
+                { "tick_word": 64128, "text": "+" }
+            ],
+            "tick_end": 64320
+        },
+        {
+            "tick_start": 64320,
+            "words": [
+                { "tick_word": 64367, "text": ":person=wearing=turban: > Aqwl?" }
+            ],
+            "tick_end": 64368
+        },
+        {
+            "tick_start": 64368,
+            "words": [
+                { "tick_word": 64369, "text": ":person=wearing=turban: > ah=" },
+                { "tick_word": 64764, "text": "_uhh..." }
+            ],
+            "tick_end": 65184
+        },
+        {
+            "tick_start": 65184,
+            "words": [
+                { "tick_word": 65363, "text": ":person=wearing=turban: > Ma tafahum hl? hah." }
+            ],
+            "tick_end": 65364
+        },
+        {
+            "tick_start": 65364,
+            "words": [
+                { "tick_word": 65365, "text": ":person=wearing=turban: > How" },
+                { "tick_word": 65543, "text": "_tafahum hl? hah." }
+            ],
+            "tick_end": 65544
+        },
+        {
+            "tick_start": 65544,
+            "words": [
+                { "tick_word": 65545, "text": ":person=wearing=turban: > How do" },
+                { "tick_word": 65652, "text": "_I" },
+                { "tick_word": 65807, "text": "hl? hah." },
+                { "tick_word": 65808, "text": ":person=wearing=turban: > How do I read" }
+            ],
+            "tick_end": 65808
+        },
+        {
+            "tick_start": 65808,
+            "words": [
+                { "tick_word": 65939, "text": "_hah." }
+            ],
+            "tick_end": 65940
+        },
+        {
+            "tick_start": 65940,
+            "words": [
+                { "tick_word": 65941, "text": ":person=wearing=turban: > How do I read this...?" }
+            ],
+            "tick_end": 66144
+        },
+        {
+            "tick_start": 66144,
+            "words": [
+                { "tick_word": 66347, "text": ":person=wearing=turban: > Bimuqabalatik tushrift." }
+            ],
+            "tick_end": 66348
+        },
+        {
+            "tick_start": 66348,
+            "words": [
+                { "tick_word": 66349, "text": ":person=wearing=turban: > Na-" },
+                { "tick_word": 66492, "text": "mas-" },
+                { "tick_word": 66636, "text": "te...?" }
+            ],
+            "tick_end": 66816
+        },
+        {
+            "tick_start": 66816,
+            "words": [
+                { "tick_word": 67019, "text": ":person=wearing=turban: > Liljamie tahia." }
+            ],
+            "tick_end": 67020
+        },
+        {
+            "tick_start": 67020,
+            "words": [
+                { "tick_word": 67021, "text": ":person=wearing=turban: > Na-" },
+                { "tick_word": 67152, "text": "mas-" },
+                { "tick_word": 67296, "text": "te...?" }
+            ],
+            "tick_end": 67584
+        },
+        {
+            "tick_start": 67584,
+            "words": [
+                { "tick_word": 67775, "text": ":fork=and=kife: yesterday" }
+            ],
+            "tick_end": 67776
+        },
+        {
+            "tick_start": 67776,
+            "words": [
+                { "tick_word": 67777, "text": "Ate=" },
+                { "tick_word": 67967, "text": "and=knife: yesterday" }
+            ],
+            "tick_end": 67968
+        },
+        {
+            "tick_start": 67968,
+            "words": [
+                { "tick_word": 67969, "text": "Ate some=" },
+                { "tick_word": 68159, "text": "knife: yesterday" }
+            ],
+            "tick_end": 68160
+        },
+        {
+            "tick_start": 68160,
+            "words": [
+                { "tick_word": 68161, "text": "Ate something" },
+                { "tick_word": 68352, "text": "yes-" },
+                { "tick_word": 68544, "text": "ter-" },
+                { "tick_word": 68640, "text": "day" }
+            ],
+            "tick_end": 68832
+        },
+        {
+            "tick_start": 68832,
+            "words": [
+                { "tick_word": 68928, "text": "The" },
+                { "tick_word": 69119, "text": ":cake: I :stuck=out=tongue=closed=eyes:" }
+            ],
+            "tick_end": 69120
+        },
+        {
+            "tick_start": 69120,
+            "words": [
+                { "tick_word": 69121, "text": "The cake" },
+                { "tick_word": 69312, "text": "I" },
+                { "tick_word": 69503, "text": ":stuck=out=tongue=closed=eyes:" }
+            ],
+            "tick_end": 69504
+        },
+        {
+            "tick_start": 69504,
+            "words": [
+                { "tick_word": 69505, "text": "The cake I had=" },
+                { "tick_word": 69695, "text": "out=tongue=closed=eyes:" }
+            ],
+            "tick_end": 69696
+        },
+        {
+            "tick_start": 69696,
+            "words": [
+                { "tick_word": 69697, "text": "The cake I had I=" },
+                { "tick_word": 69887, "text": "tongue=closed=eyes:" }
+            ],
+            "tick_end": 69888
+        },
+        {
+            "tick_start": 69888,
+            "words": [
+                { "tick_word": 69889, "text": "The cake I had I still=" },
+                { "tick_word": 70079, "text": "closed=eyes:" }
+            ],
+            "tick_end": 70080
+        },
+        {
+            "tick_start": 70080,
+            "words": [
+                { "tick_word": 70081, "text": "The cake I had I still can=" },
+                { "tick_word": 70175, "text": "eyes:" }
+            ],
+            "tick_end": 70176
+        },
+        {
+            "tick_start": 70176,
+            "words": [
+                { "tick_word": 70177, "text": "The cake I had I still can taste" }
+            ],
+            "tick_end": 70656
+        },
+        {
+            "tick_start": 70656,
+            "words": [
+                { "tick_word": 70848, "text": "Af-" },
+                { "tick_word": 71040, "text": "ter" },
+                { "tick_word": 71232, "text": "this" },
+                { "tick_word": 71423, "text": ":sunrise: came" }
+            ],
+            "tick_end": 71424
+        },
+        {
+            "tick_start": 71424,
+            "words": [
+                { "tick_word": 71425, "text": "After this morn-" },
+                { "tick_word": 71616, "text": "ing" },
+                { "tick_word": 71712, "text": "came" }
+            ],
+            "tick_end": 71904
+        },
+        {
+            "tick_start": 71904,
+            "words": [
+                { "tick_word": 72000, "text": "When" },
+                { "tick_word": 72096, "text": "the" },
+                { "tick_word": 72191, "text": ":umbrella: went away (I II)" }
+            ],
+            "tick_end": 72192
+        },
+        {
+            "tick_start": 72192,
+            "words": [
+                { "tick_word": 72193, "text": "When the rain" },
+                { "tick_word": 72288, "text": "went" },
+                { "tick_word": 72384, "text": "a-" },
+                { "tick_word": 72480, "text": "way" },
+                { "tick_word": 72575, "text": "(I II)" }
+            ],
+            "tick_end": 72576
+        },
+        {
+            "tick_start": 72576,
+            "words": [
+                { "tick_word": 72577, "text": "When the rain went away (one!" },
+                { "tick_word": 72767, "text": "II)" }
+            ],
+            "tick_end": 72768
+        },
+        {
+            "tick_start": 72768,
+            "words": [
+                { "tick_word": 72769, "text": "When the rain went away (one! two!)" }
+            ],
+            "tick_end": 72816
+        },
+        {
+            "tick_start": 72816,
+            "words": [
+                { "tick_word": 72864, "text": "Re-" },
+                { "tick_word": 72960, "text": "fresh-" },
+                { "tick_word": 73056, "text": "ing" },
+                { "tick_word": 73151, "text": ":rainbow: (III IV)" }
+            ],
+            "tick_end": 73152
+        },
+        {
+            "tick_start": 73152,
+            "words": [
+                { "tick_word": 73153, "text": "Refreshing to" },
+                { "tick_word": 73247, "text": "bow: (III IV)" }
+            ],
+            "tick_end": 73248
+        },
+        {
+            "tick_start": 73248,
+            "words": [
+                { "tick_word": 73249, "text": "Refreshing to say" },
+                { "tick_word": 73343, "text": "(III IV)" }
+            ],
+            "tick_end": 73344
+        },
+        {
+            "tick_start": 73344,
+            "words": [
+                { "tick_word": 73345, "text": "Refreshing to say (san!" },
+                { "tick_word": 73535, "text": "IV)" }
+            ],
+            "tick_end": 73536
+        },
+        {
+            "tick_start": 73536,
+            "words": [
+                { "tick_word": 73537, "text": "Refreshing to say (san! shi!)" }
+            ],
+            "tick_end": 73728
+        },
+        {
+            "tick_start": 73728,
+            "words": [
+                { "tick_word": 73920, "text": "And" },
+                { "tick_word": 74112, "text": "al-" },
+                { "tick_word": 74304, "text": "so" },
+                { "tick_word": 74496, "text": "ear-" },
+                { "tick_word": 74688, "text": "li-" },
+                { "tick_word": 74784, "text": "er" }
+            ],
+            "tick_end": 74976
+        },
+        {
+            "tick_start": 74976,
+            "words": [
+                { "tick_word": 75072, "text": "When" },
+                { "tick_word": 75264, "text": "I" },
+                { "tick_word": 75456, "text": "had" },
+                { "tick_word": 75648, "text": "passed" },
+                { "tick_word": 75840, "text": "you" },
+                { "tick_word": 76032, "text": "right" },
+                { "tick_word": 76224, "text": "a-" },
+                { "tick_word": 76320, "text": "round" }
+            ],
+            "tick_end": 76800
+        },
+        {
+            "tick_start": 76800,
+            "words": [
+                { "tick_word": 76992, "text": "My" },
+                { "tick_word": 77183, "text": ":cupid: was :revolving=hearts:" }
+            ],
+            "tick_end": 77184
+        },
+        {
+            "tick_start": 77184,
+            "words": [
+                { "tick_word": 77185, "text": "My heart" },
+                { "tick_word": 77376, "text": "was" },
+                { "tick_word": 77567, "text": ":revolving=hearts:" }
+            ],
+            "tick_end": 77568
+        },
+        {
+            "tick_start": 77568,
+            "words": [
+                { "tick_word": 77569, "text": "My heart was float-" },
+                { "tick_word": 77856, "text": "ing=" },
+                { "tick_word": 78143, "text": "hearts:" }
+            ],
+            "tick_end": 78144
+        },
+        {
+            "tick_start": 78144,
+            "words": [
+                { "tick_word": 78145, "text": "My heart was floating a-" },
+                { "tick_word": 78336, "text": "round" }
+            ],
+            "tick_end": 78528
+        },
+        {
+            "tick_start": 78528,
+            "words": [
+                { "tick_word": 78720, "text": "I" },
+                { "tick_word": 78912, "text": "just" },
+                { "tick_word": 79104, "text": "have" },
+                { "tick_word": 79296, "text": "to" },
+                { "tick_word": 79488, "text": "tell" },
+                { "tick_word": 79680, "text": "you" },
+                { "tick_word": 79872, "text": "that" }
+            ],
+            "tick_end": 80064
+        },
+        {
+            "tick_start": 80064,
+            "words": [
+                { "tick_word": 80256, "text": "When" },
+                { "tick_word": 80448, "text": "en-" },
+                { "tick_word": 80640, "text": "cod-" },
+                { "tick_word": 80832, "text": "ing" },
+                { "tick_word": 80928, "text": "to" },
+                { "tick_word": 81120, "text": "you-" },
+                { "tick_word": 81407, "text": "," }
+            ],
+            "tick_end": 81408
+        },
+        {
+            "tick_start": 81408,
+            "words": [
+                { "tick_word": 81409, "text": "(-" },
+                { "tick_word": 81455, "text": "???????? no' no,)" }
+            ],
+            "tick_end": 81456
+        },
+        {
+            "tick_start": 81456,
+            "words": [
+                { "tick_word": 81457, "text": "(M-" },
+                { "tick_word": 81503, "text": "!=:\\F*s no' no,)" }
+            ],
+            "tick_end": 81504
+        },
+        {
+            "tick_start": 81504,
+            "words": [
+                { "tick_word": 81505, "text": "(MO-" },
+                { "tick_word": 81551, "text": "$9(T2| no' no,)" }
+            ],
+            "tick_end": 81552
+        },
+        {
+            "tick_start": 81552,
+            "words": [
+                { "tick_word": 81553, "text": "(MO-" },
+                { "tick_word": 81599, "text": "p'R8*? no' no,)" }
+            ],
+            "tick_end": 81600
+        },
+        {
+            "tick_start": 81600,
+            "words": [
+                { "tick_word": 81601, "text": "(MO-" },
+                { "tick_word": 81647, "text": "j`2O;. no' no,)" }
+            ],
+            "tick_end": 81648
+        },
+        {
+            "tick_start": 81648,
+            "words": [
+                { "tick_word": 81649, "text": "(MO-" },
+                { "tick_word": 81695, "text": "0x=<|! no' no,)" }
+            ],
+            "tick_end": 81696
+        },
+        {
+            "tick_start": 81696,
+            "words": [
+                { "tick_word": 81697, "text": "(MO-" },
+                { "tick_word": 81743, "text": "!*\\4g=( no' no,)" }
+            ],
+            "tick_end": 81744
+        },
+        {
+            "tick_start": 81744,
+            "words": [
+                { "tick_word": 81745, "text": "(MO-" },
+                { "tick_word": 81791, "text": "u,|@)y no' no,)" }
+            ],
+            "tick_end": 81792
+        },
+        {
+            "tick_start": 81792,
+            "words": [
+                { "tick_word": 81793, "text": "(MOJ-" },
+                { "tick_word": 81839, "text": ">'E=. no' no,)" }
+            ],
+            "tick_end": 81840
+        },
+        {
+            "tick_start": 81840,
+            "words": [
+                { "tick_word": 81841, "text": "(MOJI-" },
+                { "tick_word": 81887, "text": "d`&9 no' no,)" }
+            ],
+            "tick_end": 81888
+        },
+        {
+            "tick_start": 81888,
+            "words": [
+                { "tick_word": 81889, "text": "(MOJI-" },
+                { "tick_word": 81935, "text": "W~c\\ no' no,)" }
+            ],
+            "tick_end": 81936
+        },
+        {
+            "tick_start": 81936,
+            "words": [
+                { "tick_word": 81937, "text": "(MOJI-" },
+                { "tick_word": 81983, "text": "I>,n no' no,)" }
+            ],
+            "tick_end": 81984
+        },
+        {
+            "tick_start": 81984,
+            "words": [
+                { "tick_word": 81985, "text": "(MOJI-" },
+                { "tick_word": 82031, "text": ")*7| no' no,)" }
+            ],
+            "tick_end": 82032
+        },
+        {
+            "tick_start": 82032,
+            "words": [
+                { "tick_word": 82033, "text": "(MOJI-" },
+                { "tick_word": 82079, "text": "?Q;4 no' no,)" }
+            ],
+            "tick_end": 82080
+        },
+        {
+            "tick_start": 82080,
+            "words": [
+                { "tick_word": 82081, "text": "(MOJI-" },
+                { "tick_word": 82127, "text": "0.:P no' no,)" }
+            ],
+            "tick_end": 82128
+        },
+        {
+            "tick_start": 82128,
+            "words": [
+                { "tick_word": 82129, "text": "(MOJI-" },
+                { "tick_word": 82175, "text": "\\N$* no' no,)" }
+            ],
+            "tick_end": 82176
+        },
+        {
+            "tick_start": 82176,
+            "words": [
+                { "tick_word": 82177, "text": "(MOJIB-" },
+                { "tick_word": 82223, "text": "=Y! no' no,)" }
+            ],
+            "tick_end": 82224
+        },
+        {
+            "tick_start": 82224,
+            "words": [
+                { "tick_word": 82225, "text": "(MOJIBA-" },
+                { "tick_word": 82271, "text": "<@ no' no,)" }
+            ],
+            "tick_end": 82272
+        },
+        {
+            "tick_start": 82272,
+            "words": [
+                { "tick_word": 82273, "text": "(MOJIBA-" },
+                { "tick_word": 82319, "text": "yz no' no,)" }
+            ],
+            "tick_end": 82320
+        },
+        {
+            "tick_start": 82320,
+            "words": [
+                { "tick_word": 82321, "text": "(MOJIBA-" },
+                { "tick_word": 82367, "text": ";| no' no,)" }
+            ],
+            "tick_end": 82368
+        },
+        {
+            "tick_start": 82368,
+            "words": [
+                { "tick_word": 82369, "text": "(MOJIBA-" },
+                { "tick_word": 82415, "text": "8w no' no,)" }
+            ],
+            "tick_end": 82416
+        },
+        {
+            "tick_start": 82416,
+            "words": [
+                { "tick_word": 82417, "text": "(MOJIBAK-" },
+                { "tick_word": 82463, "text": "~ no' no,)" }
+            ],
+            "tick_end": 82464
+        },
+        {
+            "tick_start": 82464,
+            "words": [
+                { "tick_word": 82465, "text": "(MOJIBAKE" },
+                { "tick_word": 82656, "text": "no'" },
+                { "tick_word": 82848, "text": "no,)" }
+            ],
+            "tick_end": 83136
+        },
+        {
+            "tick_start": 83136,
+            "words": [
+                { "tick_word": 83328, "text": "What" },
+                { "tick_word": 83520, "text": "am" },
+                { "tick_word": 83712, "text": "I" },
+                { "tick_word": 83904, "text": "sup-" },
+                { "tick_word": 84000, "text": "posed" },
+                { "tick_word": 84192, "text": "to" },
+                { "tick_word": 84480, "text": "do?" }
+            ],
+            "tick_end": 84576
+        },
+        {
+            "tick_start": 84576,
+            "words": [
+                { "tick_word": 84719, "text": "1\\3 of it is not even sending :joy:" }
+            ],
+            "tick_end": 84720
+        },
+        {
+            "tick_start": 84720,
+            "words": [
+                { "tick_word": 84721, "text": "one\\-" },
+                { "tick_word": 84851, "text": "3 of it is not even sending :joy:" }
+            ],
+            "tick_end": 84852
+        },
+        {
+            "tick_start": 84852,
+            "words": [
+                { "tick_word": 84853, "text": "one third" },
+                { "tick_word": 84984, "text": "of" },
+                { "tick_word": 85068, "text": "it" },
+                { "tick_word": 85176, "text": "is" },
+                { "tick_word": 85260, "text": "not" },
+                { "tick_word": 85392, "text": "e-" },
+                { "tick_word": 85452, "text": "ven" },
+                { "tick_word": 85560, "text": "send-" },
+                { "tick_word": 85692, "text": "ing :joy:" }
+            ],
+            "tick_end": 86016
+        },
+        {
+            "tick_start": 86016,
+            "words": [
+                { "tick_word": 86111, "text": "\\\\ n" }
+            ],
+            "tick_end": 86112
+        },
+        {
+            "tick_start": 86112,
+            "words": [
+                { "tick_word": 86113, "text": "\\\\ na-" },
+                { "tick_word": 86208, "text": "no!" }
+            ],
+            "tick_end": 86304
+        },
+        {
+            "tick_start": 86304,
+            "words": [
+                { "tick_word": 86399, "text": "\\\\ $" }
+            ],
+            "tick_end": 86400
+        },
+        {
+            "tick_start": 86400,
+            "words": [
+                { "tick_word": 86401, "text": "\\\\ do-" },
+                { "tick_word": 86496, "text": "ru!" }
+            ],
+            "tick_end": 86592
+        },
+        {
+            "tick_start": 86592,
+            "words": [
+                { "tick_word": 86687, "text": "\\\\ F" }
+            ],
+            "tick_end": 86688
+        },
+        {
+            "tick_start": 86688,
+            "words": [
+                { "tick_word": 86689, "text": "\\\\ fa-" },
+                { "tick_word": 86784, "text": "ra-" },
+                { "tick_word": 86976, "text": "d-" },
+                { "tick_word": 87072, "text": "do!" }
+            ],
+            "tick_end": 87168
+        },
+        {
+            "tick_start": 87168,
+            "words": [
+                { "tick_word": 87263, "text": "\\\\ W" }
+            ],
+            "tick_end": 87264
+        },
+        {
+            "tick_start": 87264,
+            "words": [
+                { "tick_word": 87265, "text": "\\\\ wa-" },
+                { "tick_word": 87456, "text": "tto!" }
+            ],
+            "tick_end": 87552
+        },
+        {
+            "tick_start": 87552,
+            "words": [
+                { "tick_word": 87647, "text": "\\\\ d" }
+            ],
+            "tick_end": 87648
+        },
+        {
+            "tick_start": 87648,
+            "words": [
+                { "tick_word": 87649, "text": "\\\\ de-" },
+                { "tick_word": 87744, "text": "shi!" }
+            ],
+            "tick_end": 87840
+        },
+        {
+            "tick_start": 87840,
+            "words": [
+                { "tick_word": 87935, "text": "\\\\ rem" }
+            ],
+            "tick_end": 87936
+        },
+        {
+            "tick_start": 87936,
+            "words": [
+                { "tick_word": 87937, "text": "\\\\ re-" },
+                { "tick_word": 88032, "text": "mu!" }
+            ],
+            "tick_end": 88128
+        },
+        {
+            "tick_start": 88128,
+            "words": [
+                { "tick_word": 88223, "text": "\\\\ ct" }
+            ],
+            "tick_end": 88224
+        },
+        {
+            "tick_start": 88224,
+            "words": [
+                { "tick_word": 88225, "text": "\\\\ ka-" },
+                { "tick_word": 88320, "text": "ra-" },
+                { "tick_word": 88512, "text": "t-" },
+                { "tick_word": 88608, "text": "to!" }
+            ],
+            "tick_end": 88704
+        },
+        {
+            "tick_start": 88704,
+            "words": [
+                { "tick_word": 88799, "text": "\\\\ c" }
+            ],
+            "tick_end": 88800
+        },
+        {
+            "tick_start": 88800,
+            "words": [
+                { "tick_word": 88801, "text": "\\\\ san-" },
+                { "tick_word": 88992, "text": "chiimu!" }
+            ],
+            "tick_end": 89280
+        },
+        {
+            "tick_start": 89280,
+            "words": [
+                { "tick_word": 89471, "text": "* ** ***" }
+            ],
+            "tick_end": 89472
+        },
+        {
+            "tick_start": 89472,
+            "words": [
+                { "tick_word": 89473, "text": "(one," },
+                { "tick_word": 89855, "text": "** ***" }
+            ],
+            "tick_end": 89856
+        },
+        {
+            "tick_start": 89856,
+            "words": [
+                { "tick_word": 89857, "text": "(one, two," },
+                { "tick_word": 90239, "text": "***" }
+            ],
+            "tick_end": 90240
+        },
+        {
+            "tick_start": 90240,
+            "words": [
+                { "tick_word": 90241, "text": "(one, two, three)" }
+            ],
+            "tick_end": 90528
+        },
+        {
+            "tick_start": 90528,
+            "words": [
+                { "tick_word": 90624, "text": ":)" }
+            ],
+            "tick_end": 90816
+        },
+        {
+            "tick_start": 90816,
+            "words": [
+                { "tick_word": 91008, "text": "yay!" }
+            ],
+            "tick_end": 91392
+        },
+        {
+            "tick_start": 91392,
+            "words": [
+                { "tick_word": 91584, "text": "Bet-" },
+                { "tick_word": 91776, "text": "wee-" },
+                { "tick_word": 91968, "text": "n" },
+                { "tick_word": 92160, "text": "''LOVE''" },
+                { "tick_word": 92351, "text": "<=> ''love'', which one do you prefer?" }
+            ],
+            "tick_end": 92352
+        },
+        {
+            "tick_start": 92352,
+            "words": [
+                { "tick_word": 92353, "text": "Between ''LOVE'' and" },
+                { "tick_word": 92448, "text": "''love''," },
+                { "tick_word": 92640, "text": "which" },
+                { "tick_word": 92832, "text": "one" },
+                { "tick_word": 93024, "text": "do" },
+                { "tick_word": 93120, "text": "you" },
+                { "tick_word": 93216, "text": "pre-" },
+                { "tick_word": 93312, "text": "fer?" }
+            ],
+            "tick_end": 93408
+        },
+        {
+            "tick_start": 93408,
+            "words": [
+                { "tick_word": 93504, "text": "<font,size:''=99''>Too" },
+                { "tick_word": 93696, "text": "_small" },
+                { "tick_word": 93887, "text": ":x: a difference<\\font> at all" }
+            ],
+            "tick_end": 93888
+        },
+        {
+            "tick_start": 93888,
+            "words": [
+                { "tick_word": 93889, "text": "<font,size:''=99''>(Too" },
+                { "tick_word": 94080, "text": "_small!)" },
+                { "tick_word": 94271, "text": ":x: a difference<\\font> at all" }
+            ],
+            "tick_end": 94272
+        },
+        {
+            "tick_start": 94272,
+            "words": [
+                { "tick_word": 94273, "text": "<font,size:''=99''>Too small of" },
+                { "tick_word": 94368, "text": "_a" },
+                { "tick_word": 94464, "text": "dif-" },
+                { "tick_word": 94560, "text": "ference<\\font>" },
+                { "tick_word": 94656, "text": "at" },
+                { "tick_word": 94752, "text": "all" }
+            ],
+            "tick_end": 95040
+        },
+        {
+            "tick_start": 95040,
+            "words": [
+                { "tick_word": 95136, "text": "I’m" },
+                { "tick_word": 95232, "text": "real-" },
+                { "tick_word": 95328, "text": "ly" },
+                { "tick_word": 95423, "text": "worried about it all" }
+            ],
+            "tick_end": 95424
+        },
+        {
+            "tick_start": 95424,
+            "words": [
+                { "tick_word": 95425, "text": "I'm real-" },
+                { "tick_word": 95520, "text": "ly*2" },
+                { "tick_word": 95615, "text": "worried about it all" }
+            ],
+            "tick_end": 95616
+        },
+        {
+            "tick_start": 95616,
+            "words": [
+                { "tick_word": 95617, "text": "I'm real-" },
+                { "tick_word": 95712, "text": "ly*3" },
+                { "tick_word": 95807, "text": "worried about it all" }
+            ],
+            "tick_end": 95808
+        },
+        {
+            "tick_start": 95808,
+            "words": [
+                { "tick_word": 95809, "text": "I'm real-" },
+                { "tick_word": 95904, "text": "ly*4" },
+                { "tick_word": 96000, "text": "wor-" },
+                { "tick_word": 96192, "text": "ried" },
+                { "tick_word": 96384, "text": "about" },
+                { "tick_word": 96576, "text": "it" },
+                { "tick_word": 96768, "text": "all" }
+            ],
+            "tick_end": 96864
+        },
+        {
+            "tick_start": 96864,
+            "words": [
+                { "tick_word": 96959, "text": "(:wave: :wave: :wave: :wave:)" }
+            ],
+            "tick_end": 96960
+        },
+        {
+            "tick_start": 96960,
+            "words": [
+                { "tick_word": 96961, "text": "(hey!" },
+                { "tick_word": 97151, "text": "hey! hey! hey!)" }
+            ],
+            "tick_end": 97152
+        },
+        {
+            "tick_start": 97152,
+            "words": [
+                { "tick_word": 97153, "text": "(:wave:" },
+                { "tick_word": 97343, "text": ":wave: :wave: wave:)" }
+            ],
+            "tick_end": 97344
+        },
+        {
+            "tick_start": 97344,
+            "words": [
+                { "tick_word": 97345, "text": "(hey! hey!" },
+                { "tick_word": 97535, "text": "hey! hey!)" }
+            ],
+            "tick_end": 97536
+        },
+        {
+            "tick_start": 97536,
+            "words": [
+                { "tick_word": 97537, "text": "(:wave: :wave:" },
+                { "tick_word": 97727, "text": ":wave: :wave:)" }
+            ],
+            "tick_end": 97728
+        },
+        {
+            "tick_start": 97728,
+            "words": [
+                { "tick_word": 97729, "text": "Check" },
+                { "tick_word": 97920, "text": "out" },
+                { "tick_word": 98112, "text": "this" },
+                { "tick_word": 98303, "text": ":speak=no=evil: plan you're :smiling=imp:" }
+            ],
+            "tick_end": 98304
+        },
+        {
+            "tick_start": 98304,
+            "words": [
+                { "tick_word": 98305, "text": "Check out this un-" },
+                { "tick_word": 98496, "text": "speak=" },
+                { "tick_word": 98591, "text": "no=evil: plan you're :smiling=imp:" }
+            ],
+            "tick_end": 98592
+        },
+        {
+            "tick_start": 98592,
+            "words": [
+                { "tick_word": 98593, "text": "Check out this unspeaka=" },
+                { "tick_word": 98783, "text": "evil: plan you're :smiling=imp:" }
+            ],
+            "tick_end": 98784
+        },
+        {
+            "tick_start": 98784,
+            "words": [
+                { "tick_word": 98785, "text": "Check out this unspeakable" },
+                { "tick_word": 98976, "text": "plan" },
+                { "tick_word": 99168, "text": "you’re" },
+                { "tick_word": 99263, "text": ":smiling=imp:" }
+            ],
+            "tick_end": 99264
+        },
+        {
+            "tick_start": 99264,
+            "words": [
+                { "tick_word": 99265, "text": "Check out this unspeakable plan you're see-" },
+                { "tick_word": 99360, "text": "ing=" },
+                { "tick_word": 99455, "text": "imp:" }
+            ],
+            "tick_end": 99456
+        },
+        {
+            "tick_start": 99456,
+            "words": [
+                { "tick_word": 99457, "text": "Check out this unspeakable plan you're seeing for" }
+            ],
+            "tick_end": 99552
+        },
+        {
+            "tick_start": 99552,
+            "words": [
+                { "tick_word": 99648, "text": "This" },
+                { "tick_word": 99840, "text": ":earth=asia:" },
+                { "tick_word": 100031, "text": ", the :crown: of the world!" }
+            ],
+            "tick_end": 100032
+        },
+        {
+            "tick_start": 100032,
+            "words": [
+                { "tick_word": 100033, "text": "(This" },
+                { "tick_word": 100224, "text": "world!)-" },
+                { "tick_word": 100415, "text": ", the :crown: of the world!" }
+            ],
+            "tick_end": 100416
+        },
+        {
+            "tick_start": 100416,
+            "words": [
+                { "tick_word": 100417, "text": "This world, the" },
+                { "tick_word": 100607, "text": ":crown: of the world" }
+            ],
+            "tick_end": 100608
+        },
+        {
+            "tick_start": 100608,
+            "words": [
+                { "tick_word": 100609, "text": "This world, the best" },
+                { "tick_word": 100704, "text": "of" },
+                { "tick_word": 100800, "text": "the" },
+                { "tick_word": 100896, "text": "world!" }
+            ],
+            "tick_end": 101376
+        },
+        {
+            "tick_start": 101376,
+            "words": [
+                { "tick_word": 101568, "text": "I" },
+                { "tick_word": 101760, "text": "guess" },
+                { "tick_word": 101952, "text": "it" },
+                { "tick_word": 102144, "text": "has" },
+                { "tick_word": 102336, "text": "to" },
+                { "tick_word": 102528, "text": "come" },
+                { "tick_word": 102720, "text": "as-" },
+                { "tick_word": 102912, "text": "sem-" },
+                { "tick_word": 103200, "text": "bled" },
+                { "tick_word": 103488, "text": "in" },
+                { "tick_word": 103680, "text": "norm-" },
+                { "tick_word": 103872, "text": "al" },
+                { "tick_word": 103968, "text": "words" }
+            ],
+            "tick_end": 104160
+        },
+        {
+            "tick_start": 104160,
+            "words": [
+                { "tick_word": 104256, "text": "Cause" },
+                { "tick_word": 104351, "text": ":soon: I know what I'll do" }
+            ],
+            "tick_end": 104352
+        },
+        {
+            "tick_start": 104352,
+            "words": [
+                { "tick_word": 104353, "text": "Cause to-" },
+                { "tick_word": 104448, "text": "mor-" },
+                { "tick_word": 104544, "text": "row" },
+                { "tick_word": 104736, "text": "I" },
+                { "tick_word": 104928, "text": "know" },
+                { "tick_word": 105120, "text": "what" },
+                { "tick_word": 105312, "text": "I’ll" },
+                { "tick_word": 105408, "text": "do" }
+            ],
+            "tick_end": 105600
+        },
+        {
+            "tick_start": 105600,
+            "words": [
+                { "tick_word": 105792, "text": "I’ll" },
+                { "tick_word": 105888, "text": "be" },
+                { "tick_word": 105983, "text": ":mag:ing for these feelings soon" }
+            ],
+            "tick_end": 105984
+        },
+        {
+            "tick_start": 105984,
+            "words": [
+                { "tick_word": 105985, "text": "I'll be search-" },
+                { "tick_word": 106080, "text": "ing" },
+                { "tick_word": 106272, "text": "for" },
+                { "tick_word": 106464, "text": "these" },
+                { "tick_word": 106656, "text": "feel-" },
+                { "tick_word": 106848, "text": "ings" },
+                { "tick_word": 106944, "text": "soon" }
+            ],
+            "tick_end": 107136
+        },
+        {
+            "tick_start": 107136,
+            "words": [
+                { "tick_word": 107328, "text": "Let-" },
+                { "tick_word": 107424, "text": "’s" },
+                { "tick_word": 107520, "text": "run" },
+                { "tick_word": 107712, "text": "a-" },
+                { "tick_word": 107808, "text": "round" },
+                { "tick_word": 108000, "text": "the" },
+                { "tick_word": 108192, "text": "char-" },
+                { "tick_word": 108384, "text": "act-" },
+                { "tick_word": 108480, "text": "e-" },
+                { "tick_word": 108576, "text": "r" },
+                { "tick_word": 108672, "text": "code!" }
+            ],
+            "tick_end": 108768
+        },
+        {
+            "tick_start": 108768,
+            "words": [
+                { "tick_word": 108863, "text": ":person=running::dash:" }
+            ],
+            "tick_end": 108864
+        },
+        {
+            "tick_start": 108864,
+            "words": [
+                { "tick_word": 108865, "text": "(bew!)" }
+            ],
+            "tick_end": 109056
+        },
+        {
+            "tick_start": 109056,
+            "words": [
+                { "tick_word": 109176, "text": "\\* The" },
+                { "tick_word": 109260, "text": "fol-" },
+                { "tick_word": 109356, "text": "low-" },
+                { "tick_word": 109452, "text": "ing" },
+                { "tick_word": 109536, "text": "a-" },
+                { "tick_word": 109644, "text": "re-" },
+                { "tick_word": 109680, "text": "a" },
+                { "tick_word": 109800, "text": "is" },
+                { "tick_word": 109860, "text": "a" },
+                { "tick_word": 109967, "text": ":underage: zone!" }
+            ],
+            "tick_end": 109968
+        },
+        {
+            "tick_start": 109968,
+            "words": [
+                { "tick_word": 109969, "text": "\\* The following area is a dan-" },
+                { "tick_word": 110064, "text": "ger" },
+                { "tick_word": 110136, "text": "zone!" }
+            ],
+            "tick_end": 110400
+        },
+        {
+            "tick_start": 110400,
+            "words": [
+                { "tick_word": 110520, "text": "The" },
+                { "tick_word": 110555, "text": ":free: of the character code is up, ''prepare for a jump! :'" }
+            ],
+            "tick_end": 110556
+        },
+        {
+            "tick_start": 110556,
+            "words": [
+                { "tick_word": 110557, "text": "The out-" },
+                { "tick_word": 110628, "text": "side" },
+                { "tick_word": 110700, "text": "of" },
+                { "tick_word": 110748, "text": "the" },
+                { "tick_word": 110796, "text": "char-" },
+                { "tick_word": 110868, "text": "act-" },
+                { "tick_word": 110928, "text": "er" },
+                { "tick_word": 111000, "text": "code" },
+                { "tick_word": 111072, "text": "is" },
+                { "tick_word": 111120, "text": "up," },
+                { "tick_word": 111216, "text": "''pre-" },
+                { "tick_word": 111252, "text": "pare" },
+                { "tick_word": 111348, "text": "for" },
+                { "tick_word": 111444, "text": "a" },
+                { "tick_word": 111516, "text": "jump! :'" }
+            ],
+            "tick_end": 111744
+        },
+        {
+            "tick_start": 111744,
+            "words": [
+                { "tick_word": 111960, "text": "Fast-" },
+                { "tick_word": 112128, "text": "en" },
+                { "tick_word": 112200, "text": "your" },
+                { "tick_word": 112296, "text": "seat-" },
+                { "tick_word": 112452, "text": "belts" },
+                { "tick_word": 112632, "text": "tight," }
+            ],
+            "tick_end": 112752
+        },
+        {
+            "tick_start": 112752,
+            "words": [
+                { "tick_word": 112860, "text": "and" },
+                { "tick_word": 113052, "text": "fol-" },
+                { "tick_word": 113172, "text": "low" },
+                { "tick_word": 113352, "text": "my" },
+                { "tick_word": 113556, "text": "lead! :rocket: *-" },
+                { "tick_word": 113662, "text": "\\" }
+            ],
+            "tick_end": 113663
+        },
+        {
+            "tick_start": 113663,
+            "words": [
+                { "tick_word": 113664, "text": "low my lead! :rocket: *\\and fo-" },
+                { "tick_word": 113710, "text": "l" }
+            ],
+            "tick_end": 113711
+        },
+        {
+            "tick_start": 113711,
+            "words": [
+                { "tick_word": 113712, "text": "w my lead! :rocket: *\\and foll-" },
+                { "tick_word": 113758, "text": "o" }
+            ],
+            "tick_end": 113759
+        },
+        {
+            "tick_start": 113759,
+            "words": [
+                { "tick_word": 113760, "text": "ocket: *\\and follow my lead! :-" },
+                { "tick_word": 113806, "text": "r" }
+            ],
+            "tick_end": 113807
+        },
+        {
+            "tick_start": 113807,
+            "words": [
+                { "tick_word": 113808, "text": "d follow my lead! :rocket: *\\a-" },
+                { "tick_word": 113854, "text": "n" }
+            ],
+            "tick_end": 113855
+        },
+        {
+            "tick_start": 113855,
+            "words": [
+                { "tick_word": 113856, "text": "y lead! :rocket: *\\and follow" },
+                { "tick_word": 113902, "text": "m" }
+            ],
+            "tick_end": 113903
+        },
+        {
+            "tick_start": 113903,
+            "words": [
+                { "tick_word": 113904, "text": "et: *\\and follow my lead! :roc-" },
+                { "tick_word": 113950, "text": "k" }
+            ],
+            "tick_end": 113951
+        },
+        {
+            "tick_start": 113951,
+            "words": [
+                { "tick_word": 113952, "text": "??? ?????? ?? ????? ???????? ?-" },
+                { "tick_word": 114046, "text": "?" }
+            ],
+            "tick_end": 114047
+        },
+        {
+            "tick_start": 114047,
+            "words": [
+                { "tick_word": 114048, "text": "!!! !!!!!! !! !!!!! !!!!!!!! !-" },
+                { "tick_word": 114142, "text": "!" }
+            ],
+            "tick_end": 114143
+        },
+        {
+            "tick_start": 114143,
+            "words": [
+                { "tick_word": 114144, "text": "\\\\\\ \\\\\\\\\\\\ \\\\ \\\\\\\\\\ \\\\\\\\\\\\\\\\ \\-" },
+                { "tick_word": 114238, "text": "\\" }
+            ],
+            "tick_end": 114239
+        },
+        {
+            "tick_start": 114239,
+            "words": [
+                { "tick_word": 114240, "text": "=== ====== == ===== ======== =" },
+                { "tick_word": 114334, "text": "=" }
+            ],
+            "tick_end": 114335
+        },
+        {
+            "tick_start": 114335,
+            "words": [
+                { "tick_word": 114336, "text": "\\* :tekcor: !dael ym wollof dn-" },
+                { "tick_word": 114526, "text": "a" }
+            ],
+            "tick_end": 114527
+        },
+        {
+            "tick_start": 114527,
+            "words": [
+                { "tick_word": 114528, "text": "l ym wollof dna\\* :tekcor: !da-" },
+                { "tick_word": 114574, "text": "e" }
+            ],
+            "tick_end": 114575
+        },
+        {
+            "tick_start": 114575,
+            "words": [
+                { "tick_word": 114576, "text": ": !dael ym wollof dna\\* :tekco-" },
+                { "tick_word": 114622, "text": "r" }
+            ],
+            "tick_end": 114623
+        },
+        {
+            "tick_start": 114623,
+            "words": [
+                { "tick_word": 114624, "text": "ael ym wollof dna\\* :tekcor: !-" },
+                { "tick_word": 114670, "text": "d" }
+            ],
+            "tick_end": 114671
+        },
+        {
+            "tick_start": 114671,
+            "words": [
+                { "tick_word": 114672, "text": "a\\* :tekcor: !dael ym wollof d-" },
+                { "tick_word": 114718, "text": "n" }
+            ],
+            "tick_end": 114719
+        },
+        {
+            "tick_start": 114719,
+            "words": [
+                { "tick_word": 114720, "text": "and follow my lead! :rocket: *-" },
+                { "tick_word": 114814, "text": "\\" }
+            ],
+            "tick_end": 114815
+        },
+        {
+            "tick_start": 114815,
+            "words": [
+                { "tick_word": 114816, "text": "\\* :tekcor: !dael ym wollof dn-" },
+                { "tick_word": 114910, "text": "a" }
+            ],
+            "tick_end": 114911
+        },
+        {
+            "tick_start": 114911,
+            "words": [
+                { "tick_word": 114912, "text": "and follow my lead! :rocket: *-" },
+                { "tick_word": 115006, "text": "\\" }
+            ],
+            "tick_end": 115007
+        },
+        {
+            "tick_start": 115007,
+            "words": [
+                { "tick_word": 115008, "text": "\\\\" },
+                { "tick_word": 115055, "text": "SOLO < Ab4 > TIME <br> Solo time means trivia time! Enjoy!" }
+            ],
+            "tick_end": 115056
+        },
+        {
+            "tick_start": 115056,
+            "words": [
+                { "tick_word": 115057, "text": "\\\\" },
+                { "tick_word": 115103, "text": "SOLO < Bb4 > TIME <br> Solo time means trivia time! Enjoy!" }
+            ],
+            "tick_end": 115104
+        },
+        {
+            "tick_start": 115104,
+            "words": [
+                { "tick_word": 115105, "text": "\\\\" },
+                { "tick_word": 115151, "text": "SOLO < C=5 > TIME <br> Solo time means trivia time! Enjoy!" }
+            ],
+            "tick_end": 115152
+        },
+        {
+            "tick_start": 115152,
+            "words": [
+                { "tick_word": 115153, "text": "\\\\" },
+                { "tick_word": 115199, "text": "SOLO < Db5 > TIME <br> Solo time means trivia time! Enjoy!" }
+            ],
+            "tick_end": 115200
+        },
+        {
+            "tick_start": 115200,
+            "words": [
+                { "tick_word": 115201, "text": "\\\\ SOLO < Eb5 > TIME" },
+                { "tick_word": 115391, "text": "<br> I have listened to this song for about three and a half years without lyrics." }
+            ],
+            "tick_end": 115392
+        },
+        {
+            "tick_start": 115392,
+            "words": [
+                { "tick_word": 115393, "text": "\\\\" },
+                { "tick_word": 115487, "text": "SOLO < Ab4 > TIME <br> I have listened to this song for about three and a half years without lyrics." }
+            ],
+            "tick_end": 115488
+        },
+        {
+            "tick_start": 115488,
+            "words": [
+                { "tick_word": 115489, "text": "\\\\" },
+                { "tick_word": 115583, "text": "SOLO < F=5 > TIME <br> I have listened to this song for about three and a half years without lyrics." }
+            ],
+            "tick_end": 115584
+        },
+        {
+            "tick_start": 115584,
+            "words": [
+                { "tick_word": 115585, "text": "\\\\ SOLO < Ab4 > TIME" },
+                { "tick_word": 115679, "text": "<br> I have listened to this song for about three and a half years without lyrics." }
+            ],
+            "tick_end": 115680
+        },
+        {
+            "tick_start": 115680,
+            "words": [
+                { "tick_word": 115681, "text": "\\\\ SOLO < Eb5 > TIME" },
+                { "tick_word": 115775, "text": "<br> I have listened to this song for about three and a half years without lyrics." }
+            ],
+            "tick_end": 115776
+        },
+        {
+            "tick_start": 115776,
+            "words": [
+                { "tick_word": 115777, "text": "\\-" },
+                { "tick_word": 115872, "text": "\\" },
+                { "tick_word": 115919, "text": "SOLO < Eb5 > TIME <br> I have listened to this song for about three and a half years without lyrics." }
+            ],
+            "tick_end": 115920
+        },
+        {
+            "tick_start": 115920,
+            "words": [
+                { "tick_word": 115921, "text": "\\\\" },
+                { "tick_word": 115967, "text": "SOLO < Db5 > TIME <br> I have listened to this song for about three and a half years without lyrics." }
+            ],
+            "tick_end": 115968
+        },
+        {
+            "tick_start": 115968,
+            "words": [
+                { "tick_word": 115969, "text": "\\\\ SOLO < C=5 > TIME" },
+                { "tick_word": 116063, "text": "<br> I have listened to this song for about three and a half years without lyrics." }
+            ],
+            "tick_end": 116064
+        },
+        {
+            "tick_start": 116064,
+            "words": [
+                { "tick_word": 116065, "text": "\\\\ SOLO < Db5 > TIME" },
+                { "tick_word": 116159, "text": "<br> I have listened to this song for about three and a half years without lyrics." }
+            ],
+            "tick_end": 116160
+        },
+        {
+            "tick_start": 116160,
+            "words": [
+                { "tick_word": 116161, "text": "\\\\" },
+                { "tick_word": 116255, "text": "SOLO < C=5 > TIME <br> I have listened to this song for about three and a half years without lyrics." }
+            ],
+            "tick_end": 116256
+        },
+        {
+            "tick_start": 116256,
+            "words": [
+                { "tick_word": 116257, "text": "\\\\" },
+                { "tick_word": 116352, "text": "SOLO < Ab4 > TIME" },
+                { "tick_word": 116447, "text": "<br> I have listened to this song for about three and a half years without lyrics." }
+            ],
+            "tick_end": 116448
+        },
+        {
+            "tick_start": 116448,
+            "words": [
+                { "tick_word": 116449, "text": "\\\\ SOLO < C=4 > TIME" },
+                { "tick_word": 116495, "text": "<br> I have listened to this song for about three and a half years without lyrics." }
+            ],
+            "tick_end": 116496
+        },
+        {
+            "tick_start": 116496,
+            "words": [
+                { "tick_word": 116497, "text": "\\\\ SOLO < Db4 > TIME" },
+                { "tick_word": 116543, "text": "<br> I have listened to this song for about three and a half years without lyrics." }
+            ],
+            "tick_end": 116544
+        },
+        {
+            "tick_start": 116544,
+            "words": [
+                { "tick_word": 116545, "text": "\\\\" },
+                { "tick_word": 116591, "text": "SOLO < E=4 > TIME <br> I have listened to this song for about three and a half years without lyrics." }
+            ],
+            "tick_end": 116592
+        },
+        {
+            "tick_start": 116592,
+            "words": [
+                { "tick_word": 116593, "text": "\\\\" },
+                { "tick_word": 116639, "text": "SOLO < Ab4 > TIME <br> I have listened to this song for about three and a half years without lyrics." }
+            ],
+            "tick_end": 116640
+        },
+        {
+            "tick_start": 116640,
+            "words": [
+                { "tick_word": 116641, "text": "\\\\" },
+                { "tick_word": 116687, "text": "SOLO < Bb4 > TIME <br> I have listened to this song for about three and a half years without lyrics." }
+            ],
+            "tick_end": 116688
+        },
+        {
+            "tick_start": 116688,
+            "words": [
+                { "tick_word": 116689, "text": "\\\\ SOLO < B=4 > TIME" },
+                { "tick_word": 116735, "text": "<br> I have listened to this song for about three and a half years without lyrics." }
+            ],
+            "tick_end": 116736
+        },
+        {
+            "tick_start": 116736,
+            "words": [
+                { "tick_word": 116737, "text": "\\\\" },
+                { "tick_word": 116783, "text": "SOLO < C=5 > TIME <br> Camellia himself gave me the lyrics a year before I started the translation!" }
+            ],
+            "tick_end": 116784
+        },
+        {
+            "tick_start": 116784,
+            "words": [
+                { "tick_word": 116785, "text": "\\\\" },
+                { "tick_word": 116831, "text": "SOLO < Ab4 > TIME <br> Camellia himself gave me the lyrics a year before I started the translation!" }
+            ],
+            "tick_end": 116832
+        },
+        {
+            "tick_start": 116832,
+            "words": [
+                { "tick_word": 116833, "text": "\\\\ SOLO < Bb4 > TIME" },
+                { "tick_word": 116879, "text": "<br> Camellia himself gave me the lyrics a year before I started the translation!" }
+            ],
+            "tick_end": 116880
+        },
+        {
+            "tick_start": 116880,
+            "words": [
+                { "tick_word": 116881, "text": "\\\\ SOLO < Ab4 > TIME" },
+                { "tick_word": 116927, "text": "<br> Camellia himself gave me the lyrics a year before I started the translation!" }
+            ],
+            "tick_end": 116928
+        },
+        {
+            "tick_start": 116928,
+            "words": [
+                { "tick_word": 116929, "text": "\\\\" },
+                { "tick_word": 116975, "text": "SOLO < E=4 > TIME <br> Camellia himself gave me the lyrics a year before I started the translation!" }
+            ],
+            "tick_end": 116976
+        },
+        {
+            "tick_start": 116976,
+            "words": [
+                { "tick_word": 116977, "text": "\\\\" },
+                { "tick_word": 117023, "text": "SOLO < F=4 > TIME <br> Camellia himself gave me the lyrics a year before I started the translation!" }
+            ],
+            "tick_end": 117024
+        },
+        {
+            "tick_start": 117024,
+            "words": [
+                { "tick_word": 117025, "text": "\\\\" },
+                { "tick_word": 117071, "text": "SOLO < Ab4 > TIME <br> Camellia himself gave me the lyrics a year before I started the translation!" }
+            ],
+            "tick_end": 117072
+        },
+        {
+            "tick_start": 117072,
+            "words": [
+                { "tick_word": 117073, "text": "\\\\" },
+                { "tick_word": 117119, "text": "SOLO < Bb4 > TIME <br> Camellia himself gave me the lyrics a year before I started the translation!" }
+            ],
+            "tick_end": 117120
+        },
+        {
+            "tick_start": 117120,
+            "words": [
+                { "tick_word": 117121, "text": "\\\\ SOLO < Ab4 > TIME" },
+                { "tick_word": 117167, "text": "<br> Camellia himself gave me the lyrics a year before I started the translation!" }
+            ],
+            "tick_end": 117168
+        },
+        {
+            "tick_start": 117168,
+            "words": [
+                { "tick_word": 117169, "text": "\\\\ SOLO < D=4 > TIME" },
+                { "tick_word": 117215, "text": "<br> Camellia himself gave me the lyrics a year before I started the translation!" }
+            ],
+            "tick_end": 117216
+        },
+        {
+            "tick_start": 117216,
+            "words": [
+                { "tick_word": 117217, "text": "\\\\ SOLO < Eb4 > TIME" },
+                { "tick_word": 117263, "text": "<br> Camellia himself gave me the lyrics a year before I started the translation!" }
+            ],
+            "tick_end": 117264
+        },
+        {
+            "tick_start": 117264,
+            "words": [
+                { "tick_word": 117265, "text": "\\\\ SOLO < F=4 > TIME" },
+                { "tick_word": 117311, "text": "<br> Camellia himself gave me the lyrics a year before I started the translation!" }
+            ],
+            "tick_end": 117312
+        },
+        {
+            "tick_start": 117312,
+            "words": [
+                { "tick_word": 117313, "text": "\\\\" },
+                { "tick_word": 117359, "text": "SOLO < Ab4 > TIME <br> Camellia himself gave me the lyrics a year before I started the translation!" }
+            ],
+            "tick_end": 117360
+        },
+        {
+            "tick_start": 117360,
+            "words": [
+                { "tick_word": 117361, "text": "\\\\" },
+                { "tick_word": 117407, "text": "SOLO < G=4 > TIME <br> Camellia himself gave me the lyrics a year before I started the translation!" }
+            ],
+            "tick_end": 117408
+        },
+        {
+            "tick_start": 117408,
+            "words": [
+                { "tick_word": 117409, "text": "\\\\" },
+                { "tick_word": 117455, "text": "SOLO < Gb4 > TIME <br> Camellia himself gave me the lyrics a year before I started the translation!" }
+            ],
+            "tick_end": 117456
+        },
+        {
+            "tick_start": 117456,
+            "words": [
+                { "tick_word": 117457, "text": "\\\\" },
+                { "tick_word": 117503, "text": "SOLO < F=4 > TIME <br> Camellia himself gave me the lyrics a year before I started the translation!" }
+            ],
+            "tick_end": 117504
+        },
+        {
+            "tick_start": 117504,
+            "words": [
+                { "tick_word": 117505, "text": "\\\\ SOLO < Eb4 > TIME" },
+                { "tick_word": 117695, "text": "<br> Camellia himself gave me the lyrics a year before I started the translation!" }
+            ],
+            "tick_end": 117696
+        },
+        {
+            "tick_start": 117696,
+            "words": [
+                { "tick_word": 117697, "text": "\\\\" },
+                { "tick_word": 117791, "text": "SOLO < Db4 > TIME <br> Camellia himself gave me the lyrics a year before I started the translation!" }
+            ],
+            "tick_end": 117792
+        },
+        {
+            "tick_start": 117792,
+            "words": [
+                { "tick_word": 117793, "text": "\\\\" },
+                { "tick_word": 117888, "text": "SOLO < C=4 > TIME" },
+                { "tick_word": 117983, "text": "<br> Camellia himself gave me the lyrics a year before I started the translation!" }
+            ],
+            "tick_end": 117984
+        },
+        {
+            "tick_start": 117984,
+            "words": [
+                { "tick_word": 117985, "text": "\\\\" },
+                { "tick_word": 118031, "text": "SOLO < Eb5 > TIME <br> Camellia himself gave me the lyrics a year before I started the translation!" }
+            ],
+            "tick_end": 118032
+        },
+        {
+            "tick_start": 118032,
+            "words": [
+                { "tick_word": 118033, "text": "\\\\ SOLO < Db5 > TIME" },
+                { "tick_word": 118079, "text": "<br> Camellia himself gave me the lyrics a year before I started the translation!" }
+            ],
+            "tick_end": 118080
+        },
+        {
+            "tick_start": 118080,
+            "words": [
+                { "tick_word": 118081, "text": "\\\\" },
+                { "tick_word": 118127, "text": "SOLO < C=5 > TIME <br> Camellia himself gave me the lyrics a year before I started the translation!" }
+            ],
+            "tick_end": 118128
+        },
+        {
+            "tick_start": 118128,
+            "words": [
+                { "tick_word": 118129, "text": "\\\\" },
+                { "tick_word": 118175, "text": "SOLO < Ab4 > TIME <br> Camellia himself gave me the lyrics a year before I started the translation!" }
+            ],
+            "tick_end": 118176
+        },
+        {
+            "tick_start": 118176,
+            "words": [
+                { "tick_word": 118177, "text": "\\\\" },
+                { "tick_word": 118223, "text": "SOLO < Bb4 > TIME <br> Camellia himself gave me the lyrics a year before I started the translation!" }
+            ],
+            "tick_end": 118224
+        },
+        {
+            "tick_start": 118224,
+            "words": [
+                { "tick_word": 118225, "text": "\\\\" },
+                { "tick_word": 118271, "text": "SOLO < C=5 > TIME <br> Camellia himself gave me the lyrics a year before I started the translation!" }
+            ],
+            "tick_end": 118272
+        },
+        {
+            "tick_start": 118272,
+            "words": [
+                { "tick_word": 118273, "text": "\\\\ SOLO < Db5 > TIME" },
+                { "tick_word": 118367, "text": "<br> About 9 hours were spent putting the lyric events into this chart." }
+            ],
+            "tick_end": 118368
+        },
+        {
+            "tick_start": 118368,
+            "words": [
+                { "tick_word": 118369, "text": "\\\\ SOLO < F=4 > TIME" },
+                { "tick_word": 118463, "text": "<br> About 9 hours were spent putting the lyric events into this chart." }
+            ],
+            "tick_end": 118464
+        },
+        {
+            "tick_start": 118464,
+            "words": [
+                { "tick_word": 118465, "text": "\\\\" },
+                { "tick_word": 118559, "text": "SOLO < Ab4 > TIME <br> About 9 hours were spent putting the lyric events into this chart." }
+            ],
+            "tick_end": 118560
+        },
+        {
+            "tick_start": 118560,
+            "words": [
+                { "tick_word": 118561, "text": "\\\\" },
+                { "tick_word": 118655, "text": "SOLO < Db5 > TIME <br> About 9 hours were spent putting the lyric events into this chart." }
+            ],
+            "tick_end": 118656
+        },
+        {
+            "tick_start": 118656,
+            "words": [
+                { "tick_word": 118657, "text": "\\\\ SOLO < F=4 > TIME" },
+                { "tick_word": 118751, "text": "<br> About 9 hours were spent putting the lyric events into this chart." }
+            ],
+            "tick_end": 118752
+        },
+        {
+            "tick_start": 118752,
+            "words": [
+                { "tick_word": 118753, "text": "\\\\ SOLO < Ab4 > TIME" },
+                { "tick_word": 118847, "text": "<br> About 9 hours were spent putting the lyric events into this chart." }
+            ],
+            "tick_end": 118848
+        },
+        {
+            "tick_start": 118848,
+            "words": [
+                { "tick_word": 118849, "text": "\\\\" },
+                { "tick_word": 118943, "text": "SOLO < Bb4 > TIME <br> About 9 hours were spent putting the lyric events into this chart." }
+            ],
+            "tick_end": 118944
+        },
+        {
+            "tick_start": 118944,
+            "words": [
+                { "tick_word": 118945, "text": "\\\\" },
+                { "tick_word": 119039, "text": "SOLO < B=4 > TIME <br> About 9 hours were spent putting the lyric events into this chart." }
+            ],
+            "tick_end": 119040
+        },
+        {
+            "tick_start": 119040,
+            "words": [
+                { "tick_word": 119041, "text": "\\\\ SOLO < C=5 > TIME" },
+                { "tick_word": 119135, "text": "<br> About 9 hours were spent putting the lyric events into this chart." }
+            ],
+            "tick_end": 119136
+        },
+        {
+            "tick_start": 119136,
+            "words": [
+                { "tick_word": 119137, "text": "\\\\ SOLO < Eb4 > TIME" },
+                { "tick_word": 119231, "text": "<br> About 9 hours were spent putting the lyric events into this chart." }
+            ],
+            "tick_end": 119232
+        },
+        {
+            "tick_start": 119232,
+            "words": [
+                { "tick_word": 119233, "text": "\\\\" },
+                { "tick_word": 119327, "text": "SOLO < G=4 > TIME <br> About 9 hours were spent putting the lyric events into this chart." }
+            ],
+            "tick_end": 119328
+        },
+        {
+            "tick_start": 119328,
+            "words": [
+                { "tick_word": 119329, "text": "\\\\" },
+                { "tick_word": 119423, "text": "SOLO < Bb4 > TIME <br> About 9 hours were spent putting the lyric events into this chart." }
+            ],
+            "tick_end": 119424
+        },
+        {
+            "tick_start": 119424,
+            "words": [
+                { "tick_word": 119425, "text": "\\\\ SOLO < Bb3 > TIME" },
+                { "tick_word": 119471, "text": "<br> About 9 hours were spent putting the lyric events into this chart." }
+            ],
+            "tick_end": 119472
+        },
+        {
+            "tick_start": 119472,
+            "words": [
+                { "tick_word": 119473, "text": "\\\\ SOLO < Eb4 > TIME" },
+                { "tick_word": 119519, "text": "<br> About 9 hours were spent putting the lyric events into this chart." }
+            ],
+            "tick_end": 119520
+        },
+        {
+            "tick_start": 119520,
+            "words": [
+                { "tick_word": 119521, "text": "\\\\ SOLO < F=4 > TIME" },
+                { "tick_word": 119567, "text": "<br> About 9 hours were spent putting the lyric events into this chart." }
+            ],
+            "tick_end": 119568
+        },
+        {
+            "tick_start": 119568,
+            "words": [
+                { "tick_word": 119569, "text": "\\\\ SOLO < Gb4 > TIME" },
+                { "tick_word": 119615, "text": "<br> About 9 hours were spent putting the lyric events into this chart." }
+            ],
+            "tick_end": 119616
+        },
+        {
+            "tick_start": 119616,
+            "words": [
+                { "tick_word": 119617, "text": "\\\\" },
+                { "tick_word": 119711, "text": "SOLO < G=4 > TIME <br> About 9 hours were spent putting the lyric events into this chart." }
+            ],
+            "tick_end": 119712
+        },
+        {
+            "tick_start": 119712,
+            "words": [
+                { "tick_word": 119713, "text": "\\\\" },
+                { "tick_word": 119760, "text": "SOLO < Eb4 > TIME" },
+                { "tick_word": 119807, "text": "<br> About 9 hours were spent putting the lyric events into this chart." }
+            ],
+            "tick_end": 119808
+        },
+        {
+            "tick_start": 119808,
+            "words": [
+                { "tick_word": 119809, "text": "\\\\" },
+                { "tick_word": 119904, "text": "SOLO < C=5 > TIME" },
+                { "tick_word": 119999, "text": "<br> That's not counting the 4 hours spent on translating the lyrics themselves!" }
+            ],
+            "tick_end": 120000
+        },
+        {
+            "tick_start": 120000,
+            "words": [
+                { "tick_word": 120001, "text": "\\\\" },
+                { "tick_word": 120095, "text": "SOLO < C=5 > TIME <br> That's not counting the 4 hours spent on translating the lyrics themselves!" }
+            ],
+            "tick_end": 120096
+        },
+        {
+            "tick_start": 120096,
+            "words": [
+                { "tick_word": 120097, "text": "\\\\" },
+                { "tick_word": 120192, "text": "SOLO < Ab5 > TIME" },
+                { "tick_word": 120383, "text": "<br> That's not counting the 4 hours spent on translating the lyrics themselves!" }
+            ],
+            "tick_end": 120384
+        },
+        {
+            "tick_start": 120384,
+            "words": [
+                { "tick_word": 120385, "text": "\\\\" },
+                { "tick_word": 120575, "text": "SOLO < Ab5 > TIME <br> That's not counting the 4 hours spent on translating the lyrics themselves!" }
+            ],
+            "tick_end": 120576
+        },
+        {
+            "tick_start": 120576,
+            "words": [
+                { "tick_word": 120577, "text": "\\\\ SOLO < D=7 > TIME" },
+                { "tick_word": 120671, "text": "<br> That's not counting the 4 hours spent on translating the lyrics themselves!" }
+            ],
+            "tick_end": 120672
+        },
+        {
+            "tick_start": 120672,
+            "words": [
+                { "tick_word": 120673, "text": "\\\\ SOLO < O=8 > TIME" },
+                { "tick_word": 120719, "text": "<br> That's not counting the 4 hours spent on translating the lyrics themselves!" }
+            ],
+            "tick_end": 120720
+        },
+        {
+            "tick_start": 120720,
+            "words": [
+                { "tick_word": 120721, "text": "\\\\ SOLO < N=9 > TIME" },
+                { "tick_word": 120767, "text": "<br> That's not counting the 4 hours spent on translating the lyrics themselves!" }
+            ],
+            "tick_end": 120768
+        },
+        {
+            "tick_start": 120768,
+            "words": [
+                { "tick_word": 120769, "text": "\\\\" },
+                { "tick_word": 120815, "text": "SOLO < O=0= > TIME <br> That's not counting the 4 hours spent on translating the lyrics themselves!" }
+            ],
+            "tick_end": 120816
+        },
+        {
+            "tick_start": 120816,
+            "words": [
+                { "tick_word": 120817, "text": "\\\\" },
+                { "tick_word": 120863, "text": "SOLO < T=6 > TIME <br> That's not counting the 4 hours spent on translating the lyrics themselves!" }
+            ],
+            "tick_end": 120864
+        },
+        {
+            "tick_start": 120864,
+            "words": [
+                { "tick_word": 120865, "text": "\\\\" },
+                { "tick_word": 120959, "text": "SOLO < M=3 > TIME <br> That's not counting the 4 hours spent on translating the lyrics themselves!" }
+            ],
+            "tick_end": 120960
+        },
+        {
+            "tick_start": 120960,
+            "words": [
+                { "tick_word": 120961, "text": "\\\\ SOLO < I=1 > TIME" },
+                { "tick_word": 121055, "text": "<br> That's not counting the 4 hours spent on translating the lyrics themselves!" }
+            ],
+            "tick_end": 121056
+        },
+        {
+            "tick_start": 121056,
+            "words": [
+                { "tick_word": 121057, "text": "\\\\" },
+                { "tick_word": 121151, "text": "SOLO < S=4 > TIME <br> That's not counting the 4 hours spent on translating the lyrics themselves!" }
+            ],
+            "tick_end": 121152
+        },
+        {
+            "tick_start": 121152,
+            "words": [
+                { "tick_word": 121153, "text": "\\\\ SOLO < S=5 > TIME" },
+                { "tick_word": 121343, "text": "<br> That's not counting the 4 hours spent on translating the lyrics themselves!" }
+            ],
+            "tick_end": 121344
+        },
+        {
+            "tick_start": 121344,
+            "words": [
+                { "tick_word": 121345, "text": "\\\\" },
+                { "tick_word": 121391, "text": "SOLO < E=4 > TIME <br> Compare that to just one hour spent on the actual chart itself." }
+            ],
+            "tick_end": 121392
+        },
+        {
+            "tick_start": 121392,
+            "words": [
+                { "tick_word": 121393, "text": "\\\\" },
+                { "tick_word": 121439, "text": "SOLO < F=4 > TIME <br> Compare that to just one hour spent on the actual chart itself." }
+            ],
+            "tick_end": 121440
+        },
+        {
+            "tick_start": 121440,
+            "words": [
+                { "tick_word": 121441, "text": "\\\\" },
+                { "tick_word": 121487, "text": "SOLO < Gb4 > TIME <br> Compare that to just one hour spent on the actual chart itself." }
+            ],
+            "tick_end": 121488
+        },
+        {
+            "tick_start": 121488,
+            "words": [
+                { "tick_word": 121489, "text": "\\\\" },
+                { "tick_word": 121535, "text": "SOLO < G=4 > TIME <br> Compare that to just one hour spent on the actual chart itself." }
+            ],
+            "tick_end": 121536
+        },
+        {
+            "tick_start": 121536,
+            "words": [
+                { "tick_word": 121537, "text": "\\\\ SOLO < F=4 > TIME" },
+                { "tick_word": 121583, "text": "<br> Compare that to just one hour spent on the actual chart itself." }
+            ],
+            "tick_end": 121584
+        },
+        {
+            "tick_start": 121584,
+            "words": [
+                { "tick_word": 121585, "text": "\\\\ SOLO < Gb4 > TIME" },
+                { "tick_word": 121631, "text": "<br> Compare that to just one hour spent on the actual chart itself." }
+            ],
+            "tick_end": 121632
+        },
+        {
+            "tick_start": 121632,
+            "words": [
+                { "tick_word": 121633, "text": "\\\\ SOLO < G=4 > TIME" },
+                { "tick_word": 121679, "text": "<br> Compare that to just one hour spent on the actual chart itself." }
+            ],
+            "tick_end": 121680
+        },
+        {
+            "tick_start": 121680,
+            "words": [
+                { "tick_word": 121681, "text": "\\\\ SOLO < Ab4 > TIME" },
+                { "tick_word": 121727, "text": "<br> Compare that to just one hour spent on the actual chart itself." }
+            ],
+            "tick_end": 121728
+        },
+        {
+            "tick_start": 121728,
+            "words": [
+                { "tick_word": 121729, "text": "\\\\" },
+                { "tick_word": 121775, "text": "SOLO < Gb4 > TIME <br> Compare that to just one hour spent on the actual chart itself." }
+            ],
+            "tick_end": 121776
+        },
+        {
+            "tick_start": 121776,
+            "words": [
+                { "tick_word": 121777, "text": "\\\\" },
+                { "tick_word": 121823, "text": "SOLO < G=4 > TIME <br> Compare that to just one hour spent on the actual chart itself." }
+            ],
+            "tick_end": 121824
+        },
+        {
+            "tick_start": 121824,
+            "words": [
+                { "tick_word": 121825, "text": "\\\\" },
+                { "tick_word": 121871, "text": "SOLO < A=4 > TIME <br> Compare that to just one hour spent on the actual chart itself." }
+            ],
+            "tick_end": 121872
+        },
+        {
+            "tick_start": 121872,
+            "words": [
+                { "tick_word": 121873, "text": "\\\\" },
+                { "tick_word": 121919, "text": "SOLO < B=4 > TIME <br> Compare that to just one hour spent on the actual chart itself." }
+            ],
+            "tick_end": 121920
+        },
+        {
+            "tick_start": 121920,
+            "words": [
+                { "tick_word": 121921, "text": "\\\\ SOLO < Ab4 > TIME" },
+                { "tick_word": 121967, "text": "<br> Compare that to just one hour spent on the actual chart itself." }
+            ],
+            "tick_end": 121968
+        },
+        {
+            "tick_start": 121968,
+            "words": [
+                { "tick_word": 121969, "text": "\\\\ SOLO < A=4 > TIME" },
+                { "tick_word": 122015, "text": "<br> Compare that to just one hour spent on the actual chart itself." }
+            ],
+            "tick_end": 122016
+        },
+        {
+            "tick_start": 122016,
+            "words": [
+                { "tick_word": 122017, "text": "\\\\ SOLO < Bb4 > TIME" },
+                { "tick_word": 122063, "text": "<br> Compare that to just one hour spent on the actual chart itself." }
+            ],
+            "tick_end": 122064
+        },
+        {
+            "tick_start": 122064,
+            "words": [
+                { "tick_word": 122065, "text": "\\\\ SOLO < B=4 > TIME" },
+                { "tick_word": 122111, "text": "<br> Compare that to just one hour spent on the actual chart itself." }
+            ],
+            "tick_end": 122112
+        },
+        {
+            "tick_start": 122112,
+            "words": [
+                { "tick_word": 122113, "text": "\\\\" },
+                { "tick_word": 122159, "text": "SOLO < Ab4 > TIME <br> Compare that to just one hour spent on the actual chart itself." }
+            ],
+            "tick_end": 122160
+        },
+        {
+            "tick_start": 122160,
+            "words": [
+                { "tick_word": 122161, "text": "\\\\" },
+                { "tick_word": 122207, "text": "SOLO < Bb4 > TIME <br> Compare that to just one hour spent on the actual chart itself." }
+            ],
+            "tick_end": 122208
+        },
+        {
+            "tick_start": 122208,
+            "words": [
+                { "tick_word": 122209, "text": "\\\\" },
+                { "tick_word": 122255, "text": "SOLO < B=4 > TIME <br> Compare that to just one hour spent on the actual chart itself." }
+            ],
+            "tick_end": 122256
+        },
+        {
+            "tick_start": 122256,
+            "words": [
+                { "tick_word": 122257, "text": "\\\\" },
+                { "tick_word": 122303, "text": "SOLO < Db5 > TIME <br> Compare that to just one hour spent on the actual chart itself." }
+            ],
+            "tick_end": 122304
+        },
+        {
+            "tick_start": 122304,
+            "words": [
+                { "tick_word": 122305, "text": "\\\\ SOLO < A=4 > TIME" },
+                { "tick_word": 122351, "text": "<br> Compare that to just one hour spent on the actual chart itself." }
+            ],
+            "tick_end": 122352
+        },
+        {
+            "tick_start": 122352,
+            "words": [
+                { "tick_word": 122353, "text": "\\\\ SOLO < Bb4 > TIME" },
+                { "tick_word": 122399, "text": "<br> Compare that to just one hour spent on the actual chart itself." }
+            ],
+            "tick_end": 122400
+        },
+        {
+            "tick_start": 122400,
+            "words": [
+                { "tick_word": 122401, "text": "\\\\ SOLO < C=5 > TIME" },
+                { "tick_word": 122447, "text": "<br> Compare that to just one hour spent on the actual chart itself." }
+            ],
+            "tick_end": 122448
+        },
+        {
+            "tick_start": 122448,
+            "words": [
+                { "tick_word": 122449, "text": "\\\\ SOLO < Db5 > TIME" },
+                { "tick_word": 122495, "text": "<br> Compare that to just one hour spent on the actual chart itself." }
+            ],
+            "tick_end": 122496
+        },
+        {
+            "tick_start": 122496,
+            "words": [
+                { "tick_word": 122497, "text": "\\\\" },
+                { "tick_word": 122543, "text": "SOLO < B=4 > TIME <br> Compare that to just one hour spent on the actual chart itself." }
+            ],
+            "tick_end": 122544
+        },
+        {
+            "tick_start": 122544,
+            "words": [
+                { "tick_word": 122545, "text": "\\\\" },
+                { "tick_word": 122591, "text": "SOLO < C=5 > TIME <br> Compare that to just one hour spent on the actual chart itself." }
+            ],
+            "tick_end": 122592
+        },
+        {
+            "tick_start": 122592,
+            "words": [
+                { "tick_word": 122593, "text": "\\\\" },
+                { "tick_word": 122639, "text": "SOLO < Db5 > TIME <br> Compare that to just one hour spent on the actual chart itself." }
+            ],
+            "tick_end": 122640
+        },
+        {
+            "tick_start": 122640,
+            "words": [
+                { "tick_word": 122641, "text": "\\\\" },
+                { "tick_word": 122687, "text": "SOLO < Eb5 > TIME <br> Compare that to just one hour spent on the actual chart itself." }
+            ],
+            "tick_end": 122688
+        },
+        {
+            "tick_start": 122688,
+            "words": [
+                { "tick_word": 122689, "text": "\\\\ SOLO < C=5 > TIME" },
+                { "tick_word": 122735, "text": "<br> Compare that to just one hour spent on the actual chart itself." }
+            ],
+            "tick_end": 122736
+        },
+        {
+            "tick_start": 122736,
+            "words": [
+                { "tick_word": 122737, "text": "\\\\ SOLO < Db5 > TIME" },
+                { "tick_word": 122783, "text": "<br> Compare that to just one hour spent on the actual chart itself." }
+            ],
+            "tick_end": 122784
+        },
+        {
+            "tick_start": 122784,
+            "words": [
+                { "tick_word": 122785, "text": "\\\\ SOLO < Eb5 > TIME" },
+                { "tick_word": 122831, "text": "<br> Compare that to just one hour spent on the actual chart itself." }
+            ],
+            "tick_end": 122832
+        },
+        {
+            "tick_start": 122832,
+            "words": [
+                { "tick_word": 122833, "text": "\\\\" },
+                { "tick_word": 122879, "text": "SOLO < F=5 > TIME <br> Compare that to just one hour spent on the actual chart itself." }
+            ],
+            "tick_end": 122880
+        },
+        {
+            "tick_start": 122880,
+            "words": [
+                { "tick_word": 122881, "text": "\\\\ SOLO < G=5 > TIME" },
+                { "tick_word": 122975, "text": "<br> There are exactly 1507 lyric events in this chart alone." }
+            ],
+            "tick_end": 122976
+        },
+        {
+            "tick_start": 122976,
+            "words": [
+                { "tick_word": 122977, "text": "\\\\" },
+                { "tick_word": 123071, "text": "SOLO < Eb5 > TIME <br> There are exactly 1507 lyric events in this chart alone." }
+            ],
+            "tick_end": 123072
+        },
+        {
+            "tick_start": 123072,
+            "words": [
+                { "tick_word": 123073, "text": "\\\\ SOLO < Bb5 > TIME" },
+                { "tick_word": 123167, "text": "<br> There are exactly 1507 lyric events in this chart alone." }
+            ],
+            "tick_end": 123168
+        },
+        {
+            "tick_start": 123168,
+            "words": [
+                { "tick_word": 123169, "text": "\\\\ SOLO < Ab5 > TIME" },
+                { "tick_word": 123263, "text": "<br> There are exactly 1507 lyric events in this chart alone." }
+            ],
+            "tick_end": 123264
+        },
+        {
+            "tick_start": 123264,
+            "words": [
+                { "tick_word": 123265, "text": "\\\\" },
+                { "tick_word": 123359, "text": "SOLO < Ab5 > TIME <br> There are exactly 1507 lyric events in this chart alone." }
+            ],
+            "tick_end": 123360
+        },
+        {
+            "tick_start": 123360,
+            "words": [
+                { "tick_word": 123361, "text": "\\\\" },
+                { "tick_word": 123455, "text": "SOLO < Db6 > TIME <br> There are exactly 1507 lyric events in this chart alone." }
+            ],
+            "tick_end": 123456
+        },
+        {
+            "tick_start": 123456,
+            "words": [
+                { "tick_word": 123457, "text": "\\\\ SOLO < C=6 > TIME" },
+                { "tick_word": 123551, "text": "<br> There are exactly 1507 lyric events in this chart alone." }
+            ],
+            "tick_end": 123552
+        },
+        {
+            "tick_start": 123552,
+            "words": [
+                { "tick_word": 123553, "text": "\\\\ SOLO < Ab5 > TIME" },
+                { "tick_word": 123647, "text": "<br> There are exactly 1507 lyric events in this chart alone." }
+            ],
+            "tick_end": 123648
+        },
+        {
+            "tick_start": 123648,
+            "words": [
+                { "tick_word": 123649, "text": "\\\\" },
+                { "tick_word": 123695, "text": "SOLO < Db6 > TIME <br> There are exactly 1507 lyric events in this chart alone." }
+            ],
+            "tick_end": 123696
+        },
+        {
+            "tick_start": 123696,
+            "words": [
+                { "tick_word": 123697, "text": "\\\\" },
+                { "tick_word": 123839, "text": "SOLO < Eb6 > TIME <br> There are exactly 1507 lyric events in this chart alone." }
+            ],
+            "tick_end": 123840
+        },
+        {
+            "tick_start": 123840,
+            "words": [
+                { "tick_word": 123841, "text": "\\\\ SOLO < Db6 > TIME" },
+                { "tick_word": 123935, "text": "<br> There are exactly 1507 lyric events in this chart alone." }
+            ],
+            "tick_end": 123936
+        },
+        {
+            "tick_start": 123936,
+            "words": [
+                { "tick_word": 123937, "text": "\\\\ SOLO < C=6 > TIME" },
+                { "tick_word": 124031, "text": "<br> There are exactly 1507 lyric events in this chart alone." }
+            ],
+            "tick_end": 124032
+        },
+        {
+            "tick_start": 124032,
+            "words": [
+                { "tick_word": 124033, "text": "\\\\" },
+                { "tick_word": 124127, "text": "SOLO < C=6 > TIME <br> There are exactly 1507 lyric events in this chart alone." }
+            ],
+            "tick_end": 124128
+        },
+        {
+            "tick_start": 124128,
+            "words": [
+                { "tick_word": 124129, "text": "\\\\ SOLO < Ab5 > TIME" },
+                { "tick_word": 124223, "text": "<br> There are exactly 1507 lyric events in this chart alone." }
+            ],
+            "tick_end": 124224
+        },
+        {
+            "tick_start": 124224,
+            "words": [
+                { "tick_word": 124225, "text": "\\\\" },
+                { "tick_word": 124415, "text": "SOLO < Ab5 > TIME <br> There are exactly 1507 lyric events in this chart alone." }
+            ],
+            "tick_end": 124416
+        },
+        {
+            "tick_start": 124416,
+            "words": [
+                { "tick_word": 124417, "text": "\\\\" },
+                { "tick_word": 124511, "text": "SOLO < Ab5 > TIME <br> They all span across a total of 573 phrases!" }
+            ],
+            "tick_end": 124512
+        },
+        {
+            "tick_start": 124512,
+            "words": [
+                { "tick_word": 124513, "text": "\\\\ SOLO < Ab3 > TIME" },
+                { "tick_word": 124559, "text": "<br> They all span across a total of 573 phrases!" }
+            ],
+            "tick_end": 124560
+        },
+        {
+            "tick_start": 124560,
+            "words": [
+                { "tick_word": 124561, "text": "\\\\ SOLO < Bb3 > TIME" },
+                { "tick_word": 124607, "text": "<br> They all span across a total of 573 phrases!" }
+            ],
+            "tick_end": 124608
+        },
+        {
+            "tick_start": 124608,
+            "words": [
+                { "tick_word": 124609, "text": "\\\\" },
+                { "tick_word": 124703, "text": "SOLO < C=4 > TIME <br> They all span across a total of 573 phrases!" }
+            ],
+            "tick_end": 124704
+        },
+        {
+            "tick_start": 124704,
+            "words": [
+                { "tick_word": 124705, "text": "\\\\" },
+                { "tick_word": 124751, "text": "SOLO < Ab3 > TIME <br> They all span across a total of 573 phrases!" }
+            ],
+            "tick_end": 124752
+        },
+        {
+            "tick_start": 124752,
+            "words": [
+                { "tick_word": 124753, "text": "\\\\" },
+                { "tick_word": 124799, "text": "SOLO < Db3 > TIME <br> They all span across a total of 573 phrases!" }
+            ],
+            "tick_end": 124800
+        },
+        {
+            "tick_start": 124800,
+            "words": [
+                { "tick_word": 124801, "text": "\\\\ SOLO < C=4 > TIME" },
+                { "tick_word": 124895, "text": "<br> They all span across a total of 573 phrases!" }
+            ],
+            "tick_end": 124896
+        },
+        {
+            "tick_start": 124896,
+            "words": [
+                { "tick_word": 124897, "text": "\\\\ SOLO < Bb3 > TIME" },
+                { "tick_word": 124943, "text": "<br> They all span across a total of 573 phrases!" }
+            ],
+            "tick_end": 124944
+        },
+        {
+            "tick_start": 124944,
+            "words": [
+                { "tick_word": 124945, "text": "\\\\ SOLO < C=4 > TIME" },
+                { "tick_word": 124991, "text": "<br> They all span across a total of 573 phrases!" }
+            ],
+            "tick_end": 124992
+        },
+        {
+            "tick_start": 124992,
+            "words": [
+                { "tick_word": 124993, "text": "\\\\" },
+                { "tick_word": 125087, "text": "SOLO < Db4 > TIME <br> They all span across a total of 573 phrases!" }
+            ],
+            "tick_end": 125088
+        },
+        {
+            "tick_start": 125088,
+            "words": [
+                { "tick_word": 125089, "text": "\\\\" },
+                { "tick_word": 125135, "text": "SOLO < Bb3 > TIME <br> They all span across a total of 573 phrases!" }
+            ],
+            "tick_end": 125136
+        },
+        {
+            "tick_start": 125136,
+            "words": [
+                { "tick_word": 125137, "text": "\\\\" },
+                { "tick_word": 125183, "text": "SOLO < F=3 > TIME <br> They all span across a total of 573 phrases!" }
+            ],
+            "tick_end": 125184
+        },
+        {
+            "tick_start": 125184,
+            "words": [
+                { "tick_word": 125185, "text": "\\\\ SOLO < E=4 > TIME" },
+                { "tick_word": 125279, "text": "<br> They all span across a total of 573 phrases!" }
+            ],
+            "tick_end": 125280
+        },
+        {
+            "tick_start": 125280,
+            "words": [
+                { "tick_word": 125281, "text": "\\\\ SOLO < C=4 > TIME" },
+                { "tick_word": 125327, "text": "<br> They all span across a total of 573 phrases!" }
+            ],
+            "tick_end": 125328
+        },
+        {
+            "tick_start": 125328,
+            "words": [
+                { "tick_word": 125329, "text": "\\\\ SOLO < D=4 > TIME" },
+                { "tick_word": 125375, "text": "<br> They all span across a total of 573 phrases!" }
+            ],
+            "tick_end": 125376
+        },
+        {
+            "tick_start": 125376,
+            "words": [
+                { "tick_word": 125377, "text": "\\\\" },
+                { "tick_word": 125471, "text": "SOLO < F=4 > TIME <br> They all span across a total of 573 phrases!" }
+            ],
+            "tick_end": 125472
+        },
+        {
+            "tick_start": 125472,
+            "words": [
+                { "tick_word": 125473, "text": "\\\\" },
+                { "tick_word": 125519, "text": "SOLO < D=4 > TIME <br> They all span across a total of 573 phrases!" }
+            ],
+            "tick_end": 125520
+        },
+        {
+            "tick_start": 125520,
+            "words": [
+                { "tick_word": 125521, "text": "\\\\" },
+                { "tick_word": 125567, "text": "SOLO < Bb3 > TIME <br> They all span across a total of 573 phrases!" }
+            ],
+            "tick_end": 125568
+        },
+        {
+            "tick_start": 125568,
+            "words": [
+                { "tick_word": 125569, "text": "\\\\ SOLO < Ab4 > TIME" },
+                { "tick_word": 125663, "text": "<br> They all span across a total of 573 phrases!" }
+            ],
+            "tick_end": 125664
+        },
+        {
+            "tick_start": 125664,
+            "words": [
+                { "tick_word": 125665, "text": "\\\\ SOLO < F=4 > TIME" },
+                { "tick_word": 125711, "text": "<br> They all span across a total of 573 phrases!" }
+            ],
+            "tick_end": 125712
+        },
+        {
+            "tick_start": 125712,
+            "words": [
+                { "tick_word": 125713, "text": "\\\\ SOLO < Ab4 > TIME" },
+                { "tick_word": 125759, "text": "<br> They all span across a total of 573 phrases!" }
+            ],
+            "tick_end": 125760
+        },
+        {
+            "tick_start": 125760,
+            "words": [
+                { "tick_word": 125761, "text": "\\\\" },
+                { "tick_word": 125855, "text": "SOLO < B=4 > TIME <br> They all span across a total of 573 phrases!" }
+            ],
+            "tick_end": 125856
+        },
+        {
+            "tick_start": 125856,
+            "words": [
+                { "tick_word": 125857, "text": "\\\\" },
+                { "tick_word": 125903, "text": "SOLO < F=4 > TIME <br> They all span across a total of 573 phrases!" }
+            ],
+            "tick_end": 125904
+        },
+        {
+            "tick_start": 125904,
+            "words": [
+                { "tick_word": 125905, "text": "\\\\ SOLO < D=4 > TIME" },
+                { "tick_word": 125951, "text": "<br> They all span across a total of 573 phrases!" }
+            ],
+            "tick_end": 125952
+        },
+        {
+            "tick_start": 125952,
+            "words": [
+                { "tick_word": 125953, "text": "\\\\" },
+                { "tick_word": 126015, "text": "SOLO < Eb5 > TIME <br> I provided links to the original lyrics and its translation in the about.txt." }
+            ],
+            "tick_end": 126016
+        },
+        {
+            "tick_start": 126016,
+            "words": [
+                { "tick_word": 126017, "text": "\\\\ SOLO < Bb4 > TIME" },
+                { "tick_word": 126079, "text": "<br> I provided links to the original lyrics and its translation in the about.txt." }
+            ],
+            "tick_end": 126080
+        },
+        {
+            "tick_start": 126080,
+            "words": [
+                { "tick_word": 126081, "text": "\\\\ SOLO < Eb5 > TIME" },
+                { "tick_word": 126143, "text": "<br> I provided links to the original lyrics and its translation in the about.txt." }
+            ],
+            "tick_end": 126144
+        },
+        {
+            "tick_start": 126144,
+            "words": [
+                { "tick_word": 126145, "text": "\\\\" },
+                { "tick_word": 126207, "text": "SOLO < A=5 > TIME <br> I provided links to the original lyrics and its translation in the about.txt." }
+            ],
+            "tick_end": 126208
+        },
+        {
+            "tick_start": 126208,
+            "words": [
+                { "tick_word": 126209, "text": "\\\\" },
+                { "tick_word": 126271, "text": "SOLO < Eb5 > TIME <br> I provided links to the original lyrics and its translation in the about.txt." }
+            ],
+            "tick_end": 126272
+        },
+        {
+            "tick_start": 126272,
+            "words": [
+                { "tick_word": 126273, "text": "\\\\" },
+                { "tick_word": 126335, "text": "SOLO < Bb4 > TIME <br> I provided links to the original lyrics and its translation in the about.txt." }
+            ],
+            "tick_end": 126336
+        },
+        {
+            "tick_start": 126336,
+            "words": [
+                { "tick_word": 126337, "text": "\\\\ SOLO < F=5 > TIME" },
+                { "tick_word": 126399, "text": "<br> I provided links to the original lyrics and its translation in the about.txt." }
+            ],
+            "tick_end": 126400
+        },
+        {
+            "tick_start": 126400,
+            "words": [
+                { "tick_word": 126401, "text": "\\\\ SOLO < C=5 > TIME" },
+                { "tick_word": 126463, "text": "<br> I provided links to the original lyrics and its translation in the about.txt." }
+            ],
+            "tick_end": 126464
+        },
+        {
+            "tick_start": 126464,
+            "words": [
+                { "tick_word": 126465, "text": "\\\\ SOLO < F=5 > TIME" },
+                { "tick_word": 126527, "text": "<br> I provided links to the original lyrics and its translation in the about.txt." }
+            ],
+            "tick_end": 126528
+        },
+        {
+            "tick_start": 126528,
+            "words": [
+                { "tick_word": 126529, "text": "\\\\" },
+                { "tick_word": 126591, "text": "SOLO < Ab5 > TIME <br> I provided links to the original lyrics and its translation in the about.txt." }
+            ],
+            "tick_end": 126592
+        },
+        {
+            "tick_start": 126592,
+            "words": [
+                { "tick_word": 126593, "text": "\\\\" },
+                { "tick_word": 126655, "text": "SOLO < F=5 > TIME <br> I provided links to the original lyrics and its translation in the about.txt." }
+            ],
+            "tick_end": 126656
+        },
+        {
+            "tick_start": 126656,
+            "words": [
+                { "tick_word": 126657, "text": "\\\\" },
+                { "tick_word": 126672, "text": "SOLO < C=5 > TIME" },
+                { "tick_word": 126719, "text": "<br> I provided links to the original lyrics and its translation in the about.txt." }
+            ],
+            "tick_end": 126720
+        },
+        {
+            "tick_start": 126720,
+            "words": [
+                { "tick_word": 126721, "text": "\\\\" },
+                { "tick_word": 126783, "text": "SOLO < Gb5 > TIME <br> I provided links to the original lyrics and its translation in the about.txt." }
+            ],
+            "tick_end": 126784
+        },
+        {
+            "tick_start": 126784,
+            "words": [
+                { "tick_word": 126785, "text": "\\\\" },
+                { "tick_word": 126847, "text": "SOLO < Eb5 > TIME <br> I provided links to the original lyrics and its translation in the about.txt." }
+            ],
+            "tick_end": 126848
+        },
+        {
+            "tick_start": 126848,
+            "words": [
+                { "tick_word": 126849, "text": "\\\\" },
+                { "tick_word": 126911, "text": "SOLO < Gb5 > TIME <br> I provided links to the original lyrics and its translation in the about.txt." }
+            ],
+            "tick_end": 126912
+        },
+        {
+            "tick_start": 126912,
+            "words": [
+                { "tick_word": 126913, "text": "\\\\ SOLO < A=5 > TIME" },
+                { "tick_word": 126975, "text": "<br> I provided links to the original lyrics and its translation in the about.txt." }
+            ],
+            "tick_end": 126976
+        },
+        {
+            "tick_start": 126976,
+            "words": [
+                { "tick_word": 126977, "text": "\\\\ SOLO < Gb5 > TIME" },
+                { "tick_word": 127039, "text": "<br> I provided links to the original lyrics and its translation in the about.txt." }
+            ],
+            "tick_end": 127040
+        },
+        {
+            "tick_start": 127040,
+            "words": [
+                { "tick_word": 127041, "text": "\\\\ SOLO < Eb5 > TIME" },
+                { "tick_word": 127103, "text": "<br> I provided links to the original lyrics and its translation in the about.txt." }
+            ],
+            "tick_end": 127104
+        },
+        {
+            "tick_start": 127104,
+            "words": [
+                { "tick_word": 127105, "text": "\\\\" },
+                { "tick_word": 127167, "text": "SOLO < G=5 > TIME <br> I provided links to the original lyrics and its translation in the about.txt." }
+            ],
+            "tick_end": 127168
+        },
+        {
+            "tick_start": 127168,
+            "words": [
+                { "tick_word": 127169, "text": "\\\\" },
+                { "tick_word": 127231, "text": "SOLO < Eb5 > TIME <br> I provided links to the original lyrics and its translation in the about.txt." }
+            ],
+            "tick_end": 127232
+        },
+        {
+            "tick_start": 127232,
+            "words": [
+                { "tick_word": 127233, "text": "\\\\" },
+                { "tick_word": 127295, "text": "SOLO < G=5 > TIME <br> I provided links to the original lyrics and its translation in the about.txt." }
+            ],
+            "tick_end": 127296
+        },
+        {
+            "tick_start": 127296,
+            "words": [
+                { "tick_word": 127297, "text": "\\\\ SOLO < Bb5 > TIME" },
+                { "tick_word": 127359, "text": "<br> I provided links to the original lyrics and its translation in the about.txt." }
+            ],
+            "tick_end": 127360
+        },
+        {
+            "tick_start": 127360,
+            "words": [
+                { "tick_word": 127361, "text": "\\\\ SOLO < G=5 > TIME" },
+                { "tick_word": 127423, "text": "<br> I provided links to the original lyrics and its translation in the about.txt." }
+            ],
+            "tick_end": 127424
+        },
+        {
+            "tick_start": 127424,
+            "words": [
+                { "tick_word": 127425, "text": "\\\\ SOLO < Bb5 > TIME" },
+                { "tick_word": 127439, "text": "<br> I provided links to the original lyrics and its translation in the about.txt." }
+            ],
+            "tick_end": 127440
+        },
+        {
+            "tick_start": 127440,
+            "words": [
+                { "tick_word": 127441, "text": "\\\\" },
+                { "tick_word": 127487, "text": "SOLO < Bb5 > TIME <br> I provided links to the original lyrics and its translation in the about.txt." }
+            ],
+            "tick_end": 127488
+        },
+        {
+            "tick_start": 127488,
+            "words": [
+                { "tick_word": 127489, "text": "<?>-" },
+                { "tick_word": 127584, "text": "<?>-" },
+                { "tick_word": 127680, "text": "<?>-" },
+                { "tick_word": 127776, "text": "<?>" },
+                { "tick_word": 127968, "text": "<?>" },
+                { "tick_word": 128160, "text": "<?>" }
+            ],
+            "tick_end": 128208
+        },
+        {
+            "tick_start": 128208,
+            "words": [
+                { "tick_word": 128256, "text": "?" },
+                { "tick_word": 128352, "text": "?" },
+                { "tick_word": 128448, "text": "?-" },
+                { "tick_word": 128496, "text": "?-" },
+                { "tick_word": 128544, "text": "?-" },
+                { "tick_word": 128592, "text": "?-" },
+                { "tick_word": 128640, "text": "?" },
+                { "tick_word": 128736, "text": "?" },
+                { "tick_word": 128832, "text": "?" }
+            ],
+            "tick_end": 128928
+        },
+        {
+            "tick_start": 128928,
+            "words": [
+                { "tick_word": 129024, "text": "<?>-" },
+                { "tick_word": 129120, "text": "<?>-" },
+                { "tick_word": 129216, "text": "<?>-" },
+                { "tick_word": 129312, "text": "<?>" },
+                { "tick_word": 129504, "text": "<?>" },
+                { "tick_word": 129696, "text": "<?>" }
+            ],
+            "tick_end": 129744
+        },
+        {
+            "tick_start": 129744,
+            "words": [
+                { "tick_word": 129792, "text": "?-" },
+                { "tick_word": 129840, "text": "?-" },
+                { "tick_word": 129888, "text": "?-" },
+                { "tick_word": 129936, "text": "?-" },
+                { "tick_word": 129984, "text": "?-" },
+                { "tick_word": 130032, "text": "?-" },
+                { "tick_word": 130080, "text": "?-" },
+                { "tick_word": 130128, "text": "?-" },
+                { "tick_word": 130176, "text": "?" },
+                { "tick_word": 130272, "text": "?-" },
+                { "tick_word": 130320, "text": "?-" },
+                { "tick_word": 130368, "text": "?" },
+                { "tick_word": 130464, "text": "?" },
+                { "tick_word": 130560, "text": "?" }
+            ],
+            "tick_end": 130944
+        },
+        {
+            "tick_start": 130944,
+            "words": [
+                { "tick_word": 131136, "text": "+" }
+            ],
+            "tick_end": 131328
+        },
+        {
+            "tick_start": 131328,
+            "words": [
+                { "tick_word": 131520, "text": "U-" },
+                { "tick_word": 131712, "text": "s-" },
+                { "tick_word": 131904, "text": "ing" },
+                { "tick_word": 132096, "text": "norm-" },
+                { "tick_word": 132288, "text": "al" },
+                { "tick_word": 132384, "text": "charact-" },
+                { "tick_word": 132576, "text": "ers" },
+                { "tick_word": 132767, "text": ":u7533: isn't enough" }
+            ],
+            "tick_end": 132768
+        },
+        {
+            "tick_start": 132768,
+            "words": [
+                { "tick_word": 132769, "text": "Using normal characters just" },
+                { "tick_word": 132960, "text": "is-" },
+                { "tick_word": 133056, "text": "n’t" },
+                { "tick_word": 133152, "text": "e-" },
+                { "tick_word": 133248, "text": "nough" }
+            ],
+            "tick_end": 133344
+        },
+        {
+            "tick_start": 133344,
+            "words": [
+                { "tick_word": 133440, "text": "To" },
+                { "tick_word": 133632, "text": "tell" },
+                { "tick_word": 133823, "text": ":love=letter: everything" }
+            ],
+            "tick_end": 133824
+        },
+        {
+            "tick_start": 133824,
+            "words": [
+                { "tick_word": 133825, "text": "(To" },
+                { "tick_word": 134016, "text": "tell!)" },
+                { "tick_word": 134207, "text": ":love=letter: everything" }
+            ],
+            "tick_end": 134208
+        },
+        {
+            "tick_start": 134208,
+            "words": [
+                { "tick_word": 134209, "text": "To tell you" },
+                { "tick_word": 134400, "text": "ev-" },
+                { "tick_word": 134496, "text": "er-" },
+                { "tick_word": 134592, "text": "y-" },
+                { "tick_word": 134688, "text": "thing" }
+            ],
+            "tick_end": 134976
+        },
+        {
+            "tick_start": 134976,
+            "words": [
+                { "tick_word": 135072, "text": "I’m" },
+                { "tick_word": 135168, "text": "real-" },
+                { "tick_word": 135264, "text": "ly" },
+                { "tick_word": 135359, "text": "getting overwhelmed" }
+            ],
+            "tick_end": 135360
+        },
+        {
+            "tick_start": 135360,
+            "words": [
+                { "tick_word": 135361, "text": "I'm real-" },
+                { "tick_word": 135456, "text": "ly*2" },
+                { "tick_word": 135551, "text": "getting overwhelmed" }
+            ],
+            "tick_end": 135552
+        },
+        {
+            "tick_start": 135552,
+            "words": [
+                { "tick_word": 135553, "text": "I'm real-" },
+                { "tick_word": 135648, "text": "ly*3" },
+                { "tick_word": 135743, "text": "getting overwhelmed" }
+            ],
+            "tick_end": 135744
+        },
+        {
+            "tick_start": 135744,
+            "words": [
+                { "tick_word": 135745, "text": "I'm real-" },
+                { "tick_word": 135840, "text": "ly*4" },
+                { "tick_word": 135936, "text": "get-" },
+                { "tick_word": 136128, "text": "ting" },
+                { "tick_word": 136320, "text": "o-" },
+                { "tick_word": 136512, "text": "ver-" },
+                { "tick_word": 136704, "text": "whelmed" }
+            ],
+            "tick_end": 136800
+        },
+        {
+            "tick_start": 136800,
+            "words": [
+                { "tick_word": 136895, "text": "(:wave: :wave: :wave: :wave:)" }
+            ],
+            "tick_end": 136896
+        },
+        {
+            "tick_start": 136896,
+            "words": [
+                { "tick_word": 136897, "text": "(hey!" },
+                { "tick_word": 137087, "text": "hey! hey! hey!)" }
+            ],
+            "tick_end": 137088
+        },
+        {
+            "tick_start": 137088,
+            "words": [
+                { "tick_word": 137089, "text": "(:wave:" },
+                { "tick_word": 137279, "text": ":wave: :wave: wave:)" }
+            ],
+            "tick_end": 137280
+        },
+        {
+            "tick_start": 137280,
+            "words": [
+                { "tick_word": 137281, "text": "(hey! hey!" },
+                { "tick_word": 137471, "text": "hey! hey!)" }
+            ],
+            "tick_end": 137472
+        },
+        {
+            "tick_start": 137472,
+            "words": [
+                { "tick_word": 137473, "text": "(:wave: :wave:" },
+                { "tick_word": 137663, "text": ":wave: :wave:)" }
+            ],
+            "tick_end": 137664
+        },
+        {
+            "tick_start": 137664,
+            "words": [
+                { "tick_word": 137665, "text": "There" },
+                { "tick_word": 137856, "text": "is" },
+                { "tick_word": 138048, "text": "a" },
+                { "tick_word": 138239, "text": ":book: that we still don't know within" }
+            ],
+            "tick_end": 138240
+        },
+        {
+            "tick_start": 138240,
+            "words": [
+                { "tick_word": 138241, "text": "There is a sto-" },
+                { "tick_word": 138432, "text": "ry" },
+                { "tick_word": 138528, "text": "that" },
+                { "tick_word": 138720, "text": "we" },
+                { "tick_word": 138912, "text": "still" },
+                { "tick_word": 139104, "text": "don’t" },
+                { "tick_word": 139200, "text": "know" },
+                { "tick_word": 139296, "text": "with-" },
+                { "tick_word": 139392, "text": "in" }
+            ],
+            "tick_end": 139488
+        },
+        {
+            "tick_start": 139488,
+            "words": [
+                { "tick_word": 139584, "text": "This" },
+                { "tick_word": 139776, "text": ":earth=asia:" },
+                { "tick_word": 139967, "text": "_that we :u6e80: :writing=hand:!" }
+            ],
+            "tick_end": 139968
+        },
+        {
+            "tick_start": 139968,
+            "words": [
+                { "tick_word": 139969, "text": "(This" },
+                { "tick_word": 140160, "text": "world!)" },
+                { "tick_word": 140351, "text": "that we :u6e80: :writing=hand:!" }
+            ],
+            "tick_end": 140352
+        },
+        {
+            "tick_start": 140352,
+            "words": [
+                { "tick_word": 140353, "text": "This world tha-" },
+                { "tick_word": 140448, "text": "t" },
+                { "tick_word": 140544, "text": "we" },
+                { "tick_word": 140639, "text": "have :writing=hand:!" }
+            ],
+            "tick_end": 140640
+        },
+        {
+            "tick_start": 140640,
+            "words": [
+                { "tick_word": 140641, "text": "This world that we have" },
+                { "tick_word": 140735, "text": ":writing=hand:!" }
+            ],
+            "tick_end": 140736
+        },
+        {
+            "tick_start": 140736,
+            "words": [
+                { "tick_word": 140737, "text": "This world that we have to" },
+                { "tick_word": 140832, "text": "write!" }
+            ],
+            "tick_end": 141312
+        },
+        {
+            "tick_start": 141312,
+            "words": [
+                { "tick_word": 141504, "text": "And" },
+                { "tick_word": 141696, "text": "by" },
+                { "tick_word": 141888, "text": "the" },
+                { "tick_word": 142080, "text": "time" },
+                { "tick_word": 142271, "text": ":incoming=envelope:, I hope :frowning2:=>:relaxed:" }
+            ],
+            "tick_end": 142272
+        },
+        {
+            "tick_start": 142272,
+            "words": [
+                { "tick_word": 142273, "text": "And by the time it" },
+                { "tick_word": 142464, "text": "has=" },
+                { "tick_word": 142655, "text": "envelope:, I hope :frowning2:=>:relaxed:" }
+            ],
+            "tick_end": 142656
+        },
+        {
+            "tick_start": 142656,
+            "words": [
+                { "tick_word": 142657, "text": "And by the time it has ar-" },
+                { "tick_word": 142848, "text": "rived," },
+                { "tick_word": 143136, "text": "I" },
+                { "tick_word": 143424, "text": "hope" },
+                { "tick_word": 143615, "text": ":frowning2:=>:relaxed:" }
+            ],
+            "tick_end": 143616
+        },
+        {
+            "tick_start": 143616,
+            "words": [
+                { "tick_word": 143617, "text": "And by the time it has arrive, I hope you-" },
+                { "tick_word": 143807, "text": "=>:relaxed:" }
+            ],
+            "tick_end": 143808
+        },
+        {
+            "tick_start": 143808,
+            "words": [
+                { "tick_word": 143809, "text": "And by the time it has arrive, I hope you will" },
+                { "tick_word": 143903, "text": ":relaxed:" }
+            ],
+            "tick_end": 143904
+        },
+        {
+            "tick_start": 143904,
+            "words": [
+                { "tick_word": 143905, "text": "And by the time it has arrive, I hope you will smile" }
+            ],
+            "tick_end": 144096
+        },
+        {
+            "tick_start": 144096,
+            "words": [
+                { "tick_word": 144192, "text": "Cause" },
+                { "tick_word": 144287, "text": ":soon: I'll be hopeful" }
+            ],
+            "tick_end": 144288
+        },
+        {
+            "tick_start": 144288,
+            "words": [
+                { "tick_word": 144289, "text": "Cause to-" },
+                { "tick_word": 144384, "text": "mor-" },
+                { "tick_word": 144480, "text": "row" },
+                { "tick_word": 144672, "text": "I’ll" },
+                { "tick_word": 144864, "text": "be" },
+                { "tick_word": 145056, "text": "ho-" },
+                { "tick_word": 145248, "text": "pe-" },
+                { "tick_word": 145344, "text": "ful" }
+            ],
+            "tick_end": 145536
+        },
+        {
+            "tick_start": 145536,
+            "words": [
+                { "tick_word": 145728, "text": "I’ll" },
+                { "tick_word": 145824, "text": "be" },
+                { "tick_word": 145920, "text": "spell-" },
+                { "tick_word": 146016, "text": "ing" },
+                { "tick_word": 146207, "text": ":pencil2: :blossom:" }
+            ],
+            "tick_end": 146208
+        },
+        {
+            "tick_start": 146208,
+            "words": [
+                { "tick_word": 146209, "text": "I'll be spelling some-" },
+                { "tick_word": 146400, "text": "thing" },
+                { "tick_word": 146591, "text": ":blossom:" }
+            ],
+            "tick_end": 146592
+        },
+        {
+            "tick_start": 146592,
+            "words": [
+                { "tick_word": 146593, "text": "I'll be spelling something co-" },
+                { "tick_word": 146784, "text": "lor-" },
+                { "tick_word": 146880, "text": "ful" }
+            ],
+            "tick_end": 147072
+        },
+        {
+            "tick_start": 147072,
+            "words": [
+                { "tick_word": 147264, "text": "Let-" },
+                { "tick_word": 147360, "text": "’s" },
+                { "tick_word": 147456, "text": "run" },
+                { "tick_word": 147648, "text": "a-" },
+                { "tick_word": 147744, "text": "round" },
+                { "tick_word": 147936, "text": "the" },
+                { "tick_word": 148128, "text": "char-" },
+                { "tick_word": 148320, "text": "act-" },
+                { "tick_word": 148416, "text": "e-" },
+                { "tick_word": 148512, "text": "r" },
+                { "tick_word": 148608, "text": "code!" }
+            ],
+            "tick_end": 148704
+        },
+        {
+            "tick_start": 148704,
+            "words": [
+                { "tick_word": 148799, "text": ":person=running::dash:" }
+            ],
+            "tick_end": 148800
+        },
+        {
+            "tick_start": 148800,
+            "words": [
+                { "tick_word": 148801, "text": "(bew!-" },
+                { "tick_word": 148991, "text": ")" }
+            ],
+            "tick_end": 148992
+        },
+        {
+            "tick_start": 148992,
+            "words": [
+                { "tick_word": 148993, "text": "(-" },
+                { "tick_word": 149183, "text": ":wave: :wave: :wave: :wave: :wave: :wave:)" }
+            ],
+            "tick_end": 149184
+        },
+        {
+            "tick_start": 149184,
+            "words": [
+                { "tick_word": 149185, "text": "(hey!" },
+                { "tick_word": 149375, "text": "hey! hey! hey! hey! hey!)" }
+            ],
+            "tick_end": 149376
+        },
+        {
+            "tick_start": 149376,
+            "words": [
+                { "tick_word": 149377, "text": "(:wave:" },
+                { "tick_word": 149567, "text": ":wave: :wave: :wave: :wave: :wave:)" }
+            ],
+            "tick_end": 149568
+        },
+        {
+            "tick_start": 149568,
+            "words": [
+                { "tick_word": 149569, "text": "(hey! hey!" },
+                { "tick_word": 149759, "text": "hey! hey! hey! hey!)" }
+            ],
+            "tick_end": 149760
+        },
+        {
+            "tick_start": 149760,
+            "words": [
+                { "tick_word": 149761, "text": "(:wave: :wave:" },
+                { "tick_word": 149951, "text": ":wave: :wave: :wave: :wave:)" }
+            ],
+            "tick_end": 149952
+        },
+        {
+            "tick_start": 149952,
+            "words": [
+                { "tick_word": 149953, "text": "(hey! hey! hey!" },
+                { "tick_word": 150143, "text": "hey! hey! hey!)" }
+            ],
+            "tick_end": 150144
+        },
+        {
+            "tick_start": 150144,
+            "words": [
+                { "tick_word": 150145, "text": "(:wave: :wave: :wave:" },
+                { "tick_word": 150335, "text": ":wave: :wave: :wave:)" }
+            ],
+            "tick_end": 150336
+        },
+        {
+            "tick_start": 150336,
+            "words": [
+                { "tick_word": 150337, "text": "(hey! hey! hey! hey!" },
+                { "tick_word": 150527, "text": "hey! hey!)" }
+            ],
+            "tick_end": 150528
+        },
+        {
+            "tick_start": 150528,
+            "words": [
+                { "tick_word": 150529, "text": "(:wave: :wave: :wave: :wave:" },
+                { "tick_word": 150719, "text": ":wave: :wave:)" }
+            ],
+            "tick_end": 150720
+        },
+        {
+            "tick_start": 150720,
+            "words": [
+                { "tick_word": 150721, "text": "(hey! hey! hey! hey! hey!" },
+                { "tick_word": 150911, "text": "hey!)" }
+            ],
+            "tick_end": 150912
+        },
+        {
+            "tick_start": 150912,
+            "words": [
+                { "tick_word": 150913, "text": "(:wave: :wave: :wave: :wave: :wave:" },
+                { "tick_word": 151103, "text": ":wave:)" }
+            ],
+            "tick_end": 151104
+        },
+        {
+            "tick_start": 151104,
+            "words": [
+                { "tick_word": 151105, "text": "(hey! hey! hey! hey! hey! hey!)" }
+            ],
+            "tick_end": 151200
+        },
+        {
+            "tick_start": 151200,
+            "words": [
+                { "tick_word": 151296, "text": "(:whi-" },
+                { "tick_word": 151392, "text": "rr:" },
+                { "tick_word": 151488, "text": ":whi-" },
+                { "tick_word": 151584, "text": "rr:" },
+                { "tick_word": 151680, "text": ":)pyon!-" },
+                { "tick_word": 152063, "text": ")" }
+            ],
+            "tick_end": 152064
+        },
+        {
+            "tick_start": 152064,
+            "words": [
+                { "tick_word": 152065, "text": "(-" },
+                { "tick_word": 152255, "text": ":wave: :wave: :wave: :wave:)" }
+            ],
+            "tick_end": 152256
+        },
+        {
+            "tick_start": 152256,
+            "words": [
+                { "tick_word": 152257, "text": "(hey!" },
+                { "tick_word": 152447, "text": "hey! hey! hey!)" }
+            ],
+            "tick_end": 152448
+        },
+        {
+            "tick_start": 152448,
+            "words": [
+                { "tick_word": 152449, "text": "(:wave:" },
+                { "tick_word": 152639, "text": ":wave: :wave: :wave:)" }
+            ],
+            "tick_end": 152640
+        },
+        {
+            "tick_start": 152640,
+            "words": [
+                { "tick_word": 152641, "text": "(hey! hey!" },
+                { "tick_word": 152831, "text": "hey! hey!)" }
+            ],
+            "tick_end": 152832
+        },
+        {
+            "tick_start": 152832,
+            "words": [
+                { "tick_word": 152833, "text": "(:wave :wave:" },
+                { "tick_word": 153023, "text": ":wave: :wave:)" }
+            ],
+            "tick_end": 153024
+        },
+        {
+            "tick_start": 153024,
+            "words": [
+                { "tick_word": 153025, "text": "(hey! hey! hey!" },
+                { "tick_word": 153215, "text": "hey!)" }
+            ],
+            "tick_end": 153216
+        },
+        {
+            "tick_start": 153216,
+            "words": [
+                { "tick_word": 153217, "text": "(:wave: :wave: :wave:" },
+                { "tick_word": 153407, "text": ":wave:)" }
+            ],
+            "tick_end": 153408
+        },
+        {
+            "tick_start": 153408,
+            "words": [
+                { "tick_word": 153409, "text": "(hey! hey! hey! hey!)" }
+            ],
+            "tick_end": 153504
+        },
+        {
+            "tick_start": 153504,
+            "words": [
+                { "tick_word": 153600, "text": ">-" },
+                { "tick_word": 153664, "text": "0-" },
+                { "tick_word": 153728, "text": "*-" },
+                { "tick_word": 153792, "text": "~" }
+            ],
+            "tick_end": 153920
+        },
+        {
+            "tick_start": 153920,
+            "words": [
+                { "tick_word": 153984, "text": "w-" },
+                { "tick_word": 154048, "text": "|-" },
+                { "tick_word": 154112, "text": "V-" },
+                { "tick_word": 154176, "text": "y-" },
+                { "tick_word": 154240, "text": "~" }
+            ],
+            "tick_end": 154304
+        },
+        {
+            "tick_start": 154304,
+            "words": [
+                { "tick_word": 154368, "text": "`-" },
+                { "tick_word": 154432, "text": "G-" },
+                { "tick_word": 154496, "text": "?-" },
+                { "tick_word": 154560, "text": "\\-" },
+                { "tick_word": 154624, "text": "~-" },
+                { "tick_word": 154688, "text": "h" }
+            ],
+            "tick_end": 155328
+        }
+    ]
+}

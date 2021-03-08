@@ -1,4 +1,19 @@
-lyrics = [   {'end_time': 3.3162393162393164, 'time': 3.247863247863248, 'words': [{'time': 0.03418803418803407, 'word': '.'}]},
+from pathlib import Path
+import json
+
+path = Path(__file__).with_suffix(".json")
+
+with path.open("r", encoding="utf-8") as f:
+    lyrics = json.load(f)
+
+ticks_per_second = lyrics["ticks_per_beat"] * lyrics["beats_per_minute"] / 60
+for phrase in lyrics["phrases"]:
+    phrase["start"] = phrase["tick_start"] / ticks_per_second
+    phrase["end"] = phrase["tick_end"] / ticks_per_second
+    for word in phrase["words"]:
+        word["offset"] = (word["tick_word"] - phrase["tick_start"]) / ticks_per_second
+
+old_lyrics = [   {'end_time': 3.3162393162393164, 'time': 3.247863247863248, 'words': [{'time': 0.03418803418803407, 'word': '.'}]},
     {   'end_time': 3.3846153846153846,
         'time': 3.3162393162393164,
         'words': [{'time': 0.03418803418803407, 'word': '..'}]},
@@ -2864,3 +2879,5 @@ lyrics = [   {'end_time': 3.3162393162393164, 'time': 3.247863247863248, 'words'
                      {'time': 0.36467236467237285, 'word': '\\-'},
                      {'time': 0.45584045584044475, 'word': '~-'},
                      {'time': 0.5470085470085451, 'word': 'h'}]}]
+
+print("🔥🐶 This is fine")
