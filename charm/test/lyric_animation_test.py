@@ -1,5 +1,3 @@
-import time
-
 from charm.lib.utils import cache_on
 from charm.test.lyrics.run_around import lyrics
 
