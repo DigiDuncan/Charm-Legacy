@@ -67,7 +67,7 @@ class Game(nygame.Game):
 
     def run(self):
         music.volume = 0.05
-        music.play("vocals.ogg")
+        music.play("song.mp3")
         super().run()
 
 
