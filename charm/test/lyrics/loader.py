@@ -12,7 +12,8 @@ def load_raw(f):
     resolution = None
     mbpms = []
     phrases = []
-    curr_phrase = None
+    phrase_ends = []
+    words = []
     for line in f:
         if match := RE_RESOLUTION.match(line):
             if resolution is not None:
@@ -24,26 +25,47 @@ def load_raw(f):
             mbpms.append(RawMBPM(tick_start, mbpm))
         elif match := RE_PHRASE_START.match(line):
             tick_start = int(match.group(1))
-            if curr_phrase is not None:
-                curr_phrase.tick_end = tick_start
-                curr_phrase.words = sorted(curr_phrase.words)
-            curr_phrase = RawPhrase(tick_start)
-            phrases.append(curr_phrase)
+            phrases.append(RawPhrase(tick_start))
         elif match := RE_LYRIC.match(line):
             tick_start = int(match.group(1))
             text = match.group(2)
-            curr_phrase.words.append(RawWord(tick_start, text))
+            words.append(RawWord(tick_start, text))
         elif match := RE_PHRASE_END.match(line):
             tick_end = int(match.group(1))
-            curr_phrase.tick_end = tick_end
-            curr_phrase.words = sorted(curr_phrase.words)
-            curr_phrase = None
+            phrase_ends.append(tick_end)
     if resolution is None:
         raise ValueError("Missing resolution")
     if not any(True for m in mbpms if m.tick_start == 0):
         raise ValueError("Missing initial mbpm")
     mbpms = sorted(mbpms)
     phrases = sorted(phrases)
+
+    ip = iter(phrases[::-1])
+    try:
+        p = next(ip)
+        for phrase_end in sorted(phrase_ends)[::-1]:
+            while not(p.tick_start < phrase_end):
+                p = next(ip)
+            if p.tick_end is not None:
+                raise ValueError("Phrase has more than one end")
+            p.tick_end = phrase_end
+    except StopIteration:
+        raise ValueError(f"Phrase end did not have a match phrase start: {phrase_end!r}")
+
+    for p, np in zip(phrases[:-1], phrases[1:]):
+        if p.tick_end is None:
+            p.tick_end = np.tick_start
+
+    ip = iter(phrases)
+    try:
+        p = next(ip)
+        for word in sorted(words):
+            while not(p.tick_start <= word.tick_start < p.tick_end):
+                p = next(ip)
+            p.words.append(word)
+    except StopIteration:
+        raise ValueError(f"Word was not part of a phrase: {word!r}")
+
     return resolution, mbpms, phrases
 
 
