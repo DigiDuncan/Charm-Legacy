@@ -26,14 +26,16 @@ class Game(nygame.Game):
         self.pause_image = draw_pause()
 
     def loop(self, events):
+        self.la.update(music.elapsed)
+
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == K_SPACE:
                     music.playpause()
-                if event.key == K_LEFT:
-                    self.la.selected -= 1
-                elif event.key == K_RIGHT:
-                    self.la.selected += 1
+                if event.key == K_LEFT and self.la.prev_phrase is not None:
+                    music.elapsed = self.la.prev_phrase.start
+                elif event.key == K_RIGHT and self.la.next_phrase is not None:
+                    music.elapsed = self.la.next_phrase.start
 
         # note = Note(instruments.GUITAR, frets.ORANGE)
         # self.screen.blit(note.image, (0, 0))
@@ -49,7 +51,6 @@ class Game(nygame.Game):
         self.render_pause()
 
     def render_lyrics(self):
-        self.la.update(music.elapsed)
         dest = self.la.image.get_rect()
         dest.center = self.surface.get_rect().center
         self.surface.blit(self.la.image, dest)

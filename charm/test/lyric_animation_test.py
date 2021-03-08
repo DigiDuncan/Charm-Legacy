@@ -82,6 +82,9 @@ class LyricPhrase():
     def is_waiting(self, tracktime):
         return self.start > tracktime
 
+    def is_done(self, tracktime):
+        return self.end <= tracktime
+
     def __lt__(self, other):
         return self.start < other.start
 
@@ -99,7 +102,6 @@ class LyricAnimator:
         self._image = None
         self.tracktime = 0
         self.last_drawn = None
-        self.selected = -1
         self.show_next = show_next
 
         for p, np in zip(self.phrases, self.phrases[1:] + [None]):
@@ -118,6 +120,14 @@ class LyricAnimator:
     def next_phrase(self):
         try:
             return next(p for p in self.phrases if p.is_waiting(self.tracktime))
+        except StopIteration:
+            return None
+
+    @property
+    @cache_on("tracktime")
+    def prev_phrase(self):
+        try:
+            return next(p for p in self.phrases[::-1] if p.is_done(self.tracktime))
         except StopIteration:
             return None
 
@@ -151,11 +161,6 @@ class LyricAnimator:
 
     def update(self, tracktime):
         self.tracktime = tracktime
-        # if self.selected < 0:
-        #    self.tracktime = time.process_time()
-        # else:
-        #    p = lyrics[self.selected]
-        #    self.tracktime = p["time"] + (time.process_time() % (p["end_time"] - p["time"]))
 
     @property
     def image(self) -> pygame.Surface:
