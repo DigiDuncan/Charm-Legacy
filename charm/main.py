@@ -1,105 +1,39 @@
-# from charm.objects.songinfo import SongInfo
+from charm.lib.utils import nice_time
 import pygame
 import nygame
-from pygame.constants import K_SPACE
+from nygame import music, DigiText as T
+from pygame.constants import K_LEFT, K_RIGHT, K_SPACE
 
-from charm.classes import examplesong
-# from charm.lib.constants import difficulties, frets, instruments
-from charm.lib.display import display
-# from charm.objects.highway import Highway
-# from charm.objects.note import Note
-# from charm.test import chparse_test
+# from charm.classes.examplesong import (
+#    example_song as song,
+#    example_gamemode as gamemode
+# )
 from charm.test.lyric_animation_test import LyricAnimator
 
-song = examplesong.example_song
-gamemode = examplesong.example_gamemode
 
-
-class OldGame(nygame.Game):
-    def __init__(self):
-        self.running = True
-        self.size = (800, 600)
-        self.clock = nygame.time.Clock()
-        self.paused = False
-
-        self.screen = display.add_layer(pygame.Surface(self.size))
-
-    def run(self):
-        pygame.init()
-
-        display.set_mode(self.size)
-
-        pygame.mixer.music.load("song.mp3")
-        pygame.mixer.music.set_volume(0.05)
-        pygame.mixer.music.play(0)
-        la = LyricAnimator(self.clock)
-
-        while self.running:
-            # Clear the screen
-            self.screen.fill((0, 0, 0))
-
-            # Window close button
-            events = pygame.event.get()
-            for event in events:
-                if event.type == pygame.KEYDOWN:
-                    if event.key == K_SPACE:
-                        if pygame.mixer.music.get_busy() == 1:
-                            self.pause()
-                        else:
-                            self.unpause()
-                elif event.type == pygame.QUIT:
-                    self.running = False
-
-            # note = Note(instruments.GUITAR, frets.ORANGE)
-            # self.screen.blit(note.image, (0, 0))
-
-            # highway = Highway(1000, gamemode, song, instruments.GUITAR, difficulties.EXPERT)
-            # self.screen.blit(highway.image, (0, (0 - highway.image.get_height() + self.screen.get_height())))
-
-            # songinfo = SongInfo(gamemode, song, instruments.GUITAR, difficulties.EXPERT)
-            # self.screen.blit(songinfo.image, (self.screen.get_width() - songinfo.image.get_width() - 5, 0))
-
-            dest = la.image.get_rect()
-            dest.center = self.screen.get_rect().center
-
-            self.screen.blit(la.image, dest)
-
-            if self.paused:
-                pause_font = pygame.font.SysFont("Lato Medium", 24)
-                pause_screen = pause_font.render("|| PAUSED", True, (0, 255, 255))
-                self.screen.blit(pause_screen,
-                                 (self.screen.get_width() - pause_screen.get_width() - 5,
-                                  self.screen.get_height() - pause_screen.get_height() - 5)
-                                 )
-
-            # Final draw stage
-            display.flip()
-            # Timing loop
-            self.clock.tick_busy_loop(60)
-
-    def pause(self):
-        self.paused = True
-        pygame.mixer.music.pause()
-
-    def unpause(self):
-        self.paused = False
-        pygame.mixer.music.unpause()
+def draw_pause():
+    T.size = 42
+    T.color = (0, 255, 255)
+    pause_text = T("⏸", font="Segoe UI Emoji") + T(" PAUSED", font="Lato Medium")
+    return pause_text.render()
 
 
 class Game(nygame.Game):
     def __init__(self):
         super().__init__(size = (800, 600), fps = 120, showfps = True)
         self.paused = False
-        self.la = None
+        self.la = LyricAnimator()
+        self.pause_image = draw_pause()
 
     def loop(self, events):
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == K_SPACE:
-                    if pygame.mixer.music.get_busy() == 1:
-                        self.pause()
-                    else:
-                        self.unpause()
+                    music.playpause()
+                if event.key == K_LEFT:
+                    self.la.selected -= 1
+                elif event.key == K_RIGHT:
+                    self.la.selected += 1
 
         # note = Note(instruments.GUITAR, frets.ORANGE)
         # self.screen.blit(note.image, (0, 0))
@@ -110,33 +44,31 @@ class Game(nygame.Game):
         # songinfo = SongInfo(gamemode, song, instruments.GUITAR, difficulties.EXPERT)
         # self.screen.blit(songinfo.image, (self.screen.get_width() - songinfo.image.get_width() - 5, 0))
 
+        self.render_lyrics()
+        self.render_clock()
+        self.render_pause()
+
+    def render_lyrics(self):
+        self.la.update(music.elapsed)
         dest = self.la.image.get_rect()
         dest.center = self.surface.get_rect().center
-
         self.surface.blit(self.la.image, dest)
 
-        if self.paused:
-            pause_font = pygame.font.SysFont("Lato Medium", 24)
-            pause_screen = pause_font.render("|| PAUSED", True, (0, 255, 255))
-            self.surface.blit(pause_screen,
-                              (self.surface.get_width() - pause_screen.get_width() - 5,
-                               self.surface.get_height() - pause_screen.get_height() - 5)
-                              )
+    def render_pause(self):
+        if music.paused:
+            rect = self.pause_image.get_rect()
+            rect.bottomright = self.surface.get_rect().bottomright
+            rect.move_ip((-5, -5))
+            self.surface.blit(self.pause_image, rect)
+
+    def render_clock(self):
+        text = T(nice_time(self.la.tracktime, True), font="Lato Medium", size=24, color="green")
+        text.render_to(self.surface, (5, 45))
 
     def run(self):
-        pygame.mixer.music.load("song.mp3")
-        pygame.mixer.music.set_volume(0.05)
-        pygame.mixer.music.play(0)
-        self.la = LyricAnimator(self.clock)
+        music.volume = 0.05
+        music.play("vocals.ogg")
         super().run()
-
-    def pause(self):
-        self.paused = True
-        pygame.mixer.music.pause()
-
-    def unpause(self):
-        self.paused = False
-        pygame.mixer.music.unpause()
 
 
 def main():

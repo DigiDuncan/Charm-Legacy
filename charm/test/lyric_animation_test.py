@@ -1,169 +1,176 @@
-from operator import itemgetter
+import time
 
-from charm.lib.utils import nice_time
-from charm.test.lyrics.stillalive import lyrics
+from charm.lib.utils import cache_on
+from charm.test.lyrics.run_around import lyrics
 
 import pygame
 import pygame.freetype
 import pygame.draw
 
-import nygame
 from nygame import DigiText as T
+from nygame.emoji import emojize
 
 
-# lyrics = [
-#     {
-#         "time": 3,
-#         "end_time": 4.5,
-#         "words": [
-#             {"time": 0, "word": "Wow,"},
-#             {"time": 0.5, "word": "this"},
-#             {"time": 0.75, "word": "is"},
-#             {"time": 1, "word": "cool!"},
-#         ]
-#     },
-#     {
-#         "time": 5.5,
-#         "end_time": 8,
-#         "words": [
-#             {"time": 0, "word": "I"},
-#             {"time": 0.5, "word": "real-"},
-#             {"time": 0.75, "word": "ly"},
-#             {"time": 1, "word": "like"},
-#             {"time": 1.25, "word": "it!"}
-#         ]
-#     },
-#     {
-#         "time": 9,
-#         "end_time": 10.5,
-#         "words": [
-#             {"time": 0, "word": "This"},
-#             {"time": 0.1, "word": "is"},
-#             {"time": 0.2, "word": "way"},
-#             {"time": 0.3, "word": "too"},
-#             {"time": 0.4, "word": "long,"},
-#             {"time": 0.5, "word": "thus"},
-#             {"time": 0.6, "word": "it"},
-#             {"time": 0.7, "word": "must"},
-#             {"time": 0.8, "word": "be"},
-#             {"time": 0.9, "word": "shrunk"},
-#             {"time": 1.0, "word": "in"},
-#             {"time": 1.1, "word": "size!"},
-#         ]
-#     },
-#     {
-#         "time": 11.5,
-#         "end_time": 12.5,
-#         "words": [
-#             {"time": 0, "word": "fast"},
-#             {"time": 0.5, "word": "fade"}
-#         ]
-#     },
-#     {
-#         "time": 13,
-#         "end_time": 14,
-#         "words": [
-#             {"time": 0, "word": "<i>I-"},
-#             {"time": 0.25, "word": "tal-"},
-#             {"time": 0.5, "word": "ics</i>"},
-#         ]
-#     },
-# ]
-
-
-class LyricAnimator:
-    def __init__(self, clock: nygame.time.Clock, phrases: list = lyrics, *,
-                 size: tuple = (600, 500), font = "Lato Medium"):
-        self.clock = clock
-        self.phrases = sorted(phrases, key=itemgetter("time"))
-        self.width = size[0]
-        self.height = size[1]
-        self.font = font
-        self.start = None
-
-        prep_phrases(self.phrases)
-        precache_fonts(font)
-
-    @property
-    def current_time(self):
-        return pygame.mixer.music.get_pos() / 1000
-
-    def get_current_phrase(self):
-        now = self.current_time
-        i = ((n, p) for n, p in enumerate(self.phrases) if p["time"] <= now < p["end_time"] + p["fade"])
-        try:
-            n, phrase = next(i)
-        except StopIteration:
-            return None, None
-        try:
-            next_phrase = self.phrases[n + 1] if self.phrases[n + 1]["time"] <= phrase["end_time"] + 3 else None
-        except IndexError:
-            return phrase, None
-        return phrase, next_phrase
-
-    def draw_phrase_to(self, surf, dest):
-        surf.fill("#000000")
-        current_phrase = self.get_current_phrase()
-
-        if current_phrase[0] is None:
-            return None
-
-        phrase_offset = self.current_time - current_phrase[0]["time"]
-        words = current_phrase[0]["words"]
-        full_text = "".join(w["clean"] for w in words)
-        on_text = "".join(w["clean"] for w in words if w["time"] <= phrase_offset)
-        off_text = "".join(w["clean"] for w in words if w["time"] > phrase_offset)
-
-        T.font = self.font
-        if current_phrase[1] is not None:
-            next_words = current_phrase[1]["words"]
-            next_text = "".join(w["clean"] for w in next_words)
-            next_fontsize = fit_text(next_text, self.font, self.width * 0.75, 24)
-            next_digitext = T(next_text, color="#505050", size=next_fontsize)
-
-        fontsize = fit_text(full_text, self.font, self.width)
-        digitext = T(on_text, color="#ffff00", size = fontsize) + T(off_text, color="#808080", size = fontsize)
-        pygame.draw.line(surf, "red", surf.get_rect().midleft, surf.get_rect().midright)
-        # digitext.render_to(surf, surf.get_rect().center)
-        rect = digitext.get_rect()
-        dest = ((surf.get_width() / 2) - (rect.w / 2), (surf.get_height() / 2))  # Causes wiggle
-        digitext.render_to(surf, dest)
-        # if current_phrase["fade"]:
-        #    self.text_surf.set_alpha(
-        #        (1 - (max(0, self.current_time - current_phrase["end_time"]) / current_phrase["fade"])) * 255
-        #    )
-        if current_phrase[1] is not None:
-            next_rect = next_digitext.get_rect()
-            next_dest = ((surf.get_width() / 2) - (next_rect.w / 2), (surf.get_height() / 2) + 40)
-            next_digitext.render_to(surf, next_dest)
-
-    def draw_time_surf(self):
-        time_font = pygame.font.SysFont(self.font, 24)
-        return time_font.render(f"{nice_time(self.current_time, True)} | {self.clock.get_fps():.1f}FPS", True, (0, 255, 0))
-
-    @property
-    def image(self) -> pygame.Surface:
-        surf = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
-        surf.fill((0, 0, 0))
-
-        self.draw_phrase_to(surf, (0, 0))
-
-        surf.blit(self.draw_time_surf(), (0, 0))
-
-        return surf
-
-
-fonts = {}
-largest_font = 30
-
-
-def clean_lyric(word: str):
+def clean_word(word: str):
     if word.endswith("-"):
         word = word.removesuffix("-")
     else:
         word = word + " "
     word = word.replace("=", "-").replace("''", "\"").replace("+", "").replace("#", "").replace("^", "")
+    word = emojize(word)
     return word
+
+
+class LyricWord():
+    def __init__(self, offset, text):
+        self.offset = offset
+        self.text = clean_word(text)
+
+    def is_on(self, curr_offset):
+        return self.offset <= curr_offset
+
+    def __lt__(self, other):
+        return self.offset < other.offset
+
+    @classmethod
+    def parse(cls, j):
+        return cls(j["time"], j["word"])
+
+
+class LyricPhrase():
+    def __init__(self, start, end, words):
+        self.start = start
+        self.end = end
+        self.words = sorted(LyricWord.parse(w) for w in words)
+        self.words[-1].text = self.words[-1].text.rstrip()
+        self.next = None
+
+    def get_on_text(self, tracktime):
+        return "".join(w.text for w in self.words if w.is_on(tracktime - self.start))
+
+    def get_off_text(self, tracktime):
+        return "".join(w.text for w in self.words if not w.is_on(tracktime - self.start))
+
+    def get_text(self):
+        return "".join(w.text for w in self.words)
+
+    def render_to(self, surf, tracktime, fontname, offset=(0, 0)):
+        full_text = self.get_text()
+        on_text = self.get_on_text(tracktime)
+        off_text = self.get_off_text(tracktime)
+        fontsize = fit_text(full_text, fontname, surf.get_width() * 0.75, 24)
+        T.font = fontname
+        T.size = fontsize
+        digitext = T(on_text, color="#ffff00") + T(off_text, color="#808080")
+        dest_rect = digitext.get_rect()
+        dest_rect.centerx = surf.get_rect().centerx
+        dest_rect.y = surf.get_rect().centery
+        dest_rect.move_ip(offset)
+        digitext.render_to(surf, dest_rect)
+
+    @property
+    def fade(self):
+        if self.next is None:
+            return 1
+        return min(self.next.start - self.end, 1)
+
+    @property
+    def fade_end(self):
+        return self.end + self.fade
+
+    def is_active(self, tracktime):
+        return self.start <= tracktime < self.end
+
+    def is_waiting(self, tracktime):
+        return self.start > tracktime
+
+    def __lt__(self, other):
+        return self.start < other.start
+
+    @classmethod
+    def parse(cls, j):
+        return cls(j["time"], j["end_time"], j["words"])
+
+
+class LyricAnimator:
+    def __init__(self, phrases: list = lyrics, *,
+                 size: tuple = (600, 500), font = "Segoe UI Emoji", show_next=False):
+        self.phrases = sorted(LyricPhrase.parse(p) for p in phrases)
+        self.width, self.height = size
+        self.font = font
+        self._image = None
+        self.tracktime = 0
+        self.last_drawn = None
+        self.selected = -1
+        self.show_next = show_next
+
+        for p, np in zip(self.phrases, self.phrases[1:] + [None]):
+            p.next = np
+
+    @property
+    @cache_on("tracktime")
+    def active_phrase(self):
+        try:
+            return next(p for p in self.phrases if p.is_active(self.tracktime))
+        except StopIteration:
+            return None
+
+    @property
+    @cache_on("tracktime")
+    def next_phrase(self):
+        try:
+            return next(p for p in self.phrases if p.is_waiting(self.tracktime))
+        except StopIteration:
+            return None
+
+    @property
+    @cache_on("tracktime")
+    def on_text(self):
+        return self.active_phrase and self.active_phrase.get_on_text(self.tracktime)
+
+    @property
+    @cache_on("tracktime")
+    def off_text(self):
+        return self.active_phrase and self.active_phrase.get_off_text(self.tracktime)
+
+    @property
+    @cache_on("tracktime")
+    def next_text(self):
+        return self.next_phrase and self.next_phrase.get_text()
+
+    def draw(self):
+        surf = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
+
+        pygame.draw.line(surf, "red", surf.get_rect().midleft, surf.get_rect().midright)
+
+        if self.active_phrase is not None:
+            self.active_phrase.render_to(surf, self.tracktime, self.font)
+
+        if self.show_next and self.next_phrase is not None:
+            self.next_phrase.render_to(surf, self.tracktime, self.font, offset=(0, 40))
+
+        return surf
+
+    def update(self, tracktime):
+        self.tracktime = tracktime
+        # if self.selected < 0:
+        #    self.tracktime = time.process_time()
+        # else:
+        #    p = lyrics[self.selected]
+        #    self.tracktime = p["time"] + (time.process_time() % (p["end_time"] - p["time"]))
+
+    @property
+    def image(self) -> pygame.Surface:
+        # Don't rerender what we just rendered
+        to_draw = (self.on_text, self.off_text, self.next_text)
+        if to_draw != self.last_drawn:
+            self._image = self.draw()
+            self.last_drawn = to_draw
+        return self._image
+
+
+fonts = {}
+largest_font = 30
 
 
 def get_font(name, size):
@@ -178,22 +185,8 @@ def precache_fonts(name):
 
 
 def fit_text(text, fontname, width, maxsize = None):
-    return 30
     for size in range(maxsize or largest_font, 4, -2):
         font = get_font(fontname, size)
         if font.get_rect(text).w <= (width * 0.95):
             return size
     return None
-
-
-def prep_phrases(phrases):
-    # Clean lyrics
-    for phrase in phrases:
-        for word in phrase["words"]:
-            word["clean"] = clean_lyric(word["word"])
-        phrase["words"][-1]["clean"] = phrase["words"][-1]["clean"].rstrip()
-
-    # Calculate fades
-    phrases[-1]["fade"] = 1
-    for p, np in zip(phrases[:-1], phrases[1:]):
-        p["fade"] = min(np["time"] - p["end_time"], 1)
