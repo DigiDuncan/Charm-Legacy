@@ -1,3 +1,4 @@
+from functools import wraps
 from typing import Tuple
 
 
@@ -58,3 +59,21 @@ def degreesToXY(degrees: int) -> dict:
         raise ValueError(f"{degrees} is not a supported degree.")
 
     return degmap[degrees]
+
+
+def cache_on(*attrs):
+    oldvals = ()
+    cached_result = None
+
+    def wrapper(fn):
+        @wraps(fn)
+        def wrapped(self, *args, **kwargs):
+            nonlocal oldvals
+            nonlocal cached_result
+            newvals = tuple(getattr(self, name) for name in attrs)
+            if oldvals != newvals:
+                oldvals = newvals
+                cached_result = fn(self, *args, **kwargs)
+            return cached_result
+        return wrapped
+    return wrapper
