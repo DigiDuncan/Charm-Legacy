@@ -8,11 +8,8 @@ RE_PHRASE_END = re.compile(r"(\d+) \"phrase_end\"")
 with open("./charm/test/lyrics/run_around.chart", mode="r") as f:
     lines = f.readlines()
 
-writeto = open("run_around.txt", mode="w")
 
 tps = 702
-
-printer = pprint.PrettyPrinter(indent=4, width=120, stream=writeto)
 
 
 def ticks_to_seconds(ticks):
@@ -34,4 +31,7 @@ for line in lines:
         lyrics.append(current_phrase)
         current_phrase = {}
 
+
+writeto = open("run_around.txt", mode="w")
+printer = pprint.PrettyPrinter(indent=4, width=120, stream=writeto)
 printer.pprint(lyrics)
