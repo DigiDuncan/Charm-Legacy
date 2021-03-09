@@ -38,9 +38,9 @@ class Game(nygame.Game):
                 elif event.key == K_RIGHT and self.la.next_phrase is not None:
                     music.elapsed = self.la.next_phrase.start
                 if event.key == K_UP:
-                    self.set_volume(self.volume + 0.05)
+                    self.set_volume(self.volume + 0.01)
                 if event.key == K_DOWN:
-                    self.set_volume(self.volume - 0.05)
+                    self.set_volume(self.volume - 0.01)
 
         # note = Note(instruments.GUITAR, frets.ORANGE)
         # self.screen.blit(note.image, (0, 0))
@@ -73,7 +73,7 @@ class Game(nygame.Game):
         text.render_to(self.surface, (5, 45))
 
     def render_volume(self):
-        text = T(f"VOL {'|' * int(self.volume * 100 // 5)}", font="Lato Medium", size=24, color="green")
+        text = T(f"VOL {'|' * int(self.volume * 100)}", font="Lato Medium", size=24, color="green")
         text.render_to(self.surface, (5, 70))
 
     @property
@@ -82,14 +82,14 @@ class Game(nygame.Game):
 
     @volume.setter
     def volume(self, value):
-        self._volume = clamp(0, value, 2)
+        self._volume = clamp(0, value, 0.3)
 
     def set_volume(self, value):
         self.volume = value
         music.volume = self.volume
 
     def run(self):
-        music.volume = 0.05
+        self.set_volume(0.05)
         music.play("song.mp3")
         super().run()
 
