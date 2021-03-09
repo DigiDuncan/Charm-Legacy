@@ -1,5 +1,5 @@
 from pathlib import Path
-from charm.test.lyrics.loader import load_lyrics
+from charm.test.loader import load_lyrics
 from charm.lib.utils import cache_on
 
 import pygame

@@ -8,7 +8,7 @@ from pygame.constants import K_DOWN, K_LEFT, K_RIGHT, K_SPACE, K_UP
 #    example_song as song,
 #    example_gamemode as gamemode
 # )
-from charm.test.lyric_animation_test import LyricAnimator
+from charm.objects.lyricanimator import LyricAnimator
 
 
 def draw_pause():
