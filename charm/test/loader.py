@@ -1,5 +1,6 @@
-from nygame.emoji import emojize
 import re
+
+from nygame.emoji import emojize
 
 RE_RESOLUTION = re.compile(r"^ *Resolution *= *(\d+)$")
 RE_MBPM = re.compile(r"^ *(\d+) *= *B +(\d+)$")
