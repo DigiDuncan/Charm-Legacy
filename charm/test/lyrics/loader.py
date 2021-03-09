@@ -158,7 +158,7 @@ def clean_word(word: str):
         word = word.removesuffix("-")
     else:
         word = word + " "
-    word = word.replace("=", "-").replace("''", "\"").replace("+", "").replace("#", "").replace("^", "")
+    word = word.replace("=", "-").replace("''", "\"").replace("+", "").replace("#", "").replace("^", "").replace("_", " ")
     word = emojize(word)
     return word
 
