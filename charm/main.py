@@ -1,14 +1,12 @@
-from charm.lib.utils import clamp, nice_time
 import pygame
 import nygame
-from nygame import music, DigiText as T
 from pygame.constants import K_DOWN, K_LEFT, K_RIGHT, K_SPACE, K_UP
+from nygame import music, DigiText as T
 
-# from charm.classes.examplesong import (
-#    example_song as song,
-#    example_gamemode as gamemode
-# )
+# from charm.lib.constants import instruments, frets
+from charm.lib.utils import clamp, nice_time
 from charm.objects.lyricanimator import LyricAnimator
+# from charm.objects.note import Note
 
 
 def draw_pause():
@@ -23,7 +21,7 @@ class Game(nygame.Game):
         super().__init__(size = (800, 600), fps = 120, showfps = True)
         self.paused = False
         self._volume = 0.05
-        self.la = LyricAnimator()
+        self.la = LyricAnimator("./charm/test/lyrics/run_around_the_character_code.chart")
         self.pause_image = draw_pause()
 
     def loop(self, events):
@@ -43,13 +41,7 @@ class Game(nygame.Game):
                     self.set_volume(self.volume - 0.01)
 
         # note = Note(instruments.GUITAR, frets.ORANGE)
-        # self.screen.blit(note.image, (0, 0))
-
-        # highway = Highway(1000, gamemode, song, instruments.GUITAR, difficulties.EXPERT)
-        # self.screen.blit(highway.image, (0, (0 - highway.image.get_height() + self.screen.get_height())))
-
-        # songinfo = SongInfo(gamemode, song, instruments.GUITAR, difficulties.EXPERT)
-        # self.screen.blit(songinfo.image, (self.screen.get_width() - songinfo.image.get_width() - 5, 0))
+        # self.surface.blit(note.image, (0, 0))
 
         self.render_lyrics()
         self.render_clock()

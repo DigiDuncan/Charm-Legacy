@@ -1,32 +1,17 @@
 from pathlib import Path
-from charm.test.loader import load_lyrics
-from charm.lib.utils import cache_on
 
 import pygame
-import pygame.freetype
 import pygame.draw
-
+import pygame.freetype
 from nygame import DigiText as T
 
-
-def render_phrase_to(phrase, surf, tracktime, fontname, offset=(0, 0)):
-    full_text = phrase.get_text()
-    on_text = phrase.get_on_text(tracktime)
-    off_text = phrase.get_off_text(tracktime)
-    fontsize = fit_text(full_text, fontname, surf.get_width() * 0.75, 24)
-    T.font = fontname
-    T.size = fontsize
-    digitext = T(on_text, color="#ffff00") + T(off_text, color="#808080")
-    dest_rect = digitext.get_rect()
-    dest_rect.centerx = surf.get_rect().centerx
-    dest_rect.y = surf.get_rect().centery
-    dest_rect.move_ip(offset)
-    digitext.render_to(surf, dest_rect)
+from charm.lib.utils import cache_on
+from charm.test.loader import load_lyrics
 
 
 class LyricAnimator:
-    def __init__(self, *, size: tuple = (600, 500), font = "Segoe UI Emoji", show_next=False):
-        with Path("./charm/test/lyrics/run_around_the_character_code.chart").open("r", encoding="utf-8") as f:
+    def __init__(self, chart, *, size: tuple = (600, 500), font = "Segoe UI Emoji", show_next=False):
+        with Path(chart).open("r", encoding="utf-8") as f:
             self.phrases = load_lyrics(f)
         self.width, self.height = size
         self.font = font
@@ -124,3 +109,18 @@ def fit_text(text, fontname, width, maxsize = None):
         if font.get_rect(text).w <= (width * 0.95):
             return size
     return None
+
+
+def render_phrase_to(phrase, surf, tracktime, fontname, offset=(0, 0)):
+    full_text = phrase.get_text()
+    on_text = phrase.get_on_text(tracktime)
+    off_text = phrase.get_off_text(tracktime)
+    fontsize = fit_text(full_text, fontname, surf.get_width() * 0.75, 24)
+    T.font = fontname
+    T.size = fontsize
+    digitext = T(on_text, color="#ffff00") + T(off_text, color="#808080")
+    dest_rect = digitext.get_rect()
+    dest_rect.centerx = surf.get_rect().centerx
+    dest_rect.y = surf.get_rect().centery
+    dest_rect.move_ip(offset)
+    digitext.render_to(surf, dest_rect)
