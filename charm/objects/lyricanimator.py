@@ -74,7 +74,7 @@ class LyricAnimator:
     def draw(self):
         surf = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
 
-        if self.draw_baseline:
+        if self.show_baseline:
             pygame.draw.line(surf, "red", surf.get_rect().midleft, surf.get_rect().midright)
 
         if self.active_phrase is not None:
