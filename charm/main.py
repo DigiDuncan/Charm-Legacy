@@ -47,6 +47,7 @@ class Game(nygame.Game):
         self.render_clock()
         self.render_pause()
         self.render_volume()
+        self.render_phrase()
 
     def render_lyrics(self):
         dest = self.la.image.get_rect()
@@ -66,6 +67,10 @@ class Game(nygame.Game):
 
     def render_volume(self):
         text = T(f"VOL {'|' * int(self.volume * 100)}", font="Lato Medium", size=24, color="green")
+        text.render_to(self.surface, (5, 95))
+
+    def render_phrase(self):
+        text = T(f"Phrase: {'None' if self.la.active_phrase_index is None else self.la.active_phrase_index + 1}", font="Lato Medium", size=24, color="green")
         text.render_to(self.surface, (5, 70))
 
     @property

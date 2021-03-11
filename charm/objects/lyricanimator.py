@@ -33,6 +33,14 @@ class LyricAnimator:
 
     @property
     @cache_on("tracktime")
+    def active_phrase_index(self):
+        try:
+            return next(i for i, p in enumerate(self.phrases) if p.is_active(self.tracktime))
+        except StopIteration:
+            return None
+
+    @property
+    @cache_on("tracktime")
     def next_phrase(self):
         try:
             return next(p for p in self.phrases if p.is_waiting(self.tracktime))
