@@ -10,7 +10,7 @@ from charm.test.loader import load_lyrics
 
 
 class LyricAnimator:
-    def __init__(self, chart, *, size: tuple = (700, 500), font = "Segoe UI Emoji", show_next=False):
+    def __init__(self, chart, *, size: tuple = (700, 500), font = "Segoe UI Emoji", show_next=False, show_baseline = False):
         with Path(chart).open("r", encoding="utf-8") as f:
             self.phrases = load_lyrics(f)
         self.width, self.height = size
@@ -19,6 +19,7 @@ class LyricAnimator:
         self.tracktime = 0
         self.last_drawn = None
         self.show_next = show_next
+        self.show_baseline = show_baseline
 
         for p, np in zip(self.phrases, self.phrases[1:] + [None]):
             p.next = np
@@ -73,7 +74,8 @@ class LyricAnimator:
     def draw(self):
         surf = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
 
-        pygame.draw.line(surf, "red", surf.get_rect().midleft, surf.get_rect().midright)
+        if self.draw_baseline:
+            pygame.draw.line(surf, "red", surf.get_rect().midleft, surf.get_rect().midright)
 
         if self.active_phrase is not None:
             render_phrase_to(self.active_phrase, surf, self.tracktime, self.font)
