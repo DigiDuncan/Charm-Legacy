@@ -10,7 +10,7 @@ from charm.test.loader import load_lyrics
 
 
 class LyricAnimator:
-    def __init__(self, chart, *, size: tuple = (600, 500), font = "Segoe UI Emoji", show_next=False):
+    def __init__(self, chart, *, size: tuple = (700, 500), font = "Segoe UI Emoji", show_next=False):
         with Path(chart).open("r", encoding="utf-8") as f:
             self.phrases = load_lyrics(f)
         self.width, self.height = size
@@ -123,7 +123,7 @@ def render_phrase_to(phrase, surf, tracktime, fontname, offset=(0, 0)):
     full_text = phrase.get_text()
     on_text = phrase.get_on_text(tracktime)
     off_text = phrase.get_off_text(tracktime)
-    fontsize = fit_text(full_text, fontname, surf.get_width() * 0.75, 24)
+    fontsize = fit_text(full_text, fontname, surf.get_width(), 24)
     T.font = fontname
     T.size = fontsize
     digitext = T(on_text, color="#ffff00") + T(off_text, color="#808080")
