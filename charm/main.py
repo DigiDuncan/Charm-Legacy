@@ -1,6 +1,6 @@
 import pygame
 import nygame
-from pygame.constants import K_DOWN, K_LEFT, K_RIGHT, K_SPACE, K_UP
+from pygame.constants import K_DOWN, K_HOME, K_LEFT, K_RIGHT, K_SPACE, K_UP
 from nygame import music, DigiText as T
 
 # from charm.lib.constants import instruments, frets
@@ -35,6 +35,8 @@ class Game(nygame.Game):
                     music.elapsed = self.la.prev_phrase.start
                 elif event.key == K_RIGHT and self.la.next_phrase is not None:
                     music.elapsed = self.la.next_phrase.start
+                elif event.key == K_HOME:
+                    music.elapsed = 0
                 if event.key == K_UP:
                     self.set_volume(self.volume + 0.01)
                 if event.key == K_DOWN:
