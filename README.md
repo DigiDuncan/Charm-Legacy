@@ -1,3 +1,5 @@
+![Charm logo.](docs/images/logo.png)
+
 # Charm
 A Python-based rhythm engine/game/chart player. Feels like an arcade cabinet, is the hope.
 
@@ -10,7 +12,8 @@ I'm just messing around for now. I want to get Clone Hero (and everything elses)
 * `.mid` (chart), various guitar games, notably Frets on Fire
 * `.osu` and `.osz` (mania/taiko), [osu!mania and osu!taiko](https://osu.ppy.sh/wiki/en/osu%21_File_Formats)\*
 * `.sm`, [StepMania](https://strategywiki.org/wiki/StepMania/Creating_songs)
-* `.bms`, [Lunatic Rave 2](https://github.com/BMS-Community/resources#bms-creation), a Beatmania iidx engine
+* `.bms/.bme/.pms`, [Lunatic Rave 2 and Pop'n Music](https://github.com/BMS-Community/resources#bms-creation), a Beatmania iidx "simulation"
+* `.1`, [Beatmania iidx](https://github.com/SaxxonPike/rhythm-game-formats/blob/master/iidx/1.md), the actual arcade binary chart format (low priority)
 
 \* The popular Roblox rhythm game *Robeats* also loads `.osz` charts.
 
