@@ -7,6 +7,12 @@ from typing import List, Union
 RE_PARENTHETICAL = r"(.*)(\(.*\).*)"
 
 
+class TimeStamp:
+    def __init__(self, ticks):
+        self.ticks = ticks
+        self.secs = None
+
+
 @dataclass(order = True)
 class RawNote:
     time: int
@@ -64,14 +70,59 @@ class RawSong:
     datablocks: List[RawDataBlock]
 
 
-class Chart:
-    def __init__(self, song, block = None):
+class Note:
+    def __init__(self, song, chart, rawnote: RawNote = None):
         self.song = song
-        if block is not None:
-            self.load_block(block)
+        self.chart = chart
+        self.kind = None
+        self.time = None
+        self.length = None
 
-    def load_block(self, block):
+        if rawnote is not None:
+            self.load_raw(rawnote)
+
+    def load_raw(self, rawnote: RawNote):
         pass
+
+
+class Chart:
+    def __init__(self, song, rawdatablock: RawDataBlock = None):
+        self.song = song
+        self.instrument = None
+        self._notes = []
+        self._star_powers = []
+        self._events = []
+        if rawdatablock is not None:
+            self.load_block(rawdatablock)
+
+    @property
+    def notes(self):
+        return sorted(self._notes)
+
+    @property
+    def star_powers(self):
+        return sorted(self._star_powers)
+
+    @property
+    def events(self):
+        return sorted(self._events)
+
+    def load_block(self, block: RawDataBlock):
+        self.instrument = block.name
+        for event in block.events:
+            if isinstance(event, RawNote):
+                self._notes.append(Note(self.song, self, event))
+            elif isinstance(event, RawSPEvent):
+                self._star_powers.append(SPEvent(self.song, self, event))
+            elif isinstance(event, RawEvent):
+                self._event.append(Event(self.song, self, event))
+
+    def __hash__(self):
+        return hash(
+            (tuple(self.notes),
+             tuple(self.star_powers),
+             tuple(self.events))
+        )
 
 
 class Song:
@@ -155,6 +206,9 @@ class Song:
     def mediastream(self):
         return self.metadata.get("mediastream")
 
+    def ticks_to_secs(self, ticks):
+        return ticks  # TODO: Placeholder
+
     def load_raw(self, rawsong: RawSong):
         for md in rawsong.metadata:
             self.metadata[md.key] = md.value
@@ -167,3 +221,10 @@ class Song:
                     self._events.append(event)
             else:
                 self.charts[block.name] = Chart(self, block)
+
+    def __hash__(self):
+        return hash(
+            (tuple(self.sync_track),
+             tuple(self.events),
+             tuple(self.charts.values()))
+        )
