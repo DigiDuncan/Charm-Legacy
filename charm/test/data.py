@@ -8,9 +8,39 @@ RE_PARENTHETICAL = r"(.*)(\(.*\).*)"
 
 
 class TimeStamp:
-    def __init__(self, ticks):
+    def __init__(self, ticks, song: Song = None):
         self.ticks = ticks
-        self.secs = None
+        self.song = song
+
+    @property
+    def secs(self):
+        return self.song.ticks_to_secs(self.ticks)
+
+
+class TimeDelta:
+    def __init__(self, start: TimeStamp, tick_length):
+        self._start = start
+        self.tick_length = tick_length
+
+    @property
+    def start_ticks(self):
+        return self._start.ticks
+
+    @property
+    def end_ticks(self):
+        return self._start.ticks + self.tick_length
+
+    @property
+    def start(self):
+        return self._start.secs
+
+    @property
+    def end(self):
+        return self._start.song.ticks_to_secs(self.end_ticks)
+
+    @property
+    def length(self):
+        return self.end - self.start
 
 
 @dataclass(order = True)
@@ -82,7 +112,39 @@ class Note:
             self.load_raw(rawnote)
 
     def load_raw(self, rawnote: RawNote):
-        pass
+        self.kind = int(rawnote.kind)
+        self.time = TimeStamp(rawnote.time, self.song)
+        self.length = TimeDelta(self.time, rawnote.length)
+
+
+class SPEvent:
+    def __init__(self, song, chart, rawspevent: RawSPEvent = None):
+        self.song = song
+        self.chart = chart
+        self.time = None
+        self.kind = None  # Unused? Seems to always be 2...
+        self.length = None
+
+        if rawspevent is not None:
+            self.load_raw(rawspevent)
+
+    def load_raw(self, rawspevent: RawSPEvent):
+        self.time = TimeStamp(rawspevent.time, self.song)
+        self.kind = int(rawspevent.kind)
+        self.length = TimeDelta(self.time, rawspevent.length)
+
+
+class Event:
+    def __init__(self, song, chart, rawevent: RawEvent = None):
+        self.song = song
+        self.chart = chart
+
+        if rawevent is not None:
+            self.load_raw(rawevent)
+
+    def load_raw(self, rawevent: RawEvent):
+        self.time = TimeStamp(rawevent.time, self.song)
+        self.data = rawevent.data
 
 
 class Chart:
@@ -160,6 +222,10 @@ class Song:
             if m := (re.match(RE_PARENTHETICAL, self.full_name)):
                 return m.group(2)
         return None
+
+    @property
+    def alt_title(self):
+        return "UNUSED"
 
     @property
     def artist(self):
