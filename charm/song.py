@@ -78,6 +78,11 @@ class Note(ChartEvent):
         self.kind = kind
         self.length = length
 
+    def __lt__(self, other):
+        if self.time == other.time:
+            return self.kind < other.kind
+        return super().__lt__(self, other)
+
     def __repr__(self):
         return f"<Note(time = {self.time}, kind = {self.kind}), length = {self.length})>"
 
@@ -105,10 +110,10 @@ class Chord:
     def __init__(self, song, chart, notes: List[Note]):
         self.song = song
         self.chart = chart
-        self.notes = sorted(notes)
+        self.notes = notes
         self.time = self.notes[0].time
         self.length = max(n.length for n in self.notes)
-        self.shape = sorted(n.kind for n in self.notes)
+        self.shape = tuple(n.kind for n in notes)
 
     def __repr__(self):
         return f"<Chord(time = {self.time}, shape = {self.shape}, length = {self.length})>"
@@ -122,10 +127,10 @@ class Chart:
         self.song = song
         self.instrument = instrument
         self.difficulty = difficulty
-        self.notes = None
-        self.star_powers = None
-        self.events = None
-        self.chords = None
+        self.notes = []
+        self.star_powers = []
+        self.events = []
+        self.chords = []
 
     def finalize(self):
         self.notes.sort()
