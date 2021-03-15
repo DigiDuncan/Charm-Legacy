@@ -1,0 +1,20 @@
+CharmSong
+^
+| highloader
+|
+Raw Data
+^
+| rawloader
+|
+Lines in a file (giant array of characters)
+
+
+CharmSong
+^
+| highloader
+|
+Raw Data
+^
+| rawloader
+|
+Bits in a midi

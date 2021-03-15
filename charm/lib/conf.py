@@ -1,9 +1,9 @@
 import importlib.resources as pkg_resources
 
 import toml
+import addict
 
 import charm.data
-from charm.lib.attrdict import AttrDict
 from charm.lib.constants import game
 
 
@@ -16,7 +16,7 @@ def loadsettings(data):
     # make all names lowercase
     settingsdict = {name.lower(): value for name, value in settingsdict.items()}
     # create the enum
-    settings = AttrDict(settingsdict)
+    settings = addict(settingsdict)
     if not isinstance(settings.scale, int):
         raise ValueError("Scale is not an integer.")
     settings.windowwidth = game.width * settings.scale

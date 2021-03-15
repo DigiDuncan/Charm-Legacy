@@ -7,3 +7,4 @@ git+git://github.com/nfearnley/nygame
 git+git://github.com/nfearnley/chparse
 digiformatter==0.5.7.2
 git+git://github.com/DigiDuncan/DigiColor
+addict==2.4.0

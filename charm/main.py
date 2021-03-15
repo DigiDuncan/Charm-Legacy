@@ -5,7 +5,7 @@ from nygame import music, DigiText as T
 
 # from charm.lib.constants import instruments, frets
 from charm.lib.utils import clamp, nice_time
-from charm.objects.lyricanimator import LyricAnimator
+from charm.prototyping.lyricanimator.lyricanimator import LyricAnimator
 # from charm.objects.note import Note
 
 
@@ -20,8 +20,9 @@ class Game(nygame.Game):
     def __init__(self):
         super().__init__(size = (800, 600), fps = 120, showfps = True)
         self.paused = False
-        self._volume = 0.05
-        self.la = LyricAnimator("./charm/test/lyrics/run_around_the_character_code.chart")
+        self.volume = 6
+        self.la = LyricAnimator("./charm/data/charts/run_around_the_character_code/run_around_the_character_code.chart")
+        music.load("./charm/data/charts/run_around_the_character_code/run_around_the_character_code.mp3")
         self.pause_image = draw_pause()
 
     def loop(self, events):
@@ -38,9 +39,9 @@ class Game(nygame.Game):
                 elif event.key == K_HOME:
                     music.elapsed = 0
                 if event.key == K_UP:
-                    self.set_volume(self.volume + 0.01)
+                    self.volume += 1
                 if event.key == K_DOWN:
-                    self.set_volume(self.volume - 0.01)
+                    self.volume -= 1
 
         # note = Note(instruments.GUITAR, frets.ORANGE)
         # self.surface.blit(note.image, (0, 0))
@@ -68,7 +69,7 @@ class Game(nygame.Game):
         text.render_to(self.surface, (5, 45))
 
     def render_volume(self):
-        text = T(f"VOL {'|' * int(self.volume * 100)}", font="Lato Medium", size=24, color="green")
+        text = T(f"VOL {'|' * int(music.volume)}", font="Lato Medium", size=24, color="green")
         text.render_to(self.surface, (5, 95))
 
     def render_phrase(self):
@@ -77,19 +78,14 @@ class Game(nygame.Game):
 
     @property
     def volume(self):
-        return self._volume
+        return music.volume
 
     @volume.setter
     def volume(self, value):
-        self._volume = clamp(0, value, 0.3)
-
-    def set_volume(self, value):
-        self.volume = value
-        music.volume = self.volume
+        music.volume = clamp(0, value, 38)
 
     def run(self):
-        self.set_volume(0.05)
-        music.play("song.mp3")
+        music.play()
         super().run()
 
 

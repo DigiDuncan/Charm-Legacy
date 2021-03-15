@@ -51,6 +51,9 @@ class RawLine:
             return cls(*m.groups())
         return None
 
+    def __str__(self):
+        return f"<{repr(self)}>"
+
 
 @dataclass
 class RawMetadata(RawLine):
