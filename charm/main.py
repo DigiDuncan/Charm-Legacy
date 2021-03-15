@@ -3,6 +3,8 @@ import nygame
 from pygame.constants import K_DOWN, K_HOME, K_LEFT, K_RIGHT, K_SPACE, K_UP
 from nygame import music, DigiText as T
 
+from charm.prototyping.data import load
+
 # from charm.lib.constants import instruments, frets
 from charm.lib.utils import clamp, nice_time
 from charm.prototyping.lyricanimator.lyricanimator import LyricAnimator
@@ -90,9 +92,12 @@ class Game(nygame.Game):
 
 
 def main():
-    g = Game()
-    g.run()
+    #g = Game()
+    #g.run()
     # chparse_test.test()
+    with open(r"C:\Users\nfear\Desktop\Coding\Charm\charm\data\charts\run_around_the_character_code\run_around_the_character_code.chart") as f:
+        song = load(f)
+        print(song)
 
 
 # This is needed, or else calling `python -m <name>` will mean that main() is called twice.

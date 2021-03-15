@@ -1,18 +1,19 @@
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass
 from functools import total_ordering
-from typing import DefaultDict, List, Union
+from typing import DefaultDict, Dict, List
+
+from charm.loaders import chchart
 
 RE_PARENTHETICAL = r"(.*)(\(.*\).*)"
 
 
 @total_ordering
 class TimeStamp:
-    def __init__(self, ticks, song: Song = None):
-        self.ticks = ticks
+    def __init__(self, song, ticks):
         self.song = song
+        self.ticks = ticks
 
     @property
     def secs(self):
@@ -58,40 +59,28 @@ class TimeDelta:
         return f"TimeDelta<start_ticks = {self.start_ticks}, end_ticks = {self.end_ticks})>"
 
 
-
-@dataclass
-class RawDataBlock:
-    name: str
-    events: List[Union[RawEvent, RawAnchorEvent, RawBPMEvent, RawNote, RawSPEvent, RawTSEvent]]
-
-    def __str__(self):
-        return f"<{repr(self)}>"
-
-
-@dataclass
-class RawSong:
-    metadata: List[RawMetadata]
-    datablocks: List[RawDataBlock]
-
-    def __str__(self):
-        return f"<{repr(self)}>"
-
-
-class Note:
-    def __init__(self, song, chart, rawnote: RawNote = None):
+class TimedEvent:
+    def __init__(self, song, chart, time):
         self.song = song
         self.chart = chart
-        self.kind = None
-        self.time = None
-        self.length = None
+        self.time = time
 
-        if rawnote is not None:
-            self.load_raw(rawnote)
+    def __lt__(self, other):
+        return self.time < other.time
 
-    def load_raw(self, rawnote: RawNote):
-        self.kind = int(rawnote.kind)
-        self.time = TimeStamp(rawnote.time, self.song)
-        self.length = TimeDelta(self.time, rawnote.length)
+
+class Note(TimedEvent):
+    def __init__(self, song, chart, time, kind, length):
+        super().__init__(song, chart, time)
+        self.kind = kind
+        self.length = length
+
+    @classmethod
+    def from_raw(cls, song, chart, rawnote: chchart.RawNote):
+        time = TimeStamp(song, rawnote.time)
+        length = TimeDelta(time, rawnote.length)
+        note = Note(song, chart, time, rawnote.kind, length)
+        return note
 
     def __repr__(self):
         return f"<Note(time = {self.time}, kind = {self.kind}), length = {self.length})>"
@@ -100,21 +89,18 @@ class Note:
         return repr(self)
 
 
-class SPEvent:
-    def __init__(self, song, chart, rawspevent: RawSPEvent = None):
-        self.song = song
-        self.chart = chart
-        self.time = None
-        self.kind = None  # Unused? Seems to always be 2...
-        self.length = None
+class SPEvent(TimedEvent):
+    def __init__(self, song, chart, time, kind, length):
+        super().__init__(song, chart, time)
+        self.kind = kind  # Unused? Seems to always be 2...
+        self.length = length
 
-        if rawspevent is not None:
-            self.load_raw(rawspevent)
-
-    def load_raw(self, rawspevent: RawSPEvent):
-        self.time = TimeStamp(rawspevent.time, self.song)
-        self.kind = int(rawspevent.kind)
-        self.length = TimeDelta(self.time, rawspevent.length)
+    @classmethod
+    def from_raw(cls, song, chart, rawspevent: chchart.RawStarPower):
+        time = TimeStamp(song, rawspevent.time)
+        length = TimeDelta(time, rawspevent.length)
+        spevent = SPEvent(song, chart, time, rawspevent.kind, length)
+        return spevent
 
     def __repr__(self):
         return f"<SPEvent(time = {self.time}, kind = {self.kind}), length = {self.length})>"
@@ -123,19 +109,16 @@ class SPEvent:
         return repr(self)
 
 
-class Event:
-    def __init__(self, song, chart, rawevent: RawEvent = None):
-        self.song = song
-        self.chart = chart
-        self.time = None
-        self.data = None
+class Event(TimedEvent):
+    def __init__(self, song, chart, time, data):
+        super().__init__(song, chart, time)
+        self.data = data
 
-        if rawevent is not None:
-            self.load_raw(rawevent)
-
-    def load_raw(self, rawevent: RawEvent):
-        self.time = TimeStamp(rawevent.time, self.song)
-        self.data = rawevent.data
+    @classmethod
+    def from_raw(cls, song, chart, rawevent: chchart.RawEvent):
+        time = TimeStamp(song, rawevent.time)
+        event = Event(song, chart, time, rawevent.data)
+        return event
 
     def __repr__(self):
         return f"<Event(time = {self.time}, data = {self.data})>"
@@ -174,14 +157,12 @@ class Chord:
 
 
 class Chart:
-    def __init__(self, song, rawdatablock: RawDataBlock = None):
+    def __init__(self, song, instrument):
         self.song = song
-        self.instrument = None
+        self.instrument = instrument
         self._notes = []
         self._star_powers = []
         self._events = []
-        if rawdatablock is not None:
-            self.load_block(rawdatablock)
 
     @property
     def notes(self):
@@ -202,22 +183,26 @@ class Chart:
     def events(self):
         return sorted(self._events)
 
-    def load_block(self, block: RawDataBlock):
-        self.instrument = block.name
-        for event in block.events:
-            if isinstance(event, RawNote):
-                self._notes.append(Note(self.song, self, event))
-            elif isinstance(event, RawSPEvent):
-                self._star_powers.append(SPEvent(self.song, self, event))
-            elif isinstance(event, RawEvent):
-                self._event.append(Event(self.song, self, event))
+    @classmethod
+    def from_raw(cls, song, instrument, lines: List):
+        chart = Chart(song, instrument)
+        for line in lines:
+            if isinstance(line, chchart.RawNote):
+                chart._notes.append(Note.from_raw(song, chart, line))
+            elif isinstance(line, chchart.RawStarPower):
+                chart._star_powers.append(SPEvent.from_raw(song, chart, line))
+            elif isinstance(line, chchart.RawEvent):
+                chart._events.append(Event.from_raw(song, chart, line))
+            else:
+                raise ValueError(f"Bad line type {line}")
+        return chart
 
     def __hash__(self):
-        return hash(
-            (tuple(self.notes),
-             tuple(self.star_powers),
-             tuple(self.events))
-        )
+        return hash((
+            tuple(self.notes),
+            tuple(self.star_powers),
+            tuple(self.events)
+        ))
 
     def __repr__(self):
         return f"<Chart(instrument = {self.instrument}, chords = {self.chords}, star_powers = {self.star_powers}, events = {self.events})>"
@@ -227,18 +212,15 @@ class Chart:
 
 
 class Song:
-    def __init__(self, rawsong = None):
+    def __init__(self):
         self.metadata = {}
         self._sync_track = []
         self._events = []
         self.charts = {}
 
-        if rawsong is not None:
-            self.load_raw(rawsong)
-
     @property
     def sync_track(self):
-        return sorted(self.sync_track)
+        return sorted(self._sync_track)
 
     @property
     def events(self):
@@ -318,18 +300,29 @@ class Song:
     def ticks_to_secs(self, ticks):
         return ticks  # TODO: Placeholder
 
-    def load_raw(self, rawsong: RawSong):
-        for md in rawsong.metadata:
-            self.metadata[md.key] = md.value
-        for block in rawsong.datablocks:
-            if block.name == "SyncTrack":
-                for event in block.events:
-                    self._sync_track.append(event)
-            elif block.name == "Events":
-                for event in block.events:
-                    self._events.append(event)
+    @classmethod
+    def from_raw(cls, datablocks: Dict[str, List]):
+        song = Song()
+        if "Song" not in datablocks:
+            raise ValueError("Missing Song block")
+        if "Events" not in datablocks:
+            raise ValueError("Missing Events block")
+        if "SyncTrack" not in datablocks:
+            raise ValueError("Missing SyncTrack block")
+
+        for block, lines in datablocks.items():
+            if block == "Song":
+                for md in lines:
+                    song.metadata[md.key] = md.value
+            elif block == "SyncTrack":
+                for line in lines:
+                    song._sync_track.append(line)
+            elif block == "Events":
+                for line in lines:
+                    song._events.append(line)
             else:
-                self.charts[block.name] = Chart(self, block)
+                song.charts[block] = Chart.from_raw(song, block, lines)
+        return song
 
     def __hash__(self):
         return hash(
@@ -343,3 +336,14 @@ class Song:
 
     def __str__(self):
         return repr(self)
+
+
+def load(f):
+    datablocks = chchart.load(f)
+    song = Song.from_raw(datablocks)
+    return song
+
+
+if __name__ == "__main__":
+    song = load(r"C:\Users\nfear\Desktop\Coding\Charm\charm\test\lyrics\run_around_the_character_code.chart")
+    print(song)

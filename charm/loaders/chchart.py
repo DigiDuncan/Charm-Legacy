@@ -54,6 +54,14 @@ class RawLine:
     def __str__(self):
         return f"<{repr(self)}>"
 
+    def __post_init__(self):
+        for attr, attrtype in self.__annotations__.items():
+            if attrtype == "int":
+                oldval = getattr(self, attr)
+                if oldval is None:
+                    return
+                setattr(self, attr, int(oldval))
+
 
 @dataclass
 class RawMetadata(RawLine):
@@ -62,53 +70,58 @@ class RawMetadata(RawLine):
     value: str
 
 
-@dataclass(order = True)
-class RawNote(RawLine):
+class RawTimedLine(RawLine):
+    def __lt__(self, other):
+        return self.time < other.time
+
+
+@dataclass
+class RawNote(RawTimedLine):
     RE_LINE = re.compile(RE_ITEM_TPL.format(r"N", RE_NUM_TPL + r"\s+" + RE_NUM_TPL))
     time: int
     kind: int
     length: int
 
 
-@dataclass(order = True)
-class RawEvent(RawLine):
+@dataclass
+class RawEvent(RawTimedLine):
     RE_LINE = re.compile(RE_ITEM_TPL.format(r"E", RE_QUOTED_TPL))
     time: int
     data: str
 
 
-@dataclass(order = True)
-class RawMBPM(RawLine):
+@dataclass
+class RawMBPM(RawTimedLine):
     RE_LINE = re.compile(RE_ITEM_TPL.format(r"B", RE_NUM_TPL))
     time: int
     mpbm: int
 
 
-@dataclass(order = True)
-class RawAnchor(RawLine):
+@dataclass
+class RawAnchor(RawTimedLine):
     RE_LINE = re.compile(RE_ITEM_TPL.format(r"A", RE_NUM_TPL))
     time: int
     mpbm: int
 
 
-@dataclass(order = True)
-class RawTS(RawLine):
+@dataclass
+class RawTS(RawTimedLine):
     RE_LINE = re.compile(
         RE_ITEM_TPL.format(r"TS", RE_NUM_TPL + r"(?:\s+" + RE_NUM_TPL + ")?")
     )
     time: int
     numerator: int
-    denominator: Union[int, None] = None
+    denominator: int = None
 
 
-@dataclass(order = True)
-class RawStarPower(RawLine):
+@dataclass
+class RawStarPower(RawTimedLine):
     RE_LINE = re.compile(RE_ITEM_TPL.format(r"S", RE_NUM_TPL + r"\s+" + RE_NUM_TPL))
     time: int
-    one: int
-    two: int
+    kind: int
+    length: int
 
 
 if __name__ == "__main__":
-    with open(r"C:\Users\nfear\Desktop\Coding\Charm\charm\test\lyrics\run_around_the_character_code.chart") as f:
+    with open(r"C:\Users\nfear\Desktop\Coding\Charm\charm\data\charts\run_around_the_character_code\run_around_the_character_code.chart") as f:
         print(load(f))
