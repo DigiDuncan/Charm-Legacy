@@ -2,9 +2,8 @@ from __future__ import annotations
 
 import re
 from functools import total_ordering
-from typing import DefaultDict, Dict, List
+from typing import DefaultDict, List
 
-from charm.loaders import chchart
 
 RE_PARENTHETICAL = r"(.*)(\(.*\).*)"
 
@@ -75,13 +74,6 @@ class Note(TimedEvent):
         self.kind = kind
         self.length = length
 
-    @classmethod
-    def from_raw(cls, song, chart, rawnote: chchart.RawNote):
-        time = TimeStamp(song, rawnote.time)
-        length = TimeDelta(time, rawnote.length)
-        note = Note(song, chart, time, rawnote.kind, length)
-        return note
-
     def __repr__(self):
         return f"<Note(time = {self.time}, kind = {self.kind}), length = {self.length})>"
 
@@ -95,13 +87,6 @@ class SPEvent(TimedEvent):
         self.kind = kind  # Unused? Seems to always be 2...
         self.length = length
 
-    @classmethod
-    def from_raw(cls, song, chart, rawspevent: chchart.RawStarPower):
-        time = TimeStamp(song, rawspevent.time)
-        length = TimeDelta(time, rawspevent.length)
-        spevent = SPEvent(song, chart, time, rawspevent.kind, length)
-        return spevent
-
     def __repr__(self):
         return f"<SPEvent(time = {self.time}, kind = {self.kind}), length = {self.length})>"
 
@@ -113,12 +98,6 @@ class Event(TimedEvent):
     def __init__(self, song, chart, time, data):
         super().__init__(song, chart, time)
         self.data = data
-
-    @classmethod
-    def from_raw(cls, song, chart, rawevent: chchart.RawEvent):
-        time = TimeStamp(song, rawevent.time)
-        event = Event(song, chart, time, rawevent.data)
-        return event
 
     def __repr__(self):
         return f"<Event(time = {self.time}, data = {self.data})>"
@@ -182,20 +161,6 @@ class Chart:
     @property
     def events(self):
         return sorted(self._events)
-
-    @classmethod
-    def from_raw(cls, song, instrument, lines: List):
-        chart = Chart(song, instrument)
-        for line in lines:
-            if isinstance(line, chchart.RawNote):
-                chart._notes.append(Note.from_raw(song, chart, line))
-            elif isinstance(line, chchart.RawStarPower):
-                chart._star_powers.append(SPEvent.from_raw(song, chart, line))
-            elif isinstance(line, chchart.RawEvent):
-                chart._events.append(Event.from_raw(song, chart, line))
-            else:
-                raise ValueError(f"Bad line type {line}")
-        return chart
 
     def __hash__(self):
         return hash((
@@ -300,30 +265,6 @@ class Song:
     def ticks_to_secs(self, ticks):
         return ticks  # TODO: Placeholder
 
-    @classmethod
-    def from_raw(cls, datablocks: Dict[str, List]):
-        song = Song()
-        if "Song" not in datablocks:
-            raise ValueError("Missing Song block")
-        if "Events" not in datablocks:
-            raise ValueError("Missing Events block")
-        if "SyncTrack" not in datablocks:
-            raise ValueError("Missing SyncTrack block")
-
-        for block, lines in datablocks.items():
-            if block == "Song":
-                for md in lines:
-                    song.metadata[md.key] = md.value
-            elif block == "SyncTrack":
-                for line in lines:
-                    song._sync_track.append(line)
-            elif block == "Events":
-                for line in lines:
-                    song._events.append(line)
-            else:
-                song.charts[block] = Chart.from_raw(song, block, lines)
-        return song
-
     def __hash__(self):
         return hash(
             (tuple(self.sync_track),
@@ -336,14 +277,3 @@ class Song:
 
     def __str__(self):
         return repr(self)
-
-
-def load(f):
-    datablocks = chchart.load(f)
-    song = Song.from_raw(datablocks)
-    return song
-
-
-if __name__ == "__main__":
-    song = load(r"C:\Users\nfear\Desktop\Coding\Charm\charm\test\lyrics\run_around_the_character_code.chart")
-    print(song)
