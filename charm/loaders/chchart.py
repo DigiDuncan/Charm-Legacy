@@ -170,5 +170,5 @@ def load(f) -> Song:
 
 
 if __name__ == "__main__":
-    song = load(r"C:\Users\nfear\Desktop\Coding\Charm\charm\test\lyrics\run_around_the_character_code.chart")
+    song = load(R".\charm\test\lyrics\run_around_the_character_code.chart")
     print(song)
