@@ -177,19 +177,15 @@ class Chart:
 
 
 class Song:
-    def __init__(self, metadata, synctrack, events):
+    def __init__(self, metadata, synctrack):
         self.metadata = metadata
         self._sync_track = synctrack
-        self._events = events
+        self.events = []
         self.charts = {}
 
     @property
     def sync_track(self):
         return sorted(self._sync_track)
-
-    @property
-    def events(self):
-        return sorted(self._events)
 
     @property
     def full_name(self):

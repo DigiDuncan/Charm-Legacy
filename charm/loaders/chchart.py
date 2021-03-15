@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict, List, Union
+from typing import Dict, List, Tuple, Union
 
 from charm.song import Chart, Event, Note, Song, SPEvent, TimeDelta, TimeStamp
 from charm.loaders.raw_chchart import RawEvent, RawNote, RawStarPower, RawMBPM, RawAnchor, RawTS, RawMetadata, load_raw
@@ -57,6 +57,31 @@ def parse_metadata(lines: List[RawMetadata]) -> Dict[str, Union[str, int]]:
     return metadata
 
 
+def parse_synctrack(lines: List[RawMBPM, RawTS]) -> Tuple[List[RawMBPM], List[RawTS]]:
+    MBPMs = []
+    TSs = []
+    for line in lines:
+        if isinstance(line, RawMBPM):
+            MBPMs.append(line)
+        elif isinstance(line, RawTS):
+            TSs.append(line)
+        else:
+            raise ValueError(f"Invalid synctrack data {line}")
+    MBPMs.sort()
+    TSs.sort()
+    # TODO: Return a BPM Calculator
+    return MBPMs, TSs
+
+
+def parse_events(song, lines: List[RawEvent]):
+    events = []
+    for line in lines:
+        if not isinstance(line, RawEvent):
+            raise ValueError(f"Invalid event {line}")
+        events.append(event_from_raw(song, None, line))
+    return sorted(events)
+
+
 def song_from_raw(datablocks: Dict[str, List[RawNote, RawEvent, RawMBPM, RawAnchor, RawTS, RawStarPower, RawMetadata]]) -> Song:
     if "Song" not in datablocks:
         raise ValueError("Missing Song block")
@@ -66,10 +91,9 @@ def song_from_raw(datablocks: Dict[str, List[RawNote, RawEvent, RawMBPM, RawAnch
         raise ValueError("Missing SyncTrack block")
 
     metadata = parse_metadata(datablocks.pop("Song"))
-    synctrack = datablocks.pop("SyncTrack")
-    events = datablocks.pop("Events")
-    song = Song(metadata, synctrack, events)
-
+    MBPMs, TSs = parse_synctrack(datablocks.pop("SyncTrack"))
+    song = Song(metadata, (MBPMs, TSs))
+    song.events = parse_events(song, datablocks.pop("Events"))
     for block, lines in datablocks.items():
         song.charts[block] = chart_from_raw(song, block, lines)
 
