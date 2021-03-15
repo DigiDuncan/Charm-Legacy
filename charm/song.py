@@ -135,7 +135,7 @@ class Chart:
         self.notes = sorted(notes)
         self.star_powers = sorted(star_powers)
         self.events = sorted(events)
-        _, chordnotes = groupby(self.notes, key=lambda n: n.time.ticks)
+        chordnotes = (notes for ticks, notes in groupby(self.notes, key=lambda n: n.time.ticks))
         self.chords = [Chord(self.song, self, notes) for notes in chordnotes]
 
     def __hash__(self):
