@@ -1,34 +1,32 @@
 from __future__ import annotations
-from charm.song import Song, Chart, TimeStamp, TimeDelta, Note, SPEvent, Event
 
 from typing import Dict, List
 
-from charm.loaders.raw_chchart import load_raw, RawNote, RawStarPower, RawEvent
+from charm.song import Chart, Event, Note, Song, SPEvent, TimeDelta, TimeStamp
+from charm.loaders.raw_chchart import RawEvent, RawNote, RawStarPower, RawMBPM, RawAnchor, RawTS, RawMetadata, load_raw
 
-RE_PARENTHETICAL = r"(.*)(\(.*\).*)"
 
-
-def note_from_raw(song, chart, rawnote: RawNote):
+def note_from_raw(song: Song, chart: Chart, rawnote: RawNote) -> Note:
     time = TimeStamp(song, rawnote.time)
     length = TimeDelta(time, rawnote.length)
     note = Note(song, chart, time, rawnote.kind, length)
     return note
 
 
-def spevent_from_raw(song, chart, rawspevent: RawStarPower):
+def spevent_from_raw(song: Song, chart: Chart, rawspevent: RawStarPower) -> SPEvent:
     time = TimeStamp(song, rawspevent.time)
     length = TimeDelta(time, rawspevent.length)
     spevent = SPEvent(song, chart, time, rawspevent.kind, length)
     return spevent
 
 
-def event_from_raw(song, chart, rawevent: RawEvent):
+def event_from_raw(song: Song, chart: Chart, rawevent: RawEvent) -> Event:
     time = TimeStamp(song, rawevent.time)
     event = Event(song, chart, time, rawevent.data)
     return event
 
 
-def chart_from_raw(song, instrument, lines: List):
+def chart_from_raw(song: Song, instrument: str, lines: List[RawNote, RawEvent, RawMBPM, RawAnchor, RawTS, RawStarPower, RawMetadata]) -> Chart:
     chart = Chart(song, instrument)
     for line in lines:
         if isinstance(line, RawNote):
@@ -42,8 +40,7 @@ def chart_from_raw(song, instrument, lines: List):
     return chart
 
 
-def song_from_raw(datablocks: Dict[str, List]):
-    song = Song()
+def song_from_raw(datablocks: Dict[str, List[RawNote, RawEvent, RawMBPM, RawAnchor, RawTS, RawStarPower, RawMetadata]]) -> Song:
     if "Song" not in datablocks:
         raise ValueError("Missing Song block")
     if "Events" not in datablocks:
@@ -51,22 +48,18 @@ def song_from_raw(datablocks: Dict[str, List]):
     if "SyncTrack" not in datablocks:
         raise ValueError("Missing SyncTrack block")
 
+    metadata = {md.key: md.value for md in datablocks.pop("Song")}
+    synctrack = datablocks.pop("SyncTrack")
+    events = datablocks.pop("Events")
+    song = Song(metadata, synctrack, events)
+
     for block, lines in datablocks.items():
-        if block == "Song":
-            for md in lines:
-                song.metadata[md.key] = md.value
-        elif block == "SyncTrack":
-            for line in lines:
-                song._sync_track.append(line)
-        elif block == "Events":
-            for line in lines:
-                song._events.append(line)
-        else:
-            song.charts[block] = chart_from_raw(song, block, lines)
+        song.charts[block] = chart_from_raw(song, block, lines)
+
     return song
 
 
-def load(f):
+def load(f) -> Song:
     datablocks = load_raw(f)
     song = song_from_raw(datablocks)
     return song

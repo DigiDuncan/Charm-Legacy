@@ -3,6 +3,7 @@ from __future__ import annotations
 import re
 
 from dataclasses import dataclass
+from typing import Dict, List, Union
 
 RE_BLOCK_HEADER = re.compile(r"^\[([A-Za-z ]+)\]\s*$")
 RE_BLOCK_PADDING = re.compile(r"^[\{\}]$")
@@ -12,7 +13,7 @@ RE_LINE_TPL = r"^\s*{}\s*=\s*{}\s*$"
 RE_ITEM_TPL = RE_LINE_TPL.format(RE_NUM_TPL, r"{}\s+{}")
 
 
-def load_raw(f):
+def load_raw(f) -> Dict[str, List[RawNote, RawEvent, RawMBPM, RawAnchor, RawTS, RawStarPower, RawMetadata]]:
     blocks = {}
     curr_block = None
     for line in f:
@@ -31,7 +32,7 @@ def load_raw(f):
     return blocks
 
 
-def parse_line(line):
+def parse_line(line) -> Union[RawNote, RawEvent, RawMBPM, RawAnchor, RawTS, RawStarPower, RawMetadata, None]:
     # parse RawMetadata last, because it's ambigious
     rawclasses = [RawNote, RawEvent, RawMBPM, RawAnchor, RawTS, RawStarPower, RawMetadata]
     parsed = (c.parse(line) for c in rawclasses)
