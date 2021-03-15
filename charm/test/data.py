@@ -2,11 +2,13 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
-from typing import List, Union
+from functools import total_ordering
+from typing import DefaultDict, List, Union
 
 RE_PARENTHETICAL = r"(.*)(\(.*\).*)"
 
 
+@total_ordering
 class TimeStamp:
     def __init__(self, ticks, song: Song = None):
         self.ticks = ticks
@@ -16,7 +18,11 @@ class TimeStamp:
     def secs(self):
         return self.song.ticks_to_secs(self.ticks)
 
+    def __lt__(self, other):
+        return self.ticks < other.ticks
 
+
+@total_ordering
 class TimeDelta:
     def __init__(self, start: TimeStamp, tick_length):
         self._start = start
@@ -41,6 +47,9 @@ class TimeDelta:
     @property
     def length(self):
         return self.end - self.start
+
+    def __lt__(self, other):
+        self.length < other.length
 
 
 @dataclass(order = True)
@@ -147,6 +156,25 @@ class Event:
         self.data = rawevent.data
 
 
+class Chord:
+    def __init__(self, song, chart, notes: List[Note] = None):
+        self.song = song
+        self.chart = chart
+        self._notes = notes
+
+    @property
+    def notes(self):
+        return None if self._notes is None else sorted(self._notes)
+
+    @property
+    def length(self):
+        return None if self.notes is None else max([n.length for n in self.notes])
+
+    @property
+    def shape(self):
+        return sorted([n.kind for n in self.notes])
+
+
 class Chart:
     def __init__(self, song, rawdatablock: RawDataBlock = None):
         self.song = song
@@ -160,6 +188,13 @@ class Chart:
     @property
     def notes(self):
         return sorted(self._notes)
+
+    @property
+    def chords(self):
+        d = DefaultDict(list)
+        for note in self.notes:
+            d[note.time.ticks].append(note)
+        return [Chord(self.song, self, ns) for ns in d.values()]
 
     @property
     def star_powers(self):
