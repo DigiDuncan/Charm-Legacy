@@ -101,7 +101,7 @@ def run_chparse():
 
 
 def run_loader():
-    chartpath = R"C:\Users\nfear\Desktop\Coding\Charm\charm\data\charts\notes\notes.chart"
+    chartpath = R".\charm\data\charts\notes\notes.chart"
     #chartpath = R"C:\Users\nfear\Desktop\Coding\Charm\charm\data\charts\run_around_the_character_code\run_around_the_character_code.chart"
     with open(chartpath, encoding="utf-8 sig") as f:
         song = chchart.load(f)
@@ -110,6 +110,7 @@ def run_loader():
 
 def main():
     run_loader()
+
 
 # This is needed, or else calling `python -m <name>` will mean that main() is called twice.
 if __name__ == "__main__":
