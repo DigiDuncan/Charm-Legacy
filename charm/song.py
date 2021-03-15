@@ -1,11 +1,8 @@
 from __future__ import annotations
 
-import re
+from itertools import groupby
 from functools import total_ordering
-from typing import DefaultDict, List
-
-
-RE_PARENTHETICAL = r"(.*)(\(.*\).*)"
+from typing import List
 
 
 @total_ordering
@@ -77,9 +74,6 @@ class Note(TimedEvent):
     def __repr__(self):
         return f"<Note(time = {self.time}, kind = {self.kind}), length = {self.length})>"
 
-    def __str__(self):
-        return repr(self)
-
 
 class SPEvent(TimedEvent):
     def __init__(self, song, chart, time, kind, length):
@@ -90,9 +84,6 @@ class SPEvent(TimedEvent):
     def __repr__(self):
         return f"<SPEvent(time = {self.time}, kind = {self.kind}), length = {self.length})>"
 
-    def __str__(self):
-        return repr(self)
-
 
 class Event(TimedEvent):
     def __init__(self, song, chart, time, data):
@@ -102,19 +93,14 @@ class Event(TimedEvent):
     def __repr__(self):
         return f"<Event(time = {self.time}, data = {self.data})>"
 
-    def __str__(self):
-        return repr(self)
-
 
 class Chord:
-    def __init__(self, song, chart, notes: List[Note] = None):
+    def __init__(self, song, chart, notes: List[Note]):
         self.song = song
         self.chart = chart
-        self._notes = notes
-
-    @property
-    def notes(self):
-        return None if self._notes is None else sorted(self._notes)
+        if notes is None:
+            notes = []
+        self.notes = sorted(notes)
 
     @property
     def time(self):
@@ -136,31 +122,21 @@ class Chord:
 
 
 class Chart:
-    def __init__(self, song, instrument):
+    def __init__(self, song, instrument, difficulty):
         self.song = song
         self.instrument = instrument
-        self._notes = []
-        self._star_powers = []
-        self._events = []
+        self.difficulty = difficulty
+        self.notes = None
+        self.star_powers = None
+        self.events = None
+        self.chords = None
 
-    @property
-    def notes(self):
-        return sorted(self._notes)
-
-    @property
-    def chords(self):
-        d = DefaultDict(list)
-        for note in self.notes:
-            d[note.time.ticks].append(note)
-        return [Chord(self.song, self, ns) for ns in d.values()]
-
-    @property
-    def star_powers(self):
-        return sorted(self._star_powers)
-
-    @property
-    def events(self):
-        return sorted(self._events)
+    def setup(self, notes, star_powers, events):
+        self.notes = sorted(notes)
+        self.star_powers = sorted(star_powers)
+        self.events = sorted(events)
+        _, chordnotes = groupby(self.notes, key=lambda n: n.time.ticks)
+        self.chords = [Chord(self.song, self, notes) for notes in chordnotes]
 
     def __hash__(self):
         return hash((
@@ -170,106 +146,46 @@ class Chart:
         ))
 
     def __repr__(self):
-        return f"<Chart(instrument = {self.instrument}, chords = {self.chords}, star_powers = {self.star_powers}, events = {self.events})>"
-
-    def __str__(self):
-        return repr(self)
+        return f"<Chart(difficulty = {self.difficulty}, instrument = {self.instrument}, chords = {len(self.chords)}, notes = {len(self.notes)}, star_powers = {len(self.star_powers)}, events = {len(self.events)})>"
 
 
 class Song:
-    def __init__(self, metadata, synctrack):
-        self.metadata = metadata
-        self._sync_track = synctrack
+    def __init__(self):
         self.events = []
         self.charts = {}
+        self.tempos = []
+        self.timesigs = []
+        self.full_name = None
+        self.title = None
+        self.subtitle = None
+        self.alt_title = None
+        self.artists = None
+        self.album = None
+        self.year = None
+        self.charter = None
+        self.offset = None
+        self.resolution = None
+        self.difficulty = None
+        self.previewstart = None
+        self.previewend = None
+        self.genre = None
+        self.mediastream = None
 
-    @property
-    def sync_track(self):
-        return sorted(self._sync_track)
-
-    @property
-    def full_name(self):
-        return self.metadata.get("name")
-
-    @property
-    def title(self):
-        if self.full_name is not None:
-            if m := (re.match(RE_PARENTHETICAL, self.full_name)):
-                return m.group(1)
-        return self.full_name
-
-    @property
-    def subtitle(self):
-        if self.full_name is not None:
-            if m := (re.match(RE_PARENTHETICAL, self.full_name)):
-                return m.group(2)
-        return None
-
-    @property
-    def alt_title(self):
-        return "UNUSED"
-
-    @property
-    def artist(self):
-        return self.metadata.get("artist")
-
-    @property
-    def album(self):
-        return self.metadata.get("album")
-
-    @property
-    def year(self):
-        return self.metadata.get("year")
-
-    @property
-    def charter(self):
-        return self.metadata.get("charter")
-
-    @property
-    def offset(self):
-        o = self.metadata.get("offset")
-        return None if o is None else int(o)
-
-    @property
-    def resolution(self):
-        o = self.metadata.get("resolution")
-        return None if o is None else int(o)
-
-    @property
-    def difficulty(self):
-        o = self.metadata.get("difficulty")
-        return None if o is None else int(o)
-
-    @property
-    def previewstart(self):
-        o = self.metadata.get("previewstart")
-        return None if o is None else int(o)
-
-    @property
-    def previewend(self):
-        o = self.metadata.get("previewend")
-        return None if o is None else int(o)
-
-    @property
-    def genre(self):
-        return self.metadata.get("genre")
-
-    @property
-    def mediastream(self):
-        return self.metadata.get("mediastream")
+    def setup(self, events, charts, tempos, timesigs):
+        self.events = sorted(events)
+        self.charts = charts
+        self.tempos = sorted(tempos)
+        self.timesigs = sorted(timesigs)
 
     def ticks_to_secs(self, ticks):
         return ticks  # TODO: Placeholder
 
     def __hash__(self):
         return hash(
-            (tuple(self.sync_track),
+            (tuple(self.tempos),
              tuple(self.events),
              tuple(self.charts.values()))
         )
 
     def __repr__(self):
-        return f"<Song(metadata = {self.metadata}, sync_track = {self.sync_track}, events = {self.events}, charts = {self.charts})>"
-
-    def __str__(self):
-        return repr(self)
+        return f"<Song(name = {self.full_name!r}, tempos = {len(self.tempos)}, events = {len(self.events)}, charts = {self.charts})>"
