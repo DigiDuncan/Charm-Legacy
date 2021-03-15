@@ -4,7 +4,7 @@ import re
 
 from typing import Dict, List, Tuple, Union
 
-from charm.song import Chart, Event, Note, Song, SPEvent, TimeDelta, TimeStamp
+from charm.song import Chart, Event, Note, Song, SPEvent, TempoCalculator, TempoEvent, TimeDelta, TimeStamp
 from charm.loaders.raw_chchart import RawEvent, RawNote, RawStarPower, RawTempo, RawAnchor, RawTS, RawMetadata, load_raw
 
 
@@ -54,7 +54,10 @@ def chart_from_raw(song: Song, header: str, lines: List[RawNote, RawEvent, RawTe
         else:
             raise ValueError(f"Bad line type {line}")
 
-    chart.setup(notes, star_powers, events)
+    chart.notes = notes
+    chart.star_powers = star_powers
+    chart.events = events
+    chart.finalize()
     return chart
 
 
@@ -66,7 +69,7 @@ def tryint(value):
 
 
 # TODO: Handle metadata smarter
-def parse_metadata(song, lines: List[RawMetadata]) -> Dict[str, Union[str, int]]:
+def set_metadata(song, lines: List[RawMetadata]) -> Dict[str, Union[str, int]]:
     metadata = {}
     for md in lines:
         if not isinstance(md, RawMetadata):
@@ -75,11 +78,11 @@ def parse_metadata(song, lines: List[RawMetadata]) -> Dict[str, Union[str, int]]
 
     # TODO: Which metadata fields are required, and which are optional?
     song.full_name = metadata.pop("Name", None)
-    RE_PARENTHETICAL = re.compile(r"(.*)(\(.*\).*)")
-    if m := RE_PARENTHETICAL.match(song.full_name):
-        song.title, song.subtitle = m.groups()
-    else:
-        song.title, song.subtitle = song.full_name, None
+    song.title, song.subtitle = song.full_name, None
+    if song.full_name is not None:
+        RE_PARENTHETICAL = re.compile(r"(.*)(\(.*\).*)")
+        if m := RE_PARENTHETICAL.match(song.full_name):
+            song.title, song.subtitle = m.groups()
 
     song.alt_title = "UNUSED"
     song.artists = metadata.pop("Artist", None)
@@ -87,7 +90,7 @@ def parse_metadata(song, lines: List[RawMetadata]) -> Dict[str, Union[str, int]]
     song.year = metadata.pop("Year", None)
     song.charter = metadata.pop("Charter", None)
     song.offset = tryint(metadata.pop("Offset", None))
-    song.resolution = tryint(metadata.pop("Resolution", None))
+    song.resolution = tryint(metadata.pop("Resolution"))
     song.difficulty = tryint(metadata.pop("Difficulty", None))
     song.previewstart = tryint(metadata.pop("PreviewStart", None))
     song.previewend = tryint(metadata.pop("PreviewEnd", None))
@@ -97,24 +100,30 @@ def parse_metadata(song, lines: List[RawMetadata]) -> Dict[str, Union[str, int]]
     metadata.pop("Player2", None)
     metadata.pop("MediaType", None)
     metadata.pop("MusicStream", None)
+    metadata.pop("GuitarStream", None)
     if len(metadata) > 0:
         raise ValueError(f"Unparsed metadata: {list(metadata.keys())}")
 
 
-def parse_synctrack(lines: List[RawTempo, RawTS]) -> Tuple[List[RawTempo], List[RawTS]]:
-    tempos = []
+def parse_synctrack(song, lines: List[RawTempo, RawTS]) -> Tuple[List[RawTempo], List[RawTS]]:
+    raw_tempos = []
     timesigs = []
     for line in lines:
         if isinstance(line, RawTempo):
-            tempos.append(line)
+            raw_tempos.append(line)
         elif isinstance(line, RawTS):
-            timesigs.append(line)
+            timesigs.append(line)   # TODO: Put these in a proper class
         else:
             raise ValueError(f"Invalid synctrack data {line}")
-    tempos.sort()
-    timesigs.sort()
-    # TODO: Return a Tempo Calculator
-    return tempos, timesigs
+
+    tempos = []
+    for raw_tempo in raw_tempos:
+        ticks_per_second = song.resolution * raw_tempo.mbpm / 1000 / 60
+        tempo = TempoEvent(song, raw_tempo.time, ticks_per_second)
+        tempos.append(tempo)
+    tempo_calc = TempoCalculator(tempos)
+
+    return tempo_calc, timesigs
 
 
 def parse_events(song, lines: List[RawEvent]):
@@ -135,9 +144,11 @@ def song_from_raw(datablocks: Dict[str, List[RawNote, RawEvent, RawTempo, RawAnc
         raise ValueError("Missing SyncTrack block")
 
     song = Song()
-    tempos, timesigs = parse_synctrack(datablocks.pop("SyncTrack"))
-    parse_metadata(song, datablocks.pop("Song"))
-    events = parse_events(song, datablocks.pop("Events"))
+    set_metadata(song, datablocks.pop("Song"))
+    song.tempo_calc, song.timesigs = parse_synctrack(song, datablocks.pop("SyncTrack"))
+    song.events = parse_events(song, datablocks.pop("Events"))
+    part_vocals = datablocks.pop("PART VOCALS", None)    # TODO Handle vocals section
+
     charts = {}
     for block, lines in datablocks.items():
         chart = chart_from_raw(song, block, lines)
@@ -145,8 +156,9 @@ def song_from_raw(datablocks: Dict[str, List[RawNote, RawEvent, RawTempo, RawAnc
         if key in charts:
             raise ValueError("Duplicate chart: {chart.difficulty} {chart.instrument}")
         charts[key] = chart
+    song.charts = charts
 
-    song.setup(events, charts, tempos, timesigs)
+    song.finalize()
 
     return song
 

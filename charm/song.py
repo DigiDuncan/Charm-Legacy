@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from itertools import groupby
-from functools import total_ordering
+from functools import cache, total_ordering
 from typing import List
 
 
@@ -13,7 +13,7 @@ class TimeStamp:
 
     @property
     def secs(self):
-        return self.song.ticks_to_secs(self.ticks)
+        return self.song.tempo_calc.ticks_to_secs(self.ticks)
 
     def __lt__(self, other):
         return self.ticks < other.ticks
@@ -55,17 +55,24 @@ class TimeDelta:
         return f"TimeDelta<start_ticks = {self.start_ticks}, end_ticks = {self.end_ticks})>"
 
 
-class TimedEvent:
-    def __init__(self, song, chart, time):
+# Abstract class
+class SongEvent():
+    def __init__(self, song, time):
         self.song = song
-        self.chart = chart
-        self.time = time
+        self.time = TimeStamp(song, time)
 
     def __lt__(self, other):
         return self.time < other.time
 
 
-class Note(TimedEvent):
+# Abstract class
+class ChartEvent(SongEvent):
+    def __init__(self, song, chart, time):
+        super().__init__(song, time)
+        self.chart = chart
+
+
+class Note(ChartEvent):
     def __init__(self, song, chart, time, kind, length):
         super().__init__(song, chart, time)
         self.kind = kind
@@ -75,7 +82,7 @@ class Note(TimedEvent):
         return f"<Note(time = {self.time}, kind = {self.kind}), length = {self.length})>"
 
 
-class SPEvent(TimedEvent):
+class SPEvent(ChartEvent):
     def __init__(self, song, chart, time, kind, length):
         super().__init__(song, chart, time)
         self.kind = kind  # Unused? Seems to always be 2...
@@ -85,7 +92,7 @@ class SPEvent(TimedEvent):
         return f"<SPEvent(time = {self.time}, kind = {self.kind}), length = {self.length})>"
 
 
-class Event(TimedEvent):
+class Event(ChartEvent):
     def __init__(self, song, chart, time, data):
         super().__init__(song, chart, time)
         self.data = data
@@ -98,21 +105,10 @@ class Chord:
     def __init__(self, song, chart, notes: List[Note]):
         self.song = song
         self.chart = chart
-        if notes is None:
-            notes = []
         self.notes = sorted(notes)
-
-    @property
-    def time(self):
-        return min([n.time for n in self.notes])
-
-    @property
-    def length(self):
-        return None if self.notes is None else max([n.length for n in self.notes])
-
-    @property
-    def shape(self):
-        return sorted([n.kind for n in self.notes])
+        self.time = self.notes[0].time
+        self.length = max(n.length for n in self.notes)
+        self.shape = sorted(n.kind for n in self.notes)
 
     def __repr__(self):
         return f"<Chord(time = {self.time}, shape = {self.shape}, length = {self.length})>"
@@ -131,10 +127,10 @@ class Chart:
         self.events = None
         self.chords = None
 
-    def setup(self, notes, star_powers, events):
-        self.notes = sorted(notes)
-        self.star_powers = sorted(star_powers)
-        self.events = sorted(events)
+    def finalize(self):
+        self.notes.sort()
+        self.star_powers.sort()
+        self.events.sort()
         chordnotes = (notes for ticks, notes in groupby(self.notes, key=lambda n: n.time.ticks))
         self.chords = [Chord(self.song, self, notes) for notes in chordnotes]
 
@@ -153,8 +149,8 @@ class Song:
     def __init__(self):
         self.events = []
         self.charts = {}
-        self.tempos = []
         self.timesigs = []
+        self.tempo_calc = None
         self.full_name = None
         self.title = None
         self.subtitle = None
@@ -171,21 +167,45 @@ class Song:
         self.genre = None
         self.mediastream = None
 
-    def setup(self, events, charts, tempos, timesigs):
-        self.events = sorted(events)
-        self.charts = charts
-        self.tempos = sorted(tempos)
-        self.timesigs = sorted(timesigs)
-
-    def ticks_to_secs(self, ticks):
-        return ticks  # TODO: Placeholder
+    def finalize(self):
+        self.events.sort()
+        self.timesigs.sort()
+        self.tempo_calc.finalize()
 
     def __hash__(self):
         return hash(
-            (tuple(self.tempos),
+            (tuple(self.tempo_calc),
              tuple(self.events),
              tuple(self.charts.values()))
         )
 
     def __repr__(self):
-        return f"<Song(name = {self.full_name!r}, tempos = {len(self.tempos)}, events = {len(self.events)}, charts = {self.charts})>"
+        return f"<Song(name = {self.full_name!r}, tempos = {len(self.tempo_calc.tempos)}, events = {len(self.events)}, charts = {self.charts})>"
+
+
+class TempoEvent(SongEvent):
+    def __init__(self, song, time, ticks_per_sec):
+        super().__init__(song, time)
+        self.ticks_per_sec = ticks_per_sec
+
+
+class TempoCalculator:
+    def __init__(self, tempos):
+        self.tempos = sorted(tempos)
+
+    def finalize(self):
+        for tempo in self.tempos:
+            print(tempo.time.secs)
+
+    @cache
+    def ticks_to_secs(self, ticks):
+        if ticks == 0:
+            return 0
+        curr_tempo = next(tempo for tempo in self.tempos if tempo.time.secs <= ticks)
+        curr_ticks = ticks - curr_tempo.time.ticks
+        curr_seconds = curr_ticks / curr_tempo.ticks_per_sec
+        seconds = curr_tempo.time.secs + curr_seconds
+        return seconds
+
+    def __hash__(self):
+        return hash(tuple(self.tempos))

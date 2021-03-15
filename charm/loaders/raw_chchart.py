@@ -94,14 +94,14 @@ class RawEvent(RawTimedLine):
 class RawTempo(RawTimedLine):
     RE_LINE = re.compile(RE_ITEM_TPL.format(r"B", RE_NUM_TPL))
     time: int
-    mpbm: int
+    mbpm: int
 
 
 @dataclass
 class RawAnchor(RawTimedLine):
     RE_LINE = re.compile(RE_ITEM_TPL.format(r"A", RE_NUM_TPL))
     time: int
-    mpbm: int
+    mbpm: int
 
 
 @dataclass
