@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict, List
+from typing import Dict, List, Union
 
 from charm.song import Chart, Event, Note, Song, SPEvent, TimeDelta, TimeStamp
 from charm.loaders.raw_chchart import RawEvent, RawNote, RawStarPower, RawMBPM, RawAnchor, RawTS, RawMetadata, load_raw
@@ -40,6 +40,23 @@ def chart_from_raw(song: Song, instrument: str, lines: List[RawNote, RawEvent, R
     return chart
 
 
+def tryint(value):
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return value
+
+
+# TODO: Handle metadata smarter
+def parse_metadata(lines: List[RawMetadata]) -> Dict[str, Union[str, int]]:
+    metadata = {}
+    for md in lines:
+        if not isinstance(md, RawMetadata):
+            raise ValueError(f"Invalid metadata {md}")
+        metadata[md.key] = tryint(md.value)
+    return metadata
+
+
 def song_from_raw(datablocks: Dict[str, List[RawNote, RawEvent, RawMBPM, RawAnchor, RawTS, RawStarPower, RawMetadata]]) -> Song:
     if "Song" not in datablocks:
         raise ValueError("Missing Song block")
@@ -48,7 +65,7 @@ def song_from_raw(datablocks: Dict[str, List[RawNote, RawEvent, RawMBPM, RawAnch
     if "SyncTrack" not in datablocks:
         raise ValueError("Missing SyncTrack block")
 
-    metadata = {md.key: md.value for md in datablocks.pop("Song")}
+    metadata = parse_metadata(datablocks.pop("Song"))
     synctrack = datablocks.pop("SyncTrack")
     events = datablocks.pop("Events")
     song = Song(metadata, synctrack, events)
