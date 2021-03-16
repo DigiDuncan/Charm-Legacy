@@ -8,6 +8,7 @@ from charm.loaders import chchart
 # from charm.lib.constants import instruments, frets
 from charm.lib.utils import clamp, nice_time
 from charm.prototyping.lyricanimator.lyricanimator import LyricAnimator
+from charm.prototyping import chparse_test
 # from charm.objects.note import Note
 
 
@@ -109,7 +110,8 @@ def run_loader():
 
 
 def main():
-    run_loader()
+    # run_loader()
+    chparse_test.main()
 
 
 # This is needed, or else calling `python -m <name>` will mean that main() is called twice.
