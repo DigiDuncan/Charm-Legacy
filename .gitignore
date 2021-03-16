@@ -3,4 +3,5 @@
 *.vscode
 .pytest_cache
 
-output.zip
+dist/
+.loaderpath

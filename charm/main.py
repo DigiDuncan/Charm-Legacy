@@ -8,7 +8,7 @@ from charm.loaders import chchart
 # from charm.lib.constants import instruments, frets
 from charm.lib.utils import clamp, nice_time
 from charm.prototyping.lyricanimator.lyricanimator import LyricAnimator
-from charm.prototyping import chparse_test
+from charm.prototyping import loader_test
 # from charm.objects.note import Note
 
 
@@ -97,21 +97,19 @@ def run_game():
 
 
 def run_chparse():
-    #chparse_test.test()
-    ...
+    loader_test.main()
 
 
 def run_loader():
     chartpath = R".\charm\data\charts\notes\notes.chart"
-    #chartpath = R"C:\Users\nfear\Desktop\Coding\Charm\charm\data\charts\run_around_the_character_code\run_around_the_character_code.chart"
+    #chartpath = R".\charm\data\charts\run_around_the_character_code\run_around_the_character_code.chart"
     with open(chartpath, encoding="utf-8 sig") as f:
         song = chchart.load(f)
         print(song)
 
 
 def main():
-    # run_loader()
-    chparse_test.main()
+    run_chparse()
 
 
 # This is needed, or else calling `python -m <name>` will mean that main() is called twice.
