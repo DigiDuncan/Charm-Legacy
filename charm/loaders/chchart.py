@@ -75,7 +75,6 @@ def set_metadata(song, lines: List[RawMetadata]) -> Dict[str, Union[str, int]]:
         if not isinstance(md, RawMetadata):
             raise ValueError(f"Invalid metadata {md}")
         metadata[md.key] = md.value
-
     # TODO: Which metadata fields are required, and which are optional?
     song.full_name = metadata.pop("Name", None)
     song.title, song.subtitle = song.full_name, None
@@ -167,6 +166,7 @@ def load(f) -> Song:
     datablocks = load_raw(f)
     song = song_from_raw(datablocks)
     return song
+
 
 
 if __name__ == "__main__":

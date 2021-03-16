@@ -126,7 +126,7 @@ def process_charts(charts):
         except KeyboardInterrupt as e:
             raise e
         except Exception as e:
-            bad_charts.append((chart_path, e, format_exc()))
+            bad_charts.append((chart_path, type(e), format_exc()))
         mem_used = p.memory_info().rss - basemem
         mem_per_chart = mem_used / (n + 1)
         t.set_postfix(Nemory=tqdm.format_sizeof(mem_used, "B", 1024), ChartCost=tqdm.format_sizeof(mem_per_chart, "B", 1024))
@@ -142,13 +142,13 @@ def process_errors(bad_charts, chart_root):
     sources = {}
     full_errors = {}
 
-    for (chart_path, e, exp) in tqdm(bad_charts, unit = " errors"):
+    for (chart_path, e_type, e_stack) in tqdm(bad_charts, unit = " errors"):
         new_path = chart_path.parent.relative_to(chart_root)
         sources[" - ".join(new_path.with_suffix(".chart").parts)] = chart_path
-        full_errors[" - ".join(new_path.with_suffix(".error").parts)] = exp
+        full_errors[" - ".join(new_path.with_suffix(".error").parts)] = e_stack
 
-        raw_errors.append((new_path, type(e)))
-        error_counts[type(e)] += 1
+        raw_errors.append((new_path, e_type))
+        error_counts[e_type] += 1
 
     return raw_errors, error_counts, sources, full_errors
 
@@ -199,7 +199,8 @@ def run(chart_root, in_limit, in_filter):
     else:
         glob_filter = "notes.*"
     print("\nCounting charts...")
-    charts = list(islice(chart_root.rglob(glob_filter), in_limit))
+    charts_iter = islice(chart_root.rglob(glob_filter), in_limit)
+    charts = list(tqdm(charts_iter, unit = " charts"))
     print(f"{len(charts)} charts found")
 
     bad_charts, counts = process_charts(charts)
