@@ -190,6 +190,7 @@ class Song:
 
 class TempoEvent(SongEvent):
     def __init__(self, song, time, ticks_per_sec):
+        self.ticks_to_secs = cache(self.ticks_to_secs)
         super().__init__(song, time)
         self.ticks_per_sec = ticks_per_sec
 
@@ -202,7 +203,6 @@ class TempoCalculator:
         for tempo in self.tempos:
             print(tempo.time.secs)
 
-    @cache
     def ticks_to_secs(self, ticks):
         if ticks == 0:
             return 0
