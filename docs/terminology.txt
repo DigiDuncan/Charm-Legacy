@@ -1,0 +1,19 @@
+file = Song / Chart
+    metadata
+SyncTrack / TempoMap
+Events
+    section events
+    lyric events
+
+Chart (Difficulty + Instrument)
+    Notes
+    Modifiers
+    Star power events?
+    Solo events?
+Lyrics / Vocals
+    Lyric Phrase events (one line) / Sentences
+    Notes / Pitch
+    Text / Lyrics / Words
+
+SectionHeader
+Section? / Track / Instrument / Chart? / Data block
