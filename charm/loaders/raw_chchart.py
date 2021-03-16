@@ -13,6 +13,18 @@ RE_LINE_TPL = r"^\s*{}\s*=\s*{}\s*$"
 RE_ITEM_TPL = RE_LINE_TPL.format(RE_NUM_TPL, r"{}\s+{}")
 
 
+class RawLoadException(Exception):
+    pass
+
+
+class DuplicateBlockException(RawLoadException):
+    pass
+
+
+class LineParseException(RawLoadException):
+    pass
+
+
 def load_raw(f) -> Dict[str, List[RawNote, RawEvent, RawTempo, RawAnchor, RawTS, RawStarPower, RawMetadata]]:
     blocks = {}
     curr_block = None
@@ -22,12 +34,12 @@ def load_raw(f) -> Dict[str, List[RawNote, RawEvent, RawTempo, RawAnchor, RawTS,
         elif m := RE_BLOCK_HEADER.match(line):
             curr_block = m.group(1)
             if curr_block in blocks:
-                raise ValueError(f"Duplicate block: {curr_block}")
+                raise DuplicateBlockException(f"Duplicate block: {curr_block}")
             blocks[curr_block] = []
         else:
             lineobj = parse_line(line)
             if lineobj is None:
-                raise ValueError(f"Couldn't parse: {line}")
+                raise LineParseException(f"Couldn't parse: {line}")
             blocks[curr_block].append(lineobj)
     return blocks
 

@@ -8,6 +8,50 @@ from charm.song import Chart, Event, Note, Song, SPEvent, TempoCalculator, Tempo
 from charm.loaders.raw_chchart import RawEvent, RawNote, RawStarPower, RawTempo, RawAnchor, RawTS, RawMetadata, load_raw
 
 
+class LoadException(Exception):
+    pass
+
+
+class DuplicateChartException(LoadException):
+    pass
+
+
+class InvalidEventException(LoadException):
+    pass
+
+
+class InvalidHeaderException(LoadException):
+    pass
+
+
+class InvalidLineTypeException(LoadException):
+    pass
+
+
+class InvalidMetadataException(LoadException):
+    pass
+
+
+class InvalidSynctrackDataException(LoadException):
+    pass
+
+
+class MissingEventsBlockException(LoadException):
+    pass
+
+
+class MissingSongBlockException(LoadException):
+    pass
+
+
+class MissingSyncTrackBlockException(LoadException):
+    pass
+
+
+class UnparsedMetadataException(LoadException):
+    pass
+
+
 def note_from_raw(song: Song, chart: Chart, rawnote: RawNote) -> Note:
     time = TimeStamp(song, rawnote.time)
     length = TimeDelta(time, rawnote.length)
@@ -37,7 +81,7 @@ def chart_from_raw(song: Song, header: str, lines: List[RawNote, RawEvent, RawTe
     try:
         difficulty, instrument = DIFFINST_MAP[header]
     except KeyError:
-        raise ValueError(f"Invalid Header: {header}")
+        raise InvalidHeaderException(f"Invalid Header: {header}")
 
     chart = Chart(song, instrument, difficulty)
 
@@ -52,7 +96,7 @@ def chart_from_raw(song: Song, header: str, lines: List[RawNote, RawEvent, RawTe
         elif isinstance(line, RawEvent):
             events.append(event_from_raw(song, chart, line))
         else:
-            raise ValueError(f"Bad line type {line}")
+            raise InvalidLineTypeException(f"Bad line type {line}")
 
     chart.notes = notes
     chart.star_powers = star_powers
@@ -73,7 +117,7 @@ def set_metadata(song, lines: List[RawMetadata]) -> Dict[str, Union[str, int]]:
     metadata = {}
     for md in lines:
         if not isinstance(md, RawMetadata):
-            raise ValueError(f"Invalid metadata {md}")
+            raise InvalidMetadataException(f"Invalid metadata {md}")
         metadata[md.key] = md.value
     # TODO: Which metadata fields are required, and which are optional?
     song.full_name = metadata.pop("Name", None)
@@ -101,7 +145,7 @@ def set_metadata(song, lines: List[RawMetadata]) -> Dict[str, Union[str, int]]:
     metadata.pop("MusicStream", None)
     metadata.pop("GuitarStream", None)
     if len(metadata) > 0:
-        raise ValueError(f"Unparsed metadata: {list(metadata.keys())}")
+        raise UnparsedMetadataException(f"Unparsed metadata: {list(metadata.keys())}")
 
 
 def parse_synctrack(song, lines: List[RawTempo, RawTS]) -> Tuple[List[RawTempo], List[RawTS]]:
@@ -113,7 +157,7 @@ def parse_synctrack(song, lines: List[RawTempo, RawTS]) -> Tuple[List[RawTempo],
         elif isinstance(line, RawTS):
             timesigs.append(line)   # TODO: Put these in a proper class
         else:
-            raise ValueError(f"Invalid synctrack data {line}")
+            raise InvalidSynctrackDataException(f"Invalid synctrack data {line}")
 
     tempos = []
     for raw_tempo in raw_tempos:
@@ -129,18 +173,18 @@ def parse_events(song, lines: List[RawEvent]):
     events = []
     for line in lines:
         if not isinstance(line, RawEvent):
-            raise ValueError(f"Invalid event {line}")
+            raise InvalidEventException(f"Invalid event {line}")
         events.append(event_from_raw(song, None, line))
     return sorted(events)
 
 
 def song_from_raw(datablocks: Dict[str, List[RawNote, RawEvent, RawTempo, RawAnchor, RawTS, RawStarPower, RawMetadata]]) -> Song:
     if "Song" not in datablocks:
-        raise ValueError("Missing Song block")
+        raise MissingSongBlockException("Missing Song block")
     if "Events" not in datablocks:
-        raise ValueError("Missing Events block")
+        raise MissingEventsBlockException("Missing Events block")
     if "SyncTrack" not in datablocks:
-        raise ValueError("Missing SyncTrack block")
+        raise MissingSyncTrackBlockException("Missing SyncTrack block")
 
     song = Song()
     set_metadata(song, datablocks.pop("Song"))
@@ -153,7 +197,7 @@ def song_from_raw(datablocks: Dict[str, List[RawNote, RawEvent, RawTempo, RawAnc
         chart = chart_from_raw(song, block, lines)
         key = (chart.difficulty, chart.instrument)
         if key in charts:
-            raise ValueError("Duplicate chart: {chart.difficulty} {chart.instrument}")
+            raise DuplicateChartException("Duplicate chart: {chart.difficulty} {chart.instrument}")
         charts[key] = chart
     song.charts = charts
 
@@ -166,7 +210,6 @@ def load(f) -> Song:
     datablocks = load_raw(f)
     song = song_from_raw(datablocks)
     return song
-
 
 
 if __name__ == "__main__":
