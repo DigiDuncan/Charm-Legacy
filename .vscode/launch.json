@@ -32,6 +32,13 @@
             "args": ["bulk", "--path=c:\\users\\nfear\\desktop\\temp\\charts", "--limit=none", "--filter=chart"]
         },
         {
+            "name": "Charm: Bulk Test Duncan Charts",
+            "type": "python",
+            "request": "launch",
+            "module": "charm",
+            "args": ["bulk", "--path=f:\\chs", "--limit=none", "--filter=chart"]
+        },
+        {
             "name": "Charm: Bulk Test Natalie 10 Charts",
             "type": "python",
             "request": "launch",
@@ -43,7 +50,7 @@
             "type": "python",
             "request": "launch",
             "module": "charm",
-            "args": ["bulk", "--path=f:\\charts", "--limit=10", "--filter=chart"]
+            "args": ["bulk", "--path=f:\\chs", "--limit=10", "--filter=chart"]
         },
         {
             "name": "Charm: Test Chart 1",
