@@ -1,7 +1,10 @@
 *.code-workspace
 *.pyc
-*.vscode
+.vscode/*
 .pytest_cache
+
+!.vscode/launch.json
 
 dist/
 .loaderpath
+

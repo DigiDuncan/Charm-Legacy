@@ -1,0 +1,56 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [{
+            "name": "PyFile",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Charm: Lyrics",
+            "type": "python",
+            "request": "launch",
+            "module": "charm",
+            "args": ["lyrics"]
+        },
+        {
+            "name": "Charm: Bulk Test Charts",
+            "type": "python",
+            "request": "launch",
+            "module": "charm",
+            "args": ["bulk"]
+        },
+        {
+            "name": "Charm: Test Chart 1",
+            "type": "python",
+            "request": "launch",
+            "module": "charm",
+            "args": ["single", "1"]
+        },
+        {
+            "name": "Charm: Test Chart 2",
+            "type": "python",
+            "request": "launch",
+            "module": "charm",
+            "args": ["single", "2"]
+        },
+        {
+            "name": "Charm: Test Chart 3",
+            "type": "python",
+            "request": "launch",
+            "module": "charm",
+            "args": ["single", "3"]
+        },
+        {
+            "name": "Charm: List Charts",
+            "type": "python",
+            "request": "launch",
+            "module": "charm",
+            "args": ["charts"]
+        }
+    ]
+}
