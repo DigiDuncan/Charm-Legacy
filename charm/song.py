@@ -79,9 +79,10 @@ class Note(ChartEvent):
         self.length = length
 
     def __lt__(self, other):
-        if self.time == other.time:
+        if self.time != other.time:
+            return self.time < other.time
+        else:
             return self.kind < other.kind
-        return super().__lt__(self, other)
 
     def __repr__(self):
         return f"<Note(time = {self.time}, kind = {self.kind}), length = {self.length})>"
@@ -137,7 +138,7 @@ class Chart:
         self.star_powers.sort()
         self.events.sort()
         chordnotes = (notes for ticks, notes in groupby(self.notes, key=lambda n: n.time.ticks))
-        self.chords = [Chord(self.song, self, notes) for notes in chordnotes]
+        self.chords = [Chord(self.song, self, list(notes)) for notes in chordnotes]
 
     def __hash__(self):
         return hash((
@@ -190,13 +191,13 @@ class Song:
 
 class TempoEvent(SongEvent):
     def __init__(self, song, time, ticks_per_sec):
-        self.ticks_to_secs = cache(self.ticks_to_secs)
         super().__init__(song, time)
         self.ticks_per_sec = ticks_per_sec
 
 
 class TempoCalculator:
     def __init__(self, tempos):
+        self.ticks_to_secs = cache(self.ticks_to_secs)
         self.tempos = sorted(tempos)
 
     def finalize(self):

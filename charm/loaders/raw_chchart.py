@@ -132,8 +132,3 @@ class RawStarPower(RawTimedLine):
     time: int
     kind: int
     length: int
-
-
-if __name__ == "__main__":
-    with open(r"C:\Users\nfear\Desktop\Coding\Charm\charm\data\charts\run_around_the_character_code\run_around_the_character_code.chart") as f:
-        print(load_raw(f))

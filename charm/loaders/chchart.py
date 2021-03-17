@@ -210,8 +210,3 @@ def load(f) -> Song:
     datablocks = load_raw(f)
     song = song_from_raw(datablocks)
     return song
-
-
-if __name__ == "__main__":
-    song = load(R".\charm\test\lyrics\run_around_the_character_code.chart")
-    print(song)
