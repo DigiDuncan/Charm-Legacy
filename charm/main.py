@@ -123,7 +123,8 @@ def run():
         Game().run()
 
     elif mode == Mode.BulkTest:
-        loader_test.main()
+        # pass remaining args to bulk tester
+        loader_test.main(args)
 
     elif mode == Mode.SingleTest:
         charts = list_charts()

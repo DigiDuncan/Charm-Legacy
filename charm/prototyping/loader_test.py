@@ -2,13 +2,14 @@ from operator import itemgetter
 from itertools import islice
 from pathlib import Path
 from traceback import format_exc
-from typing import DefaultDict
+from typing import DefaultDict, List, Literal, Optional, Tuple
 
 from tqdm import tqdm
 import psutil
 
 from charm.loaders import chchart
 from charm.lib.nip import zip_all
+from charm.lib.args import InvalidArgException, tryint
 
 
 path_path = Path(".loaderpath")
@@ -29,13 +30,8 @@ def load_path():
     return p
 
 
-SENTINEL = object()
-
-
-def ninput(prompt, *, default=SENTINEL, default_label=None, converter=lambda a: a):
-    if default is SENTINEL:
-        default = None
-    else:
+def ninput(prompt, *, default=None, default_label=None, converter=lambda a: a):
+    if default is not None:
         if default_label is None:
             default_label = default
         prompt += f" [{default_label}]"
@@ -56,23 +52,69 @@ def input_int(*args, **kwargs):
     return ninput(*args, **kwargs, converter = int)
 
 
-def get_input():
-    lastpath = load_path()
-    path_kwargs = {}
-    if lastpath is not None:
-        path_kwargs["default"] = lastpath
+def get_args(args: Optional[List[str]]) -> Tuple[Optional[Path], Optional[int], Optional[Literal["chart", "all"]]]:
+    """
+    Optionally read input from command-line arguments
+    """
+    if args is None:
+        args = ()
 
-    chart_root = None
+    chart_root, in_limit, in_filter = None, None, None
+
+    for arg in args:
+        if arg.startswith("--path="):
+            if chart_root is not None:
+                raise InvalidArgException("Duplicate path arguments")
+            arg = arg.removeprefix("--path=")
+            chart_root = Path(arg)
+            if not chart_root.exists():
+                raise InvalidArgException(f"Sorry, {chart_root} doesn't exist")
+
+        elif arg.startswith("--limit="):
+            if in_limit is not None:
+                raise InvalidArgException("Duplicate limit arguments")
+            arg = arg.removeprefix("--limit=").lower()
+            if arg in ("unlimited", "none"):
+                arg = "0"
+            in_limit = tryint(arg)
+            if in_limit is None or in_limit < 0:
+                raise InvalidArgException(f"Sorry, {arg} is not a valid limit, a positive integer or 'unlimited' or 'none'.")
+
+        elif arg.startswith("--filter="):
+            if in_filter is not None:
+                raise InvalidArgException("Duplicate filter arguments")
+            arg = arg.removeprefix("--filter=").lower()
+            if arg not in ("all", "chart"):
+                raise InvalidArgException(f"Sorry, {arg} is not a valid filter, try 'chart' or 'all'.")
+            in_filter = arg
+
+    return chart_root, in_limit, in_filter
+
+
+def get_input(args: Optional[List[str]]) -> Tuple[Path, int, Literal["chart", "all"]]:
+    """
+    Gets user input for runtime options
+    Optionally loads values from command-line arguments first
+    If values were not set at command-line, then the user is prompted to enter a value
+    """
+    chart_root, in_limit, in_filter = get_args(args)
+
+    lastpath = load_path()
+
+    # None is unset
     while chart_root is None:
-        chart_root = input_path("Recursively search what directory for charts?", **path_kwargs)
+        chart_root = input_path("Recursively search what directory for charts?", default=lastpath)
         if chart_root is not None and not chart_root.exists():
             print(f"Sorry, {chart_root} doesn't exist, try again.")
             chart_root = None
 
     save_path(chart_root)
-    in_limit = input_int("Limit number of charts scanned to...", default=None, default_label="unlimited")
 
-    in_filter = None
+    # None is unset, 0 is unlimited
+    if in_limit is None:
+        in_limit = input_int("Limit number of charts scanned to...", default=0, default_label="unlimited")
+
+    # None is unset
     while in_filter is None:
         in_filter = ninput("Which suffixes do you want to parse? <chart/all>", default="chart")
         if in_filter not in ("chart", "all"):
@@ -192,14 +234,16 @@ def gen_output(raw_errors, error_counts, counts):
     return "\n".join(lines)
 
 
-def run(chart_root, in_limit, in_filter):
+def run(chart_root: Path, in_limit: int, in_filter: Literal["chart", "all"]):
     # Clone Hero requires charts be named "notes.chart" or "notes.mid[i]."
     if in_filter == "chart":
         glob_filter = "notes.chart"
     else:
         glob_filter = "notes.*"
     print("\nCounting charts...")
-    charts_iter = islice(chart_root.rglob(glob_filter), in_limit)
+    charts_iter = chart_root.rglob(glob_filter)
+    if in_limit > 0:
+        charts_iter = islice(charts_iter, in_limit)
     charts = list(tqdm(charts_iter, unit = " charts"))
     print(f"{len(charts)} charts found")
 
@@ -211,9 +255,9 @@ def run(chart_root, in_limit, in_filter):
     zip_all(output_path, copy = sources, create = full_errors | {"log.txt": out}, progress = True)
 
 
-def main():
+def main(args):
     try:
-        chart_root, in_limit, in_filter = get_input()
+        chart_root, in_limit, in_filter = get_input(args)
         run(chart_root, in_limit, in_filter)
     except KeyboardInterrupt:
         print("Goodbye")
