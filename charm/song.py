@@ -202,7 +202,7 @@ class TempoCalculator:
 
     def finalize(self):
         for tempo in self.tempos:
-            print(tempo.time.secs)
+            self.tempo_calc.ticks_to_secs(tempo.time.ticks)
 
     def ticks_to_secs(self, ticks):
         if ticks == 0:
