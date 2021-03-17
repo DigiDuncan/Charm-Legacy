@@ -1,14 +1,19 @@
-import pygame
-import nygame
-from pygame.constants import K_DOWN, K_HOME, K_LEFT, K_RIGHT, K_SPACE, K_UP
-from nygame import music, DigiText as T
+import sys
+from pathlib import Path
 
+import nygame
+import pygame
+from nygame import DigiText as T
+from nygame import music
+from pygame.constants import K_DOWN, K_HOME, K_LEFT, K_RIGHT, K_SPACE, K_UP
+
+from charm.lib.args import InvalidArgException, Mode, get_mode, get_selected_chart
+from charm.lib.utils import clamp, nice_time
 from charm.loaders import chchart
+from charm.prototyping import loader_test
+from charm.prototyping.lyricanimator.lyricanimator import LyricAnimator
 
 # from charm.lib.constants import instruments, frets
-from charm.lib.utils import clamp, nice_time
-from charm.prototyping.lyricanimator.lyricanimator import LyricAnimator
-from charm.prototyping import loader_test
 # from charm.objects.note import Note
 
 
@@ -92,24 +97,57 @@ class Game(nygame.Game):
         super().run()
 
 
-def run_game():
-    Game().run()
+def list_charts():
+    """
+    List all available charts
+    """
+    charts_root = Path(R".\charm\data\charts")
+    charts = list(charts_root.rglob("*.chart"))
+    return charts
 
 
-def run_chparse():
-    loader_test.main()
+def strch(chart):
+    r"""
+    Convert a chart Path object to a string path relative to .\charm\data\charts
+    """
+    charts_root = Path(R".\charm\data\charts")
+    return str(chart.relative_to(charts_root))
 
 
-def run_loader():
-    chartpath = R".\charm\data\charts\notes\notes.chart"
-    #chartpath = R".\charm\data\charts\run_around_the_character_code\run_around_the_character_code.chart"
-    with open(chartpath, encoding="utf-8 sig") as f:
-        song = chchart.load(f)
-        print(song)
+def run():
+    args = sys.argv
+    args.pop(0)     # Ignore executable path
+    mode = get_mode(args)
+
+    if mode == Mode.LyricAnimator:
+        Game().run()
+
+    elif mode == Mode.BulkTest:
+        loader_test.main()
+
+    elif mode == Mode.SingleTest:
+        charts = list_charts()
+        i = get_selected_chart(args, len(charts))
+        chart = charts[i - 1]
+        print(f"Testing chart {i}: {strch(chart)}")
+        with open(chart, encoding="utf-8 sig") as f:
+            song = chchart.load(f)
+            print(song)
+
+    elif mode == Mode.ListCharts:
+        charts = list_charts()
+        w = len(str(len(charts)))
+        print("Available Charts:")
+        for i, chart in enumerate(charts, start=1):
+            print(f"{i:>{w}}: {strch(chart)}")
 
 
 def main():
-    run_chparse()
+    try:
+        run()
+    except InvalidArgException as e:
+        print(e)
+        return
 
 
 # This is needed, or else calling `python -m <name>` will mean that main() is called twice.
