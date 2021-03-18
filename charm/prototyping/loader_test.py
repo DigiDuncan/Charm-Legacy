@@ -2,7 +2,7 @@ from operator import itemgetter
 from itertools import islice
 from pathlib import Path
 from traceback import format_exc
-from typing import DefaultDict, List, Literal, Optional, Tuple
+from typing import DefaultDict, Literal, Tuple
 
 from tqdm import tqdm
 import psutil
@@ -52,53 +52,12 @@ def input_int(*args, **kwargs):
     return ninput(*args, **kwargs, converter = int)
 
 
-def get_args(args: Optional[List[str]]) -> Tuple[Optional[Path], Optional[int], Optional[Literal["chart", "all"]]]:
-    """
-    Optionally read input from command-line arguments
-    """
-    if args is None:
-        args = ()
-
-    chart_root, in_limit, in_filter = None, None, None
-
-    for arg in args:
-        if arg.startswith("--path="):
-            if chart_root is not None:
-                raise InvalidArgException("Duplicate path arguments")
-            arg = arg.removeprefix("--path=")
-            chart_root = Path(arg)
-            if not chart_root.exists():
-                raise InvalidArgException(f"Sorry, {chart_root} doesn't exist")
-
-        elif arg.startswith("--limit="):
-            if in_limit is not None:
-                raise InvalidArgException("Duplicate limit arguments")
-            arg = arg.removeprefix("--limit=").lower()
-            if arg in ("unlimited", "none"):
-                arg = "0"
-            in_limit = tryint(arg)
-            if in_limit is None or in_limit < 0:
-                raise InvalidArgException(f"Sorry, {arg} is not a valid limit, a positive integer or 'unlimited' or 'none'.")
-
-        elif arg.startswith("--filter="):
-            if in_filter is not None:
-                raise InvalidArgException("Duplicate filter arguments")
-            arg = arg.removeprefix("--filter=").lower()
-            if arg not in ("all", "chart"):
-                raise InvalidArgException(f"Sorry, {arg} is not a valid filter, try 'chart' or 'all'.")
-            in_filter = arg
-
-    return chart_root, in_limit, in_filter
-
-
-def get_input(args: Optional[List[str]]) -> Tuple[Path, int, Literal["chart", "all"]]:
+def get_input(chart_root=None, in_limit=None, in_filter=None) -> Tuple[Path, int, Literal["chart", "all"]]:
     """
     Gets user input for runtime options
     Optionally loads values from command-line arguments first
     If values were not set at command-line, then the user is prompted to enter a value
     """
-    chart_root, in_limit, in_filter = get_args(args)
-
     lastpath = load_path()
 
     # None is unset
@@ -271,13 +230,34 @@ def run(chart_root: Path, in_limit: int, in_filter: Literal["chart", "all"]):
     build_path = Path() / "build"
     build_all(build_path, copy = sources, create = full_errors | {"log.txt": out}, progress = True)
 
-    #zip_path = Path() / "dist" / "output.zip"
-    #zip_all(zip_path, copy = sources, create = full_errors | {"log.txt": out}, progress = True)
+    # zip_path = Path() / "dist" / "output.zip"
+    # zip_all(zip_path, copy = sources, create = full_errors | {"log.txt": out}, progress = True)
 
 
-def main(args):
+def check_args(path, limit, filter):
+    if path is not None:
+        path = Path(path)
+        if not path.exists():
+            raise InvalidArgException(f"Sorry, {path} doesn't exist")
+
+    if limit is not None:
+        if limit in ("unlimited", "none"):
+            limit = 0
+        limit = tryint(limit)
+        if limit is None or limit < 0:
+            raise InvalidArgException(f"Sorry, {limit} is not a valid limit, a positive integer or 'unlimited' or 'none'.")
+
+    if filter is not None:
+        if filter not in ("all", "chart"):
+            raise InvalidArgException(f"Sorry, {filter} is not a valid filter, try 'chart' or 'all'.")
+
+    return path, limit, filter
+
+
+def main(*, path=None, limit=None, filter=None):
+    chart_root, limit, filter = check_args(path, limit, filter)
     try:
-        chart_root, in_limit, in_filter = get_input(args)
+        chart_root, in_limit, in_filter = get_input(chart_root=chart_root, in_limit=limit, in_filter=filter)
         run(chart_root, in_limit, in_filter)
     except KeyboardInterrupt:
         print("Goodbye")

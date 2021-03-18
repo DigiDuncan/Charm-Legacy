@@ -1,4 +1,5 @@
-import sys
+from charm.lib.nargs import nargs
+from enum import Enum
 from pathlib import Path
 
 import nygame
@@ -7,7 +8,7 @@ from nygame import DigiText as T
 from nygame import music
 from pygame.constants import K_DOWN, K_HOME, K_LEFT, K_RIGHT, K_SPACE, K_UP
 
-from charm.lib.args import InvalidArgException, Mode, get_mode, get_selected_chart
+from charm.lib.args import InvalidArgException, tryint
 from charm.lib.utils import clamp, nice_time
 from charm.loaders import chchart
 from charm.prototyping import loader_test
@@ -114,33 +115,56 @@ def strch(chart):
     return str(chart.relative_to(charts_root))
 
 
-def run():
-    args = sys.argv
-    args.pop(0)     # Ignore executable path
-    mode = get_mode(args)
+class Mode(Enum):
+    LyricAnimator = Default = "lyrics"
+    BulkTest = "bulk"
+    SingleTest = "single"
+    ListCharts = "charts"
 
+
+def play_chart(n=1):
+    charts = list_charts()
+    i = tryint(n)
+    if i is None or not (1 <= i <= len(charts)):
+        raise InvalidArgException(
+            f"Invalid chart selection: {n!r}\n"
+            f"Please enter a number between 1-{len(charts)} or use 'charts' to list all available charts."
+        )
+    chart = charts[i - 1]
+    print(f"Testing chart {i}: {strch(chart)}")
+    with open(chart, encoding="utf-8 sig") as f:
+        song = chchart.load(f)
+        print(song)
+
+
+def print_charts():
+    charts = list_charts()
+    w = len(str(len(charts)))
+    print("Available Charts:")
+    for i, chart in enumerate(charts, start=1):
+        print(f"{i:>{w}}: {strch(chart)}")
+
+
+@nargs
+def run(mode=Mode.Default.value, *args, **kwargs):
+    try:
+        mode = Mode(mode)
+    except ValueError:
+        mode = None
     if mode == Mode.LyricAnimator:
         Game().run()
-
     elif mode == Mode.BulkTest:
-        # pass remaining args to bulk tester
-        loader_test.main(args)
-
+        loader_test.main(**kwargs)
     elif mode == Mode.SingleTest:
-        charts = list_charts()
-        i = get_selected_chart(args, len(charts))
-        chart = charts[i - 1]
-        print(f"Testing chart {i}: {strch(chart)}")
-        with open(chart, encoding="utf-8 sig") as f:
-            song = chchart.load(f)
-            print(song)
-
+        play_chart(*args)
     elif mode == Mode.ListCharts:
-        charts = list_charts()
-        w = len(str(len(charts)))
-        print("Available Charts:")
-        for i, chart in enumerate(charts, start=1):
-            print(f"{i:>{w}}: {strch(chart)}")
+        print_charts()
+    else:
+        valid_modes = " / ".join(m.value for m in Mode)
+        print(
+            f"Unrecognized mode: {mode!r}\n"
+            f"Please use one of the following modes: {valid_modes}."
+        )
 
 
 def main():
