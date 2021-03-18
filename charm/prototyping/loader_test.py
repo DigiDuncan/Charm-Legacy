@@ -52,7 +52,7 @@ def input_int(*args, **kwargs):
     return ninput(*args, **kwargs, converter = int)
 
 
-def get_input(chart_root=None, in_limit=None, in_filter=None) -> Tuple[Path, int, Literal["chart", "all"]]:
+def get_input(chart_root=None, in_limit=None, in_filter=None, errlimit=None) -> Tuple[Path, int, Literal["chart", "all"]]:
     """
     Gets user input for runtime options
     Optionally loads values from command-line arguments first
@@ -73,6 +73,10 @@ def get_input(chart_root=None, in_limit=None, in_filter=None) -> Tuple[Path, int
     if in_limit is None:
         in_limit = input_int("Limit number of charts scanned to...", default=0, default_label="unlimited")
 
+    # None is unset, 0 is unlimited
+    if errlimit is None:
+        errlimit = input_int("Maximum number of errors before giving up...", default=0, default_label="unlimited")
+
     # None is unset
     while in_filter is None:
         in_filter = ninput("Which suffixes do you want to parse? <chart/all>", default="chart")
@@ -80,7 +84,7 @@ def get_input(chart_root=None, in_limit=None, in_filter=None) -> Tuple[Path, int
             print(f"Sorry, {in_filter} is not valid, try 'chart' or 'all'.")
             in_filter = None
 
-    return chart_root, in_limit, in_filter
+    return chart_root, in_limit, in_filter, errlimit
 
 
 def get_suffix(path):
@@ -110,7 +114,7 @@ def fqcn(o):
         return f"{module}.{o.__class__.__name__}"
 
 
-def process_charts(charts):
+def process_charts(charts, errlimit):
     print("\nProcessing charts...")
 
     bad_charts = []
@@ -143,6 +147,9 @@ def process_charts(charts):
             mem_per_chart = mem_used / (n + 1)
             t.set_postfix(Nemory=tqdm.format_sizeof(mem_used, "B", 1024), ChartCost=tqdm.format_sizeof(mem_per_chart, "B", 1024))
             counts[suffix] += 1
+            if len(bad_charts) >= errlimit:
+                print(f"Stopping after reaching maximum number of errors: {errlimit}")
+                break
     except KeyboardInterrupt:
         print(f"CTRL-C received. Stopped processing after {max(counts.values())} charts.")
     return bad_charts, sorted(unparsed_metadata), counts.items()
@@ -210,7 +217,7 @@ def gen_output(raw_errors, error_counts, counts, unparsed_metadata):
     return "\n".join(lines)
 
 
-def run(chart_root: Path, in_limit: int, in_filter: Literal["chart", "all"]):
+def run(chart_root: Path, in_limit: int, in_filter: Literal["chart", "all"], errlimit: int):
     # Clone Hero requires charts be named "notes.chart" or "notes.mid[i]."
     if in_filter == "chart":
         glob_filter = "notes.chart"
@@ -223,7 +230,7 @@ def run(chart_root: Path, in_limit: int, in_filter: Literal["chart", "all"]):
     charts = list(tqdm(charts_iter, unit = " charts"))
     print(f"{len(charts)} charts found")
 
-    bad_charts, unparsed_metadata, counts = process_charts(charts)
+    bad_charts, unparsed_metadata, counts = process_charts(charts, errlimit)
     raw_errors, error_counts, sources, full_errors = process_errors(bad_charts, chart_root)
     out = gen_output(raw_errors, error_counts, counts, unparsed_metadata)
 
@@ -234,7 +241,7 @@ def run(chart_root: Path, in_limit: int, in_filter: Literal["chart", "all"]):
     # zip_all(zip_path, copy = sources, create = full_errors | {"log.txt": out}, progress = True)
 
 
-def check_args(path, limit, filter):
+def check_args(path, limit, filter, errlimit):
     if path is not None:
         path = Path(path)
         if not path.exists():
@@ -245,19 +252,26 @@ def check_args(path, limit, filter):
             limit = 0
         limit = tryint(limit)
         if limit is None or limit < 0:
-            raise InvalidArgException(f"Sorry, {limit} is not a valid limit, a positive integer or 'unlimited' or 'none'.")
+            raise InvalidArgException(f"Sorry, {limit} is not a valid limit, try a positive integer or 'unlimited' or 'none'.")
 
     if filter is not None:
         if filter not in ("all", "chart"):
             raise InvalidArgException(f"Sorry, {filter} is not a valid filter, try 'chart' or 'all'.")
 
-    return path, limit, filter
+    if errlimit is not None:
+        if errlimit in ("unlimited", "none"):
+            errlimit = 0
+        errlimit = tryint(errlimit)
+        if errlimit is None or errlimit < 0:
+            raise InvalidArgException(f"Sorry, {errlimit} is not a valid error limit, try a positive integer or 'unlimited' or 'none'.")
+
+    return path, limit, filter, errlimit
 
 
-def main(*, path=None, limit=None, filter=None):
-    chart_root, limit, filter = check_args(path, limit, filter)
+def main(*, path=None, limit=None, filter=None, errlimit=None):
+    chart_root, limit, filter, errlimit = check_args(path, limit, filter, errlimit)
     try:
-        chart_root, in_limit, in_filter = get_input(chart_root=chart_root, in_limit=limit, in_filter=filter)
-        run(chart_root, in_limit, in_filter)
+        chart_root, in_limit, in_filter, errlimit = get_input(chart_root=chart_root, in_limit=limit, in_filter=filter, errlimit=errlimit)
+        run(chart_root, in_limit, in_filter, errlimit)
     except KeyboardInterrupt:
         print("Goodbye")
