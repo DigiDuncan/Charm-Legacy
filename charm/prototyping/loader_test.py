@@ -8,7 +8,7 @@ from tqdm import tqdm
 import psutil
 
 from charm.loaders import chchart
-from charm.lib.nip import zip_all
+from charm.lib.nip import build_all, zip_all
 from charm.lib.args import InvalidArgException, tryint
 
 
@@ -126,10 +126,10 @@ def get_input(args: Optional[List[str]]) -> Tuple[Path, int, Literal["chart", "a
 
 def get_suffix(path):
     if path.suffix == ".chart":
-        suffix = ".chart"
+        suffix = "chart"
     # midis are so old sometimes the extension is uppercase
     elif path.suffix.lower() in [".mid", ".midi"]:
-        suffix = ".mid"
+        suffix = "mid"
     # .bak, .backup, .eof
     else:
         suffix = "other"
@@ -140,16 +140,24 @@ class DontBeNoneException(Exception):
     ...
 
 
+def fqcn(o):
+    """
+    Get fully qualified class name
+    """
+    module = o.__class__.__module__
+    if module is None or module == str.__class__.__module__:
+        return o.__class__.__name__  # Avoid reporting __builtin__
+    else:
+        return f"{module}.{o.__class__.__name__}"
+
+
 def process_charts(charts):
     print("\nProcessing charts...")
 
     bad_charts = []
+    unparsed_metadata = set()
+    counts = DefaultDict(int)
 
-    counts = {
-        ".chart": 0,
-        ".mid": 0,
-        "other": 0
-    }
     p = psutil.Process()
     basemem = p.memory_info().rss
 
@@ -157,7 +165,7 @@ def process_charts(charts):
     for n, chart_path in enumerate(t):
         suffix = get_suffix(chart_path)
         counts[suffix] += 1
-        if suffix != ".chart":
+        if suffix != "chart":
             continue
 
         try:
@@ -168,12 +176,15 @@ def process_charts(charts):
         except KeyboardInterrupt as e:
             raise e
         except Exception as e:
-            bad_charts.append((chart_path, type(e), format_exc()))
+            if isinstance(e, chchart.UnparsedMetadataException):
+                unparsed_metadata.update(e.keys)
+            bad_charts.append((chart_path, fqcn(e), format_exc()))
+
         mem_used = p.memory_info().rss - basemem
         mem_per_chart = mem_used / (n + 1)
         t.set_postfix(Nemory=tqdm.format_sizeof(mem_used, "B", 1024), ChartCost=tqdm.format_sizeof(mem_per_chart, "B", 1024))
 
-    return bad_charts, counts
+    return bad_charts, sorted(unparsed_metadata), counts.items()
 
 
 def process_errors(bad_charts, chart_root):
@@ -191,43 +202,47 @@ def process_errors(bad_charts, chart_root):
 
         raw_errors.append((new_path, e_type))
         error_counts[e_type] += 1
-
+    error_counts = sorted(error_counts.items(), key=itemgetter(1), reverse=True)
     return raw_errors, error_counts, sources, full_errors
 
 
-def gen_output(raw_errors, error_counts, counts):
+def gen_output(raw_errors, error_counts, counts, unparsed_metadata):
     print("\nGenerating output file...")
 
-    lines = []
-    lines.append("=== RAW ERRORS ===")
-    if raw_errors:
-        for name, error in raw_errors:
-            lines.append(f"\"{name}\": {error}")
-    else:
-        lines.append("No errors!")
+    total_count = sum(cnt for sfx, cnt in counts)
+    chart_count = sum(cnt for sfx, cnt in counts if sfx != "other")
 
-    lines.append("\n\n=== ERROR COUNT ===")
-    if error_counts:
-        for e, c in sorted(error_counts.items(), key=itemgetter(1), reverse=True):
-            lines.append(f"{e}: {c}")
-    else:
-        lines.append("No errors!")
+    if chart_count == 0:
+        return f"No charts found out of {total_count} files."
 
-    lines.append("\n\n=== TOTALS ===")
-    for n, c in counts.items():
-        lines.append(f"{n}s: {c}")
-
-    chart_count = sum(c for n, c in counts.items() if n != "other")
-    total_count = sum(c for c in counts.values())
     error_count = len(raw_errors)
     success_count = chart_count - error_count
-    if chart_count > 0:
-        success_rate = success_count / chart_count
-    else:
-        success_rate = 1
+    success_rate = success_count / chart_count
 
+    lines = []
+
+    lines.append("=== RAW ERRORS ===")
+    lines += ([f'"{name}": {error}' for name, error in raw_errors] or ["No errors!"])
+
+    lines.append("")
+    lines.append("")
+    lines.append("=== ERROR COUNT ===")
+    lines += ([f"{err}: {cnt}" for err, cnt in error_counts] or ["No errors!"])
+
+    lines.append("")
+    lines.append("")
+    lines.append("=== TOTALS ===")
+    lines += [f"{sfx}s: {cnt}" for sfx, cnt in counts]
+
+    lines.append("")
+    lines.append("")
+    lines.append("=== UNPARSED METADATA ===")
+    lines += [key for key in unparsed_metadata] or ["All metadata has been parsed."]
+
+    lines.append("")
+    lines.append("")
+    lines.append(f"Total Files: {total_count}")
     lines.append(f"Total Charts: {chart_count}")
-    lines.append(f"Total: {total_count}")
     lines.append(f"Errors: {error_count}")
     lines.append(f"Success Rate: {success_rate:.3%}")
 
@@ -247,12 +262,15 @@ def run(chart_root: Path, in_limit: int, in_filter: Literal["chart", "all"]):
     charts = list(tqdm(charts_iter, unit = " charts"))
     print(f"{len(charts)} charts found")
 
-    bad_charts, counts = process_charts(charts)
+    bad_charts, unparsed_metadata, counts = process_charts(charts)
     raw_errors, error_counts, sources, full_errors = process_errors(bad_charts, chart_root)
-    out = gen_output(raw_errors, error_counts, counts)
+    out = gen_output(raw_errors, error_counts, counts, unparsed_metadata)
 
-    output_path = Path() / "dist" / "output.zip"
-    zip_all(output_path, copy = sources, create = full_errors | {"log.txt": out}, progress = True)
+    build_path = Path() / "build"
+    build_all(build_path, copy = sources, create = full_errors | {"log.txt": out}, progress = True)
+
+    #zip_path = Path() / "dist" / "output.zip"
+    #zip_all(zip_path, copy = sources, create = full_errors | {"log.txt": out}, progress = True)
 
 
 def main(args):

@@ -49,7 +49,9 @@ class MissingSyncTrackBlockException(LoadException):
 
 
 class UnparsedMetadataException(LoadException):
-    pass
+    def __init__(self, keys):
+        super().__init__(f"Unparsed metadata: {keys}")
+        self.keys = keys
 
 
 def note_from_raw(song: Song, chart: Chart, rawnote: RawNote) -> Note:
@@ -145,7 +147,7 @@ def set_metadata(song, lines: List[RawMetadata]) -> Dict[str, Union[str, int]]:
     metadata.pop("MusicStream", None)
     metadata.pop("GuitarStream", None)
     if len(metadata) > 0:
-        raise UnparsedMetadataException(f"Unparsed metadata: {list(metadata.keys())}")
+        raise UnparsedMetadataException(list(metadata.keys()))
 
 
 def parse_synctrack(song, lines: List[RawTempo, RawTS]) -> Tuple[List[RawTempo], List[RawTS]]:
@@ -197,7 +199,7 @@ def song_from_raw(datablocks: Dict[str, List[RawNote, RawEvent, RawTempo, RawAnc
         chart = chart_from_raw(song, block, lines)
         key = (chart.difficulty, chart.instrument)
         if key in charts:
-            raise DuplicateChartException("Duplicate chart: {chart.difficulty} {chart.instrument}")
+            raise DuplicateChartException(f"Duplicate chart: {chart.difficulty} {chart.instrument}")
         charts[key] = chart
     song.charts = charts
 
