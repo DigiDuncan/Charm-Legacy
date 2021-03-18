@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Literal, Union
 from zipfile import ZipFile, ZIP_DEFLATED
 
-import tqdm
+from tqdm import tqdm
 
 
 def build_all(dst, *, copy=None, create=None, progress=False, clean=False):
@@ -11,6 +11,12 @@ def build_all(dst, *, copy=None, create=None, progress=False, clean=False):
 
 def zip_all(dst, *, copy=None, create=None, progress=False):
     return n_all(dst, dst_type="zip", copy=copy, create=create, progress=progress)
+
+
+def progressive(items, msg):
+    items = tqdm(items, bar_format=msg)
+    items = tqdm(items, unit=" files")
+    return items
 
 
 def n_all(dst: Union[Path, str], *, dst_type: Literal["dir", "zip"], copy=None, create=None, progress=False, clean=False):
@@ -33,11 +39,8 @@ def n_all(dst: Union[Path, str], *, dst_type: Literal["dir", "zip"], copy=None, 
     copy_pairs = copy.items()
     create_pairs = create.items()
     if progress:
-        default_bar_format = "{l_bar}{bar}{r_bar}"
-        copy_pairs = tqdm.tqdm(copy_pairs, unit = " files")
-        copy_pairs.bar_format = f"Copying {len(copy_pairs)} existing files to {dst_type}...\n" + default_bar_format
-        create_pairs = tqdm.tqdm(create_pairs, unit = " files")
-        create_pairs.bar_format = f"Adding {len(create_pairs)} new files to {dst_type}...\n" + default_bar_format
+        copy_pairs = progressive(copy_pairs, f"Copying {len(copy_pairs)} existing files to {dst_type}...")
+        create_pairs = progressive(create_pairs, f"Adding {len(create_pairs)} new files to {dst_type}...")
 
     from contextlib import ExitStack
 
