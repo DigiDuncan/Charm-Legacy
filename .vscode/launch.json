@@ -3,12 +3,22 @@
     // Hover to view descriptions of existing attributes.
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
-    "configurations": [{
+    "configurations": [
+        {
             "name": "PyFile",
             "type": "python",
             "request": "launch",
             "program": "${file}",
-            "console": "integratedTerminal"
+            "console": "integratedTerminal",
+            "args": []
+        },
+        {
+            "name": "nargs",
+            "type": "python",
+            "request": "launch",
+            "program": "charm/lib/nargs.py",
+            "console": "integratedTerminal",
+            "args": ["one", "--two", "--three=four", "-5", "-67"]
         },
         {
             "name": "Charm: Lyrics",
