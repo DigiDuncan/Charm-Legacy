@@ -160,30 +160,32 @@ def process_charts(charts):
 
     p = psutil.Process()
     basemem = p.memory_info().rss
+    try:
+        t = tqdm(charts, unit = " charts")
+        for n, chart_path in enumerate(t):
+            suffix = get_suffix(chart_path)
+            if suffix != "chart":
+                counts[suffix] += 1
+                continue
 
-    t = tqdm(charts, unit = " charts")
-    for n, chart_path in enumerate(t):
-        suffix = get_suffix(chart_path)
-        counts[suffix] += 1
-        if suffix != "chart":
-            continue
+            try:
+                with chart_path.open(encoding = "utf-8 sig") as f:
+                    c = chchart.load(f)
+                if c is None:
+                    raise DontBeNoneException("Don't be None!")
+            except KeyboardInterrupt as e:
+                raise e
+            except Exception as e:
+                if isinstance(e, chchart.UnparsedMetadataException):
+                    unparsed_metadata.update(e.keys)
+                bad_charts.append((chart_path, fqcn(e), format_exc()))
 
-        try:
-            with chart_path.open(encoding = "utf-8 sig") as f:
-                c = chchart.load(f)
-            if c is None:
-                raise DontBeNoneException("Don't be None!")
-        except KeyboardInterrupt as e:
-            raise e
-        except Exception as e:
-            if isinstance(e, chchart.UnparsedMetadataException):
-                unparsed_metadata.update(e.keys)
-            bad_charts.append((chart_path, fqcn(e), format_exc()))
-
-        mem_used = p.memory_info().rss - basemem
-        mem_per_chart = mem_used / (n + 1)
-        t.set_postfix(Nemory=tqdm.format_sizeof(mem_used, "B", 1024), ChartCost=tqdm.format_sizeof(mem_per_chart, "B", 1024))
-
+            mem_used = p.memory_info().rss - basemem
+            mem_per_chart = mem_used / (n + 1)
+            t.set_postfix(Nemory=tqdm.format_sizeof(mem_used, "B", 1024), ChartCost=tqdm.format_sizeof(mem_per_chart, "B", 1024))
+            counts[suffix] += 1
+    except KeyboardInterrupt:
+        print(f"CTRL-C received. Stopped processing after {max(counts.values())} charts.")
     return bad_charts, sorted(unparsed_metadata), counts.items()
 
 
