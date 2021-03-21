@@ -44,18 +44,18 @@ class ChartEvent(SongEvent):
 
 
 class Note(ChartEvent):
-    def __init__(self, song, chart, tick_start, kind, tick_length):
+    def __init__(self, song, chart, tick_start, fret, tick_length):
         super().__init__(song, chart, tick_start, tick_length)
-        self.kind = kind
+        self.fret = fret
 
     def __eq__(self, other):
-        return (self.tick_start, self.kind, self.tick_length) == (other.tick_start, other.kind, other.tick_length)
+        return (self.tick_start, self.fret, self.tick_length) == (other.tick_start, other.fret, other.tick_length)
 
     def __lt__(self, other):
-        return (self.tick_start, self.kind, self.tick_length) < (other.tick_start, other.kind, other.tick_length)
+        return (self.tick_start, self.fret, self.tick_length) < (other.tick_start, other.fret, other.tick_length)
 
     def __repr__(self):
-        return f"<{self.__class__.__name__}(start = {self.start}, kind = {self.kind}), length = {self.length})>"
+        return f"<{self.__class__.__name__}(start = {self.start}, fret = {self.fret}), length = {self.length})>"
 
 
 class SPEvent(ChartEvent):
@@ -83,16 +83,16 @@ class Event(ChartEvent):
 
 
 class Chord(ChartEvent):
-    def __init__(self, song, chart, mode, notes: List[Note]):
+    def __init__(self, song, chart, flag, notes: List[Note]):
         tick_start = notes[0].tick_start
         tick_length = max(n.tick_length for n in notes)
         super().__init__(song, chart, tick_start, tick_length)
-        self.mode = mode
+        self.flag = flag
         self.notes = notes
-        self.shape = tuple(n.kind for n in notes)
+        self.frets = tuple(n.fret for n in notes)
 
     def __repr__(self):
-        return f"<{self.__class__.__name__}(start = {self.start}, shape = {self.shape}, length = {self.length})>"
+        return f"<{self.__class__.__name__}(start = {self.start}, frets = {self.frets}, length = {self.length})>"
 
 
 class Chart:

@@ -55,7 +55,7 @@ class UnparsedMetadataException(LoadException):
 
 
 def note_from_raw(song: Song, chart: Chart, rawnote: RawNote) -> Note:
-    note = Note(song, chart, rawnote.tick_start, rawnote.kind, rawnote.tick_length)
+    note = Note(song, chart, rawnote.tick_start, rawnote.fret, rawnote.tick_length)
     return note
 
 
@@ -104,14 +104,14 @@ def chart_from_raw(song: Song, header: str, lines: List[RawNote, RawEvent, RawTe
 
 
 def notes_to_chord(song, chart, notes):
-    frets = [n.kind for n in notes]
+    frets = [n.fret for n in notes]
     if 6 in frets:
         mode = "tap"
     elif 5 in frets:
         mode = "hopo"
     else:
         mode = "note"
-    notes = [n for n in notes if n.kind not in (5, 6)]
+    notes = [n for n in notes if n.fret not in (5, 6)]
     chord = Chord(song, chart, mode, notes)
     return chord
 

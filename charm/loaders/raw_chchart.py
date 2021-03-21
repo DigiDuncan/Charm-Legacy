@@ -91,7 +91,7 @@ class RawTimedLine(RawLine):
 class RawNote(RawTimedLine):
     RE_LINE = re.compile(RE_ITEM_TPL.format(r"N", RE_NUM_TPL + r"\s+" + RE_NUM_TPL))
     tick_start: int
-    kind: int
+    fret: int
     tick_length: int
 
 

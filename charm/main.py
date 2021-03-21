@@ -1,4 +1,4 @@
-from charm.prototyping.notedisplay.notedisplay import NoteDisplay
+from charm.prototyping.notedisplay.hyperloop import HyperloopDisplay, init as hyperloop_init
 from charm.lib.nargs import nargs
 from enum import Enum
 from pathlib import Path
@@ -35,7 +35,8 @@ class Game(nygame.Game):
         with songpath.open("r", encoding="utf-8") as f:
             song = chchart.load(f)
         self.la = LyricAnimator(songpath)   # TODO: Update to take Song object
-        self.nd = NoteDisplay(song.charts[('Expert', 'Single')])
+        hyperloop_init()
+        self.nd = HyperloopDisplay(song.charts[('Expert', 'Single')], size=(400, 600))
         music.load(songpath.parent / song.musicstream)
         self.pause_image = draw_pause()
 
@@ -80,7 +81,7 @@ class Game(nygame.Game):
 
     def render_notes(self):
         dest = self.nd.image.get_rect()
-        dest.center = (self.surface.get_rect().centerx, 450)
+        dest.center = self.surface.get_rect().center
         self.surface.blit(self.nd.image, dest)
 
     def render_pause(self):
