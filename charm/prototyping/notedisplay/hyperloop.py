@@ -117,7 +117,7 @@ class HyperloopDisplay:
             self.upcoming_chord = getone(self.chord_stream)
 
     def draw(self):
-        self._image.fill("clear")
+        self._image.fill(0x00000000)
         for fret, name in fretnames.items():
             if name == "open":
                 continue
