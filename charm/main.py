@@ -1,3 +1,4 @@
+from charm.prototyping.notedisplay.notedisplay import NoteDisplay
 from charm.lib.nargs import nargs
 from enum import Enum
 from pathlib import Path
@@ -31,11 +32,13 @@ class Game(nygame.Game):
         self.paused = False
         self.volume = 6
         self.la = LyricAnimator("./charm/data/charts/run_around_the_character_code/run_around_the_character_code.chart")
+        self.nd = NoteDisplay("./charm/data/charts/run_around_the_character_code/run_around_the_character_code.chart")
         music.load("./charm/data/charts/run_around_the_character_code/run_around_the_character_code.mp3")
         self.pause_image = draw_pause()
 
     def loop(self, events):
         self.la.update(music.elapsed)
+        self.nd.update(music.elapsed)
 
         for event in events:
             if event.type == pygame.KEYDOWN:
@@ -56,6 +59,7 @@ class Game(nygame.Game):
         # self.surface.blit(note.image, (0, 0))
 
         self.render_lyrics()
+        self.render_notes()
         self.render_clock()
         self.render_pause()
         self.render_volume()
@@ -65,6 +69,11 @@ class Game(nygame.Game):
         dest = self.la.image.get_rect()
         dest.center = self.surface.get_rect().center
         self.surface.blit(self.la.image, dest)
+
+    def render_notes(self):
+        dest = self.nd.image.get_rect()
+        dest.center = (self.surface.get_rect().centerx, 450)
+        self.surface.blit(self.nd.image, dest)
 
     def render_pause(self):
         if music.paused:
