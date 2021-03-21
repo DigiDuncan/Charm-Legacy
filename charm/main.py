@@ -59,10 +59,7 @@ class Game(nygame.Game):
                 elif event.key == K_DOWN:
                     self.volume -= 1
             elif event.type == MOUSEWHEEL:
-                if event.y > 0 and self.la.prev_phrase is not None:
-                    music.elapsed = self.la.prev_phrase.start
-                elif event.y < 0 and self.la.next_phrase is not None:
-                    music.elapsed = self.la.next_phrase.start
+                music.elapsed -= event.y / 20
 
         # note = Note(instruments.GUITAR, frets.ORANGE)
         # self.surface.blit(note.image, (0, 0))

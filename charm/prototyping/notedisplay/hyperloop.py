@@ -77,7 +77,7 @@ class HyperloopDisplay:
         self.chord_stream = iter(c for c in self.chart.chords)
         self.visible_chords = []
         self.upcoming_chord = next(self.chord_stream)
-        self.fret_strikes = [-1, -1, -1, -1, -1]
+        self.strike_fadetime = 0.5
 
     @property
     def end(self):
@@ -103,36 +103,31 @@ class HyperloopDisplay:
 
     def update(self, tracktime):
         self.tracktime = tracktime
-        # Remove tracks that have become hidden
-        while self.visible_chords and self.visible_chords[0].start < self.tracktime:
-            oldchord = self.visible_chords.pop(0)
-            for fret in fretnames:
-                if fret == 7:
-                    continue
-                for hit in oldchord.frets:
-                    self.fret_strikes[hit] = self.tracktime
-        # Add tracks that have become visible
-        while self.upcoming_chord and self.upcoming_chord.start < self.end:
-            self.visible_chords.append(self.upcoming_chord)
-            self.upcoming_chord = getone(self.chord_stream)
+        self.visible_chords = self.chart[self.tracktime - self.strike_fadetime:self.end]
 
     def draw(self):
         self._image.fill("clear")
-        for fret, name in fretnames.items():
-            if name == "open":
-                continue
-            pos = self.get_fret_pos(fret)
-            since_strike = self.tracktime - self.fret_strikes[fret]
-            fadetime = 0.5
-            fade = max(fadetime - since_strike, 0)
-            strike_images[fret].set_alpha(fade / fadetime * 255)
-            self._image.blit(strike_images[fret], pos)
 
+        fret_strikes = [0, 0, 0, 0, 0]
         for chord in self.visible_chords:
             diff = chord.start - self.tracktime
+            if diff < 0:
+                for fret in chord.frets:
+                    fade = max(0, self.strike_fadetime + diff)  # 0 to 0.5
+                    fade /= self.strike_fadetime                # 0 t0 1
+                    fret_strikes[fret] = max(fret_strikes[fret], fade)
+                continue
             for fret in chord.frets:
                 pos = self.get_fret_pos(fret, diff)
                 self._image.blit(fret_images[chord.flag][fret], pos)
+
+        for fret, fade in enumerate(fret_strikes):
+            fade_alpha = 255 * fade
+            strike_images[fret].set_alpha(fade_alpha)
+
+            pos = self.get_fret_pos(fret)
+            self._image.blit(strike_images[fret], pos)
+
 
     @property
     def image(self) -> pygame.Surface:

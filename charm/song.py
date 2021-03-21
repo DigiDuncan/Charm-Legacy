@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from itertools import groupby
+import bisect
 from functools import cache, total_ordering
 from typing import List
 
@@ -104,12 +104,33 @@ class Chart:
         self.star_powers = []
         self.events = []
         self.chords = []
+        self.chord_keys = []
+
+    def __getitem__(self, key):
+        if not isinstance(key, slice):
+            raise IndexError
+        if key.step is not None:
+            raise IndexError
+        if key.start is None:
+            raise IndexError
+        from_secs = key.start
+        to_secs = key.stop
+        from_ticks = self.song.tempo_calc.secs_to_ticks(from_secs)
+        to_ticks = self.song.tempo_calc.secs_to_ticks(to_secs)
+        start_index = bisect.bisect_left(self.chord_keys, from_ticks)
+        if to_ticks is not None:
+            end_index = bisect.bisect_left(self.chord_keys, to_ticks, start_index)
+        else:
+            end_index = len(self.chord_keys)
+
+        return self.chords[start_index:end_index]
 
     def finalize(self):
         self.notes.sort()
         self.star_powers.sort()
         self.events.sort()
         self.chords.sort()
+        self.chord_keys = [c.tick_start for c in self.chords]
 
     def __hash__(self):
         return hash((
@@ -177,12 +198,28 @@ class TempoCalculator:
             self.ticks_to_secs(tempo.tick_start)
 
     def ticks_to_secs(self, ticks):
+        if ticks is None:
+            return None
         if ticks == 0:
             return 0
         curr_tempo = next(tempo for tempo in self.tempos if tempo.tick_start <= ticks)
         diff_ticks = ticks - curr_tempo.tick_start
         diff_seconds = diff_ticks / curr_tempo.ticks_per_sec
         seconds = curr_tempo.start + diff_seconds
+        return seconds
+
+    def secs_to_ticks(self, secs):
+        if secs is None:
+            return None
+        if secs == 0:
+            return 0
+        if secs < 0:
+            curr_tempo = self.tempos[0]
+        else:
+            curr_tempo = next(tempo for tempo in self.tempos if tempo.start <= secs)
+        diff_seconds = secs - curr_tempo.start
+        diff_ticks = diff_seconds * curr_tempo.ticks_per_sec
+        seconds = curr_tempo.tick_start + diff_ticks
         return seconds
 
     def __hash__(self):
