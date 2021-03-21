@@ -143,6 +143,7 @@ class Song:
         self.previewend = None
         self.genre = None
         self.mediastream = None
+        self.musicstream = None
 
     def finalize(self):
         self.events.sort()

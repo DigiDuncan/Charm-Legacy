@@ -12,7 +12,7 @@ from charm.loaders.chlyrics import load_lyrics
 class LyricAnimator:
     def __init__(self, chart, *, size: tuple = (700, 500), font = "Segoe UI Emoji", show_next=False, show_baseline = False):
         with Path(chart).open("r", encoding="utf-8") as f:
-            self.phrases = load_lyrics(f)
+            self.phrases = load_lyrics(f)   # TODO: Update this to use lyrics from Song object
         self.width, self.height = size
         self.font = font
         self._image = None

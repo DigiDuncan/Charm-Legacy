@@ -31,9 +31,12 @@ class Game(nygame.Game):
         super().__init__(size = (800, 600), fps = 120, showfps = True)
         self.paused = False
         self.volume = 6
-        self.la = LyricAnimator("./charm/data/charts/run_around_the_character_code/run_around_the_character_code.chart")
-        self.nd = NoteDisplay("./charm/data/charts/run_around_the_character_code/run_around_the_character_code.chart")
-        music.load("./charm/data/charts/run_around_the_character_code/run_around_the_character_code.mp3")
+        songpath = Path("./charm/data/charts/run_around_the_character_code/run_around_the_character_code.chart")
+        with songpath.open("r", encoding="utf-8") as f:
+            song = chchart.load(f)
+        self.la = LyricAnimator(songpath)   # TODO: Update to take Song object
+        self.nd = NoteDisplay(song.charts[('Expert', 'Single')])
+        music.load(songpath.parent / song.musicstream)
         self.pause_image = draw_pause()
 
     def loop(self, events):

@@ -1,11 +1,9 @@
 import importlib.resources as pkg_resources
 from importlib import import_module
-from pathlib import Path
 
 import pygame
 
 from charm.lib.utils import cache_on
-from charm.loaders import chchart
 from charm.song import Chord
 
 HIT_WINDOW = 0.140  # 140ms
@@ -21,19 +19,13 @@ fretmap = {
 
 
 class NoteDisplay:
-    def __init__(self, chartfile, *, size: tuple = (400, 100)):
-        self.chartfile = chartfile
-        self.size = size
-        self._image = pygame.Surface(self.size)
+    def __init__(self, chart, *, size: tuple = (400, 100)):
+        self.chart = chart
+        self._image = pygame.Surface(size)
         self._image.fill("BLUE")
-        self.image_folder = import_module("charm.data.images.gh")
+        image_folder = import_module("charm.data.images.gh")
         self.tracktime = 0
         self.last_drawn = None
-
-        with Path(chartfile).open("r", encoding="utf-8") as f:
-            self.song = chchart.load(f)
-
-        self.chart = self.song.charts[('Expert', 'Single')]
 
         self.note_images = {}
         self.note_positions = {}
@@ -41,11 +33,11 @@ class NoteDisplay:
         for i in range(8):
             if i not in fretmap:
                 continue
-            with pkg_resources.path(self.image_folder, f"note_{fretmap[i]}.png") as p:
+            with pkg_resources.path(image_folder, f"note_{fretmap[i]}.png") as p:
                 note_img = pygame.image.load(p)
-            with pkg_resources.path(self.image_folder, f"hopo_{fretmap[i]}.png") as p:
+            with pkg_resources.path(image_folder, f"hopo_{fretmap[i]}.png") as p:
                 hopo_img = pygame.image.load(p)
-            with pkg_resources.path(self.image_folder, f"tap_{fretmap[i]}.png") as p:
+            with pkg_resources.path(image_folder, f"tap_{fretmap[i]}.png") as p:
                 tap_img = pygame.image.load(p)
             note_img.convert_alpha()
             hopo_img.convert_alpha()
@@ -71,7 +63,8 @@ class NoteDisplay:
             return None
 
     def draw(self):
-        surf = pygame.Surface(self.size)
+        surf = self._image
+        surf.fill("black")
         if self.active_chord is None:
             return surf
 

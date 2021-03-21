@@ -149,11 +149,11 @@ def set_metadata(song, lines: List[RawMetadata]) -> Dict[str, Union[str, int]]:
     song.previewstart = tryint(metadata.pop("PreviewStart", None))
     song.previewend = tryint(metadata.pop("PreviewEnd", None))
     song.genre = metadata.pop("Genre", None)
-    song.mediastream = metadata.pop("MediaStream", None)  # TODO: Should this be MusicStream?
+    song.mediastream = metadata.pop("MediaStream", None)
+    song.musicstream = metadata.pop("MusicStream", None)
     # TODO: Do something with this unparsed metadata entries
     metadata.pop("Player2", None)
     metadata.pop("MediaType", None)
-    metadata.pop("MusicStream", None)
     metadata.pop("GuitarStream", None)
     if len(metadata) > 0:
         raise UnparsedMetadataException(list(metadata.keys()))
