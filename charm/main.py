@@ -7,7 +7,7 @@ import nygame
 import pygame
 from nygame import DigiText as T
 from nygame import music
-from pygame.constants import K_DOWN, K_HOME, K_LEFT, K_RIGHT, K_SPACE, K_UP
+from pygame.constants import K_DOWN, K_HOME, K_LEFT, K_RIGHT, K_SPACE, K_UP, MOUSEWHEEL
 
 from charm.lib.args import InvalidArgException, tryint
 from charm.lib.utils import clamp, nice_time
@@ -44,16 +44,21 @@ class Game(nygame.Game):
             if event.type == pygame.KEYDOWN:
                 if event.key == K_SPACE:
                     music.playpause()
-                if event.key == K_LEFT and self.la.prev_phrase is not None:
+                elif event.key == K_LEFT and self.la.prev_phrase is not None:
                     music.elapsed = self.la.prev_phrase.start
                 elif event.key == K_RIGHT and self.la.next_phrase is not None:
                     music.elapsed = self.la.next_phrase.start
                 elif event.key == K_HOME:
                     music.elapsed = 0
-                if event.key == K_UP:
+                elif event.key == K_UP:
                     self.volume += 1
-                if event.key == K_DOWN:
+                elif event.key == K_DOWN:
                     self.volume -= 1
+            elif event.type == MOUSEWHEEL:
+                if event.y > 0 and self.la.prev_phrase is not None:
+                    music.elapsed = self.la.prev_phrase.start
+                elif event.y < 0 and self.la.next_phrase is not None:
+                    music.elapsed = self.la.next_phrase.start
 
         # note = Note(instruments.GUITAR, frets.ORANGE)
         # self.surface.blit(note.image, (0, 0))
