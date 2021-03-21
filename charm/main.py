@@ -36,7 +36,7 @@ class Game(nygame.Game):
             song = chchart.load(f)
         self.la = LyricAnimator(songpath)   # TODO: Update to take Song object
         hyperloop_init()
-        self.nd = HyperloopDisplay(song.charts[('Expert', 'Single')], size=(400, 600))
+        self.nd = HyperloopDisplay(song.charts[('Expert', 'Single')], size=(400, 500))
         music.load(songpath.parent / song.musicstream)
         self.pause_image = draw_pause()
 
@@ -73,12 +73,14 @@ class Game(nygame.Game):
 
     def render_lyrics(self):
         dest = self.la.image.get_rect()
-        dest.center = self.surface.get_rect().center
+        dest.centerx = self.surface.get_rect().centerx
+        dest.top = self.surface.get_rect().top
         self.surface.blit(self.la.image, dest)
 
     def render_notes(self):
         dest = self.nd.image.get_rect()
-        dest.center = self.surface.get_rect().center
+        dest.centerx = self.surface.get_rect().centerx
+        dest.bottom = self.surface.get_rect().bottom
         self.surface.blit(self.nd.image, dest)
 
     def render_pause(self):
