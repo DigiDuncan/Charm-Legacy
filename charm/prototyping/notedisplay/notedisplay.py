@@ -66,7 +66,7 @@ class NoteDisplay:
     @cache_on("tracktime")
     def active_chord(self) -> Chord:
         try:
-            return next(c for c in self.chart.chords if self.tracktime <= c.time.ticks.secs <= self.tracktime + HIT_WINDOW)
+            return next(c for c in self.chart.chords if self.tracktime <= c.start <= self.tracktime + HIT_WINDOW)
         except StopIteration:
             return None
 
