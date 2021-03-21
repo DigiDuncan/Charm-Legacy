@@ -74,18 +74,12 @@ class NoteDisplay:
         surf = pygame.Surface(self.size)
         if self.active_chord is None:
             return surf
-        tap = False
-        hopo = False
-        for note in self.active_chord.notes:
-            if note.kind == 6:
-                tap = True
-            if note.kind == 5:
-                hopo = True
-        if tap is True:
+
+        if self.active_chord.mode == "tap":
             for note in self.active_chord.notes:
                 surf.blit(self.note_images[('tap', note.kind)], self.note_positions[note.kind])
             return surf
-        if hopo is True:
+        if self.active_chord.mode == "hopo":
             for note in self.active_chord.notes:
                 surf.blit(self.note_images[('hopo', note.kind)], self.note_positions[note.kind])
             return surf
