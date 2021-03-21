@@ -1,10 +1,10 @@
 from __future__ import annotations
-from itertools import product
+from itertools import groupby, product
 import re
 
 from typing import Dict, List, Tuple, Union
 
-from charm.song import Chart, Event, Note, Song, SPEvent, TempoCalculator, TempoEvent, TimeDelta, TimeStamp
+from charm.song import Chart, Chord, Event, Note, Song, SPEvent, TempoCalculator, TempoEvent
 from charm.loaders.raw_chchart import RawEvent, RawNote, RawStarPower, RawTempo, RawAnchor, RawTS, RawMetadata, load_raw
 
 
@@ -55,22 +55,17 @@ class UnparsedMetadataException(LoadException):
 
 
 def note_from_raw(song: Song, chart: Chart, rawnote: RawNote) -> Note:
-    time = TimeStamp(song, rawnote.time)
-    length = TimeDelta(time, rawnote.length)
-    note = Note(song, chart, time, rawnote.kind, length)
+    note = Note(song, chart, rawnote.tick_start, rawnote.kind, rawnote.tick_length)
     return note
 
 
 def spevent_from_raw(song: Song, chart: Chart, rawspevent: RawStarPower) -> SPEvent:
-    time = TimeStamp(song, rawspevent.time)
-    length = TimeDelta(time, rawspevent.length)
-    spevent = SPEvent(song, chart, time, rawspevent.kind, length)
+    spevent = SPEvent(song, chart, rawspevent.tick_start, rawspevent.kind, rawspevent.tick_length)
     return spevent
 
 
 def event_from_raw(song: Song, chart: Chart, rawevent: RawEvent) -> Event:
-    time = TimeStamp(song, rawevent.time)
-    event = Event(song, chart, time, rawevent.data)
+    event = Event(song, chart, rawevent.tick_start, rawevent.data)
     return event
 
 
@@ -103,8 +98,22 @@ def chart_from_raw(song: Song, header: str, lines: List[RawNote, RawEvent, RawTe
     chart.notes = notes
     chart.star_powers = star_powers
     chart.events = events
+    chart.chords = [notes_to_chord(song, chart, list(notes)) for _, notes in groupby(chart.notes, key=lambda n: n.tick_start)]
     chart.finalize()
     return chart
+
+
+def notes_to_chord(song, chart, notes):
+    frets = [n.kind for n in notes]
+    if 5 in frets:
+        mode = "tap"
+    elif 6 in frets:
+        mode = "hopo"
+    else:
+        mode = "note"
+    notes = [n for n in notes if n.kind not in (5, 6)]
+    chord = Chord(song, chart, mode, notes)
+    return chord
 
 
 def tryint(value):
@@ -164,7 +173,7 @@ def parse_synctrack(song, lines: List[RawTempo, RawTS]) -> Tuple[List[RawTempo],
     tempos = []
     for raw_tempo in raw_tempos:
         ticks_per_second = song.resolution * raw_tempo.mbpm / 1000 / 60
-        tempo = TempoEvent(song, raw_tempo.time, ticks_per_second)
+        tempo = TempoEvent(song, raw_tempo.tick_start, ticks_per_second)
         tempos.append(tempo)
     tempo_calc = TempoCalculator(tempos)
 

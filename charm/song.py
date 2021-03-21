@@ -5,122 +5,94 @@ from functools import cache, total_ordering
 from typing import List
 
 
+# Abstract class
 @total_ordering
-class TimeStamp:
-    def __init__(self, song, ticks):
+class SongEvent():
+    def __init__(self, song, tick_start, tick_length=None):
         self.song = song
-        self.ticks = ticks
-
-    @property
-    def secs(self):
-        return self.song.tempo_calc.ticks_to_secs(self.ticks)
-
-    def __lt__(self, other):
-        return self.ticks < other.ticks
-
-    def __repr__(self):
-        return f"<TimeStamp(ticks = {self.ticks}, secs = {self.secs})>"
-
-
-@total_ordering
-class TimeDelta:
-    def __init__(self, start: TimeStamp, tick_length):
-        self._start = start
-        self.tick_length = tick_length
-
-    @property
-    def start_ticks(self):
-        return self._start.ticks
-
-    @property
-    def end_ticks(self):
-        return self._start.ticks + self.tick_length
+        self.tick_start = tick_start
+        self.tick_length = tick_length or 0
 
     @property
     def start(self):
-        return self._start.secs
+        return self.song.tempo_calc.ticks_to_secs(self.tick_start)
+
+    @property
+    def tick_end(self):
+        return self.tick_start + self.tick_length
 
     @property
     def end(self):
-        return self._start.song.ticks_to_secs(self.end_ticks)
+        return self.song.tempo_calc.ticks_to_secs(self.tick_end)
 
     @property
     def length(self):
         return self.end - self.start
 
-    def __lt__(self, other):
-        self.length < other.length
-
-    def __repr__(self):
-        return f"TimeDelta<start_ticks = {self.start_ticks}, end_ticks = {self.end_ticks})>"
-
-
-# Abstract class
-class SongEvent():
-    def __init__(self, song, time):
-        self.song = song
-        self.time = TimeStamp(song, time)
+    def __eq__(self, other):
+        return (self.tick_start, self.tick_length) == (other.tick_start, other.tick_length)
 
     def __lt__(self, other):
-        return self.time < other.time
+        return (self.tick_start, self.tick_length) < (other.tick_start, other.tick_length)
 
 
 # Abstract class
 class ChartEvent(SongEvent):
-    def __init__(self, song, chart, time):
-        super().__init__(song, time)
+    def __init__(self, song, chart, tick_start, tick_length=None):
+        super().__init__(song, tick_start, tick_length)
         self.chart = chart
 
 
 class Note(ChartEvent):
-    def __init__(self, song, chart, time, kind, length):
-        super().__init__(song, chart, time)
+    def __init__(self, song, chart, tick_start, kind, tick_length):
+        super().__init__(song, chart, tick_start, tick_length)
         self.kind = kind
-        self.length = length
+
+    def __eq__(self, other):
+        return (self.tick_start, self.kind, self.tick_length) == (other.tick_start, other.kind, other.tick_length)
 
     def __lt__(self, other):
-        if self.time != other.time:
-            return self.time < other.time
-        else:
-            return self.kind < other.kind
+        return (self.tick_start, self.kind, self.tick_length) < (other.tick_start, other.kind, other.tick_length)
 
     def __repr__(self):
-        return f"<Note(time = {self.time}, kind = {self.kind}), length = {self.length})>"
+        return f"<{self.__class__.__name__}(start = {self.start}, kind = {self.kind}), length = {self.length})>"
 
 
 class SPEvent(ChartEvent):
-    def __init__(self, song, chart, time, kind, length):
-        super().__init__(song, chart, time)
+    def __init__(self, song, chart, tick_start, kind, tick_length):
+        super().__init__(song, chart, tick_start, tick_length)
         self.kind = kind  # Unused? Seems to always be 2...
-        self.length = length
+
+    def __eq__(self, other):
+        return (self.tick_start, self.kind, self.tick_length) == (other.tick_start, other.kind, other.tick_length)
+
+    def __lt__(self, other):
+        return (self.tick_start, self.kind, self.tick_length) < (other.tick_start, other.kind, other.tick_length)
 
     def __repr__(self):
-        return f"<SPEvent(time = {self.time}, kind = {self.kind}), length = {self.length})>"
+        return f"<{self.__class__.__name__}(start = {self.start}, kind = {self.kind}), length = {self.length})>"
 
 
 class Event(ChartEvent):
-    def __init__(self, song, chart, time, data):
-        super().__init__(song, chart, time)
+    def __init__(self, song, chart, tick_start, data):
+        super().__init__(song, chart, tick_start)
         self.data = data
 
     def __repr__(self):
-        return f"<Event(time = {self.time}, data = {self.data})>"
+        return f"<{self.__class__.__name__}(start = {self.start}, data = {self.data})>"
 
 
-class Chord:
-    def __init__(self, song, chart, notes: List[Note]):
-        self.song = song
-        self.chart = chart
+class Chord(ChartEvent):
+    def __init__(self, song, chart, mode, notes: List[Note]):
+        tick_start = notes[0].tick_start
+        tick_length = max(n.tick_length for n in notes)
+        super().__init__(song, chart, tick_start, tick_length)
+        self.mode = mode
         self.notes = notes
-        self.time = self.notes[0].time
-        self.length = max(n.length for n in self.notes)
         self.shape = tuple(n.kind for n in notes)
 
     def __repr__(self):
-        return f"<Chord(time = {self.time}, shape = {self.shape}, length = {self.length})>"
-
-    def __str__(self):
-        return repr(self)
+        return f"<{self.__class__.__name__}(start = {self.start}, shape = {self.shape}, length = {self.length})>"
 
 
 class Chart:
@@ -137,8 +109,7 @@ class Chart:
         self.notes.sort()
         self.star_powers.sort()
         self.events.sort()
-        chordnotes = (notes for ticks, notes in groupby(self.notes, key=lambda n: n.time.ticks))
-        self.chords = [Chord(self.song, self, list(notes)) for notes in chordnotes]
+        self.chords.sort()
 
     def __hash__(self):
         return hash((
@@ -148,7 +119,7 @@ class Chart:
         ))
 
     def __repr__(self):
-        return f"<Chart(difficulty = {self.difficulty}, instrument = {self.instrument}, chords = {len(self.chords)}, notes = {len(self.notes)}, star_powers = {len(self.star_powers)}, events = {len(self.events)})>"
+        return f"<{self.__class__.__name__}(difficulty = {self.difficulty}, instrument = {self.instrument}, chords = {len(self.chords)}, notes = {len(self.notes)}, star_powers = {len(self.star_powers)}, events = {len(self.events)})>"
 
 
 class Song:
@@ -179,19 +150,19 @@ class Song:
         self.tempo_calc.finalize()
 
     def __hash__(self):
-        return hash(
-            (tuple(self.tempo_calc),
-             tuple(self.events),
-             tuple(self.charts.values()))
-        )
+        return hash((
+            tuple(self.tempo_calc),
+            tuple(self.events),
+            tuple(self.charts.values())
+        ))
 
     def __repr__(self):
-        return f"<Song(name = {self.full_name!r}, tempos = {len(self.tempo_calc.tempos)}, events = {len(self.events)}, charts = {self.charts})>"
+        return f"<{self.__class__.__name__}(name = {self.full_name!r}, tempos = {len(self.tempo_calc.tempos)}, events = {len(self.events)}, charts = {self.charts})>"
 
 
 class TempoEvent(SongEvent):
-    def __init__(self, song, time, ticks_per_sec):
-        super().__init__(song, time)
+    def __init__(self, song, tick_start, ticks_per_sec):
+        super().__init__(song, tick_start)
         self.ticks_per_sec = ticks_per_sec
 
 
@@ -202,15 +173,15 @@ class TempoCalculator:
 
     def finalize(self):
         for tempo in self.tempos:
-            self.ticks_to_secs(tempo.time.ticks)
+            self.ticks_to_secs(tempo.tick_start)
 
     def ticks_to_secs(self, ticks):
         if ticks == 0:
             return 0
-        curr_tempo = next(tempo for tempo in self.tempos if tempo.time.secs <= ticks)
-        curr_ticks = ticks - curr_tempo.time.ticks
-        curr_seconds = curr_ticks / curr_tempo.ticks_per_sec
-        seconds = curr_tempo.time.secs + curr_seconds
+        curr_tempo = next(tempo for tempo in self.tempos if tempo.tick_start <= ticks)
+        diff_ticks = ticks - curr_tempo.tick_start
+        diff_seconds = diff_ticks / curr_tempo.ticks_per_sec
+        seconds = curr_tempo.start + diff_seconds
         return seconds
 
     def __hash__(self):

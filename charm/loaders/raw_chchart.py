@@ -84,35 +84,35 @@ class RawMetadata(RawLine):
 
 class RawTimedLine(RawLine):
     def __lt__(self, other):
-        return self.time < other.time
+        return self.tick_start < other.tick_start
 
 
 @dataclass
 class RawNote(RawTimedLine):
     RE_LINE = re.compile(RE_ITEM_TPL.format(r"N", RE_NUM_TPL + r"\s+" + RE_NUM_TPL))
-    time: int
+    tick_start: int
     kind: int
-    length: int
+    tick_length: int
 
 
 @dataclass
 class RawEvent(RawTimedLine):
     RE_LINE = re.compile(RE_ITEM_TPL.format(r"E", RE_QUOTED_TPL))
-    time: int
+    tick_start: int
     data: str
 
 
 @dataclass
 class RawTempo(RawTimedLine):
     RE_LINE = re.compile(RE_ITEM_TPL.format(r"B", RE_NUM_TPL))
-    time: int
+    tick_start: int
     mbpm: int
 
 
 @dataclass
 class RawAnchor(RawTimedLine):
     RE_LINE = re.compile(RE_ITEM_TPL.format(r"A", RE_NUM_TPL))
-    time: int
+    tick_start: int
     mbpm: int
 
 
@@ -121,7 +121,7 @@ class RawTS(RawTimedLine):
     RE_LINE = re.compile(
         RE_ITEM_TPL.format(r"TS", RE_NUM_TPL + r"(?:\s+" + RE_NUM_TPL + ")?")
     )
-    time: int
+    tick_start: int
     numerator: int
     denominator: int = None
 
@@ -129,6 +129,6 @@ class RawTS(RawTimedLine):
 @dataclass
 class RawStarPower(RawTimedLine):
     RE_LINE = re.compile(RE_ITEM_TPL.format(r"S", RE_NUM_TPL + r"\s+" + RE_NUM_TPL))
-    time: int
+    tick_start: int
     kind: int
-    length: int
+    tick_length: int
