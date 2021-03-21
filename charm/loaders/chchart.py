@@ -105,9 +105,9 @@ def chart_from_raw(song: Song, header: str, lines: List[RawNote, RawEvent, RawTe
 
 def notes_to_chord(song, chart, notes):
     frets = [n.kind for n in notes]
-    if 5 in frets:
+    if 6 in frets:
         mode = "tap"
-    elif 6 in frets:
+    elif 5 in frets:
         mode = "hopo"
     else:
         mode = "note"
