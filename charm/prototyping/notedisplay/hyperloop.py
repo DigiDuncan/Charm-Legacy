@@ -72,7 +72,7 @@ class HyperloopDisplay:
         self.size = size
         self._image = pygame.Surface(size, SRCALPHA)
         self.tracktime = 0
-        self.length = 1
+        self.length = 0.75
         self.last_drawn = None
         self.chord_stream = iter(c for c in self.chart.chords)
         self.visible_chords = []
