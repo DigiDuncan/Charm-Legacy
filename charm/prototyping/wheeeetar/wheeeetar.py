@@ -96,9 +96,9 @@ class Game(nygame.Game):
             self.drawpressed(Rect(102, 360, 209, 203))
         if self.start:
             self.drawpressed(Rect(338, 387, 91, 115))
-        self.drawbar(Rect(639, 491, 40, 14), self.tilt)
+        self.drawbar(Rect(639, 491, 40, 14), (self.tilt * -2) - 1)
         self.drawbar(Rect(745, 489, 46, 17), self.whammy)
-        print(self.tilt)
+        # print(self.tilt)
 
 
 for i, name in enumerate(Game.buttonmap):
