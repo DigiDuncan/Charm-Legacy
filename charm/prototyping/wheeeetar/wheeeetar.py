@@ -2,7 +2,7 @@ from pathlib import Path
 import nygame
 from nygame import joystick
 from pygame import Rect
-from pygame.constants import JOYAXISMOTION, JOYBALLMOTION, JOYBUTTONDOWN, JOYBUTTONUP, JOYHATMOTION
+from pygame.constants import JOYAXISMOTION, JOYBUTTONDOWN, JOYBUTTONUP, JOYHATMOTION
 import pygame.image
 
 
