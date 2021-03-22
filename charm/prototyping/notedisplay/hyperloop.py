@@ -67,9 +67,10 @@ def getone(items):
 
 
 class HyperloopDisplay:
-    def __init__(self, chart, *, size: tuple = (400, 400)):
+    def __init__(self, chart, *, size: tuple = (400, 400), lefty = False):
         self.chart = chart
         self.size = size
+        self.lefty = lefty
         self._image = pygame.Surface(size, SRCALPHA)
         self.tracktime = 0
         self.length = 0.75
@@ -135,4 +136,6 @@ class HyperloopDisplay:
         if to_draw != self.last_drawn:
             self.draw()
             self.last_drawn = to_draw
+        if self.lefty:
+            return pygame.transform.flip(self._image, True, False)
         return self._image
