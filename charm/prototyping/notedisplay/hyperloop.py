@@ -128,7 +128,6 @@ class HyperloopDisplay:
             pos = self.get_fret_pos(fret)
             self._image.blit(strike_images[fret], pos)
 
-
     @property
     def image(self) -> pygame.Surface:
         # Don't rerender what we just rendered
