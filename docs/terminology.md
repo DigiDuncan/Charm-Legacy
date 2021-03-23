@@ -54,6 +54,9 @@ Chord Length    # Length of longest note in chord
     {TICKS} = TS {NUM} {DENOM}  # Time Signature (NUM / DENOM)
     {TICKS} = TS {NUM}          # Time Signature (NUM / 4)
 
+## Time Signatures
+Measure bars display on screen according to the Time Signature
+
 # Events Block
 [Events]
     Lyric Elements                  # See "Lyrics in Events Block"

@@ -1,3 +1,4 @@
+from charm.lib import instruments
 from charm.prototyping.notedisplay.hyperloop import HyperloopDisplay, init as hyperloop_init
 from charm.lib.nargs import nargs
 from enum import Enum
@@ -29,6 +30,8 @@ def draw_pause():
 class Game(nygame.Game):
     def __init__(self):
         super().__init__(size = (800, 600), fps = 120, showfps = True)
+        instruments.init(self)
+        self.guitar = instruments.Guitar.connect(0)
         self.paused = False
         self.volume = 6
         songpath = Path("./charm/data/charts/run_around_the_character_code/run_around_the_character_code.chart")
@@ -43,6 +46,7 @@ class Game(nygame.Game):
     def loop(self, events):
         self.la.update(music.elapsed)
         self.nd.update(music.elapsed)
+        print(self.guitar.debug)
 
         for event in events:
             if event.type == pygame.KEYDOWN:
