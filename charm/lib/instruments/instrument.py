@@ -16,6 +16,11 @@ def get_count():
     joystick.get_count()
 
 
+# TODO: Detect instrument type
+# TODO: Inject instrument events
+# TODO: Auto-connect instruments
+# TODO: Gracefully handle disconnected instruments
+# TODO: Detect player number
 class Instrument:
     instruments = {}
 
