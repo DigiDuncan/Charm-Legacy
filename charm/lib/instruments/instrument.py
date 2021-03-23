@@ -43,8 +43,6 @@ class Instrument:
     @classmethod
     def handle_event(cls, e):
         joyid = getattr(e, "instance_id", None)
-        if joyid is None:
-            return
         if joyid not in cls.instruments:
             return
         cls.instruments[joyid].handle_event(e)

@@ -46,7 +46,7 @@ class Game(nygame.Game):
     def loop(self, events):
         self.la.update(music.elapsed)
         self.nd.update(music.elapsed)
-        print(self.guitar.debug)
+        # print(self.guitar.debug)
 
         for event in events:
             if event.type == pygame.KEYDOWN:

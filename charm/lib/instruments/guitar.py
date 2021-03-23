@@ -45,7 +45,7 @@ class Guitar(Instrument):
     def handle_event(self, e):
         if e.type == JOYHATMOTION:
             # Strum bar / Joystick
-            self._joy = Coord(*e.value)
+            self._joy = Coord(e.value)
         elif e.type == JOYBUTTONDOWN or e.type == JOYBUTTONUP:
             state = e.type == JOYBUTTONDOWN
             btn = e.button
@@ -132,7 +132,7 @@ class Guitar(Instrument):
     def debug(self):
         fretstr = ''.join(str(int(f)) for f in self._frets)
         btnstr = f"{int(self._select)}{int(self._start)}"
-        joystr = dir2arrow[self._joy.xy]
+        joystr = dir2arrow[tuple(self._joy)]
         tiltstr = num2bar(self._tilt, "o")
         whamstr = num2bar(self._whammy, "/")
         return f"[ {fretstr} {btnstr} ]   [ {joystr} ]   [{tiltstr}]   [{whamstr}]"
