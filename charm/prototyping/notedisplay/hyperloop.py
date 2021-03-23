@@ -1,62 +1,77 @@
 import importlib.resources as pkg_resources
 
-import pygame
+from pygame import Rect, Surface, image, transform
 from pygame.constants import SRCALPHA
-import charm.data.images.gh as image_folder
+import charm.data.images.spritesheets as image_folder
 
 HIT_WINDOW = 0.140  # 140ms
 
-fretnames = {
-    0: "green",
-    1: "red",
-    2: "yellow",
-    3: "blue",
-    4: "orange",
-    7: "open"
+fretnums = {
+    "green": 0,
+    "red": 1,
+    "yellow": 2,
+    "blue": 3,
+    "orange": 4,
+    "open": 7
 }
 
-flags = {
-    "note",
-    "hopo",
-    "tap"
+fretmap = {
+    "green": 0,
+    "red": 1,
+    "yellow": 2,
+    "blue": 3,
+    "orange": 4,
+    "sp": 5,
+    "open": (6, 5),
+    "opensp": (11, 5)
 }
 
-fret_images = {
-    "note": {},
-    "hopo": {},
-    "tap": {}
+flagmap = {
+    "note": 0,
+    "hopo": 1,
+    "tap": 2,
+    "strike": 6
 }
 
-strike_images = {
-}
+gh_sheet: Surface = None
 
-hit_images = {
-}
+fret_images = {}
+
+
+def get_sprite(flag, fret):
+    return fret_images[flag][fret]
+
+
+def set_sprite(flag, fretname, sprite):
+    fret_images[flag][fretname] = sprite
+    if fretname in fretnums:
+        fretnum = fretnums[fretname]
+        fret_images[flag][fretnum] = sprite
 
 
 def init():
-    for flag in flags:
-        for fret, name in fretnames.items():
-            with pkg_resources.path(image_folder, f"{flag}_{name}.png") as p:
-                img = pygame.image.load(p)
-                img.convert_alpha()
-            fret_images[flag][fret] = img
+    global gh_sheet
 
-    for fret, name in fretnames.items():
-        if name == "open":
-            continue
-        with pkg_resources.path(image_folder, f"strikeline_{name}.png") as p:
-            img = pygame.image.load(p)
-            img.convert_alpha()
-        strike_images[fret] = img
+    SPRITE_SIZE = 64
 
-    for fret, name in fretnames.items():
-        if name == "open":
-            continue
-        with pkg_resources.path(image_folder, f"strikeline_{name}.png") as p:
-            img = pygame.image.load(p)
-            img.convert_alpha()
-        hit_images[fret] = img
+    with pkg_resources.path(image_folder, "gh.png") as p:
+        gh_sheet = image.load(p)
+        gh_sheet.convert_alpha()
+
+    for flag, sy in flagmap.items():
+        fret_images[flag] = {}
+        for fret, sxw in fretmap.items():
+            sw = 1
+            try:
+                sx, sw = sxw
+            except TypeError:
+                sx = sxw
+            x = sx * SPRITE_SIZE
+            y = sy * SPRITE_SIZE
+            w = sw * SPRITE_SIZE
+            h = SPRITE_SIZE
+            img = gh_sheet.subsurface(Rect(x, y, w, h))
+            set_sprite(flag, fret, img)
 
 
 def getone(items):
@@ -71,7 +86,7 @@ class HyperloopDisplay:
         self.chart = chart
         self.size = size
         self.lefty = lefty
-        self._image = pygame.Surface(size, SRCALPHA)
+        self._image = Surface(size, SRCALPHA)
         self.tracktime = 0
         self.length = 0.75
         self.last_drawn = None
@@ -120,22 +135,23 @@ class HyperloopDisplay:
                 continue
             for fret in chord.frets:
                 pos = self.get_fret_pos(fret, diff)
-                self._image.blit(fret_images[chord.flag][fret], pos)
+                self._image.blit(get_sprite(chord.flag, fret), pos)
 
         for fret, fade in enumerate(fret_strikes):
             fade_alpha = 255 * fade
-            strike_images[fret].set_alpha(fade_alpha)
+            sprite = get_sprite("strike", fret)
+            sprite.set_alpha(fade_alpha)
 
             pos = self.get_fret_pos(fret)
-            self._image.blit(strike_images[fret], pos)
+            self._image.blit(sprite, pos)
 
     @property
-    def image(self) -> pygame.Surface:
+    def image(self) -> Surface:
         # Don't rerender what we just rendered
         to_draw = self.tracktime
         if to_draw != self.last_drawn:
             self.draw()
             self.last_drawn = to_draw
         if self.lefty:
-            return pygame.transform.flip(self._image, True, False)
+            return transform.flip(self._image, True, False)
         return self._image
