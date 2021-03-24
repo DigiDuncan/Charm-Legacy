@@ -190,6 +190,8 @@ class HyperloopDisplay:
 
             pos = self.get_fret_pos(fret)
             self._image.blit(sprite, pos)
+        if self.lefty:
+            self._image = transform.flip(self._image, True, False)
 
     @property
     def image(self) -> Surface:
@@ -198,6 +200,4 @@ class HyperloopDisplay:
         if to_draw != self.last_drawn:
             self.draw()
             self.last_drawn = to_draw
-        if self.lefty:
-            return transform.flip(self._image, True, False)
         return self._image
