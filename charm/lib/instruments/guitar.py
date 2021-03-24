@@ -93,6 +93,10 @@ class Guitar(Instrument):
     orange = fret5
 
     @property
+    def shape(self):
+        return (self.fret1, self.fret2, self.fret3, self.fret4, self.fret5)
+
+    @property
     def select(self):
         return self._select
 
