@@ -1,3 +1,4 @@
+import bisect
 from pathlib import Path
 
 import pygame
@@ -5,7 +6,6 @@ import pygame.draw
 import pygame.freetype
 from nygame import DigiText as T
 
-from charm.lib.utils import cache_on
 from charm.loaders.chlyrics import load_lyrics
 
 
@@ -13,6 +13,7 @@ class LyricAnimator:
     def __init__(self, chart, *, size: tuple = (700, 100), font = "Segoe UI Emoji", show_next=False, show_baseline = False):
         with Path(chart).open("r", encoding="utf-8") as f:
             self.phrases = load_lyrics(f)   # TODO: Update this to use lyrics from Song object
+        self.phrase_starts = [p.start for p in self.phrases]
         self.width, self.height = size
         self.font = font
         self._image = None
@@ -25,49 +26,42 @@ class LyricAnimator:
             p.next = np
 
     @property
-    @cache_on("tracktime")
     def active_phrase(self):
-        try:
-            return next(p for p in self.phrases if p.is_active(self.tracktime))
-        except StopIteration:
+        phrase = self.phrases[self.phrase_index]
+        if self.tracktime >= phrase.end:
             return None
+        return phrase
 
     @property
-    @cache_on("tracktime")
-    def active_phrase_index(self):
-        try:
-            return next(i for i, p in enumerate(self.phrases) if p.is_active(self.tracktime))
-        except StopIteration:
-            return None
+    def phrase_index(self):
+        phrase_index = bisect.bisect_left(self.phrase_starts, self.tracktime)
+        return phrase_index
 
     @property
-    @cache_on("tracktime")
     def next_phrase(self):
         try:
-            return next(p for p in self.phrases if p.is_waiting(self.tracktime))
-        except StopIteration:
-            return None
+            phrase = self.phrases[self.phrase_index + 1]
+        except IndexError:
+            phrase = None
+        return phrase
 
     @property
-    @cache_on("tracktime")
     def prev_phrase(self):
         try:
-            return next(p for p in self.phrases[::-1] if p.is_done(self.tracktime))
-        except StopIteration:
-            return None
+            phrase = self.phrases[self.phrase_index - 1]
+        except IndexError:
+            phrase = None
+        return phrase
 
     @property
-    @cache_on("tracktime")
     def on_text(self):
         return self.active_phrase and self.active_phrase.get_on_text(self.tracktime)
 
     @property
-    @cache_on("tracktime")
     def off_text(self):
         return self.active_phrase and self.active_phrase.get_off_text(self.tracktime)
 
     @property
-    @cache_on("tracktime")
     def next_text(self):
         return self.next_phrase and self.next_phrase.get_text()
 
@@ -96,6 +90,7 @@ class LyricAnimator:
             self._image = self.draw()
             self.last_drawn = to_draw
         return self._image
+
 
 
 fonts = {}
