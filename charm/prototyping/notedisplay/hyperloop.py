@@ -126,11 +126,15 @@ class HyperloopDisplay:
         return x, y
 
     def get_visible_beats(self):
-        ticks_per_beat = self.chart.song.resolution
         timesig = self.chart.song.timesig_by_ticks[self.track_ticks]
 
-        x = timesig.tick_start + (1 * ticks_per_beat)
-        
+        ticks_per_quarternote = self.chart.song.resolution
+        ticks_per_wholenote = ticks_per_quarternote * 4
+        beats_per_measure = timesig.numerator
+        beats_per_wholenote = timesig.denominator
+        ticks_per_beat = ticks_per_wholenote / beats_per_wholenote
+        ticks_per_measure = ticks_per_beat * beats_per_measure
+
         #     measureLine.tickOffset = 0
         #     measureLine.repetitions = 1
         #     measureLine.tickGap = resolution * (4 / denominator * numerator)
@@ -143,7 +147,7 @@ class HyperloopDisplay:
         #     quarterBeatLine.tickOffset = beatLine.tickGap / 2
         #     quarterBeatLine.repetitions = numerator
         #     quarterBeatLine.repetitionCycleOffset = 0
-    
+
         return []
 
     def update(self, tracktime):
