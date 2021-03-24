@@ -96,10 +96,12 @@ class HyperloopDisplay:
         self.length = 0.75
         self.last_drawn = None
         self.chord_stream = iter(c for c in self.chart.chords)
+        self.beats = self.calc_beats()
         self.visible_chords = []
         self.visible_beats = []
         self.upcoming_chord = next(self.chord_stream)
         self.strike_fadetime = 0.5
+
 
     @property
     def end(self):
@@ -109,8 +111,7 @@ class HyperloopDisplay:
     def px_per_sec(self):
         return self.size[1] / self.length
 
-    @property
-    def beats(self):
+    def calc_beats(self):
         _beats = {}
         timed_beats = {}
         current_tick = 0
