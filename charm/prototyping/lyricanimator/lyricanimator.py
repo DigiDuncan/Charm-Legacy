@@ -1,9 +1,9 @@
-from charm.song import Chart
-
 import pygame
 import pygame.draw
 import pygame.freetype
 from nygame import DigiText as T
+
+from charm.song import Chart
 
 
 class LyricAnimator:

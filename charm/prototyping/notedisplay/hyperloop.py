@@ -1,6 +1,6 @@
-import pygame
 import importlib.resources as pkg_resources
 
+import pygame
 from pygame import Rect, Surface, image, transform
 from pygame.constants import SRCALPHA
 

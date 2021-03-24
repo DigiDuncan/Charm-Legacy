@@ -1,13 +1,13 @@
 from __future__ import annotations
-from itertools import groupby, product
-import re
 
+import re
+from itertools import groupby, product
 from typing import Dict, List, Tuple, Union
 
 from nygame.emoji import emojize
 
-from charm.song import Chart, Chord, Event, LyricPhrase, LyricWord, Note, Song, SPEvent, TSEvent, TempoCalculator, TempoEvent
 from charm.loaders.raw_chchart import RawEvent, RawLyric, RawNote, RawPhraseEnd, RawPhraseStart, RawStarPower, RawTempo, RawAnchor, RawTS, RawMetadata, load_raw
+from charm.song import Chart, Chord, Event, LyricPhrase, LyricWord, Note, Song, SPEvent, TSEvent, TempoCalculator, TempoEvent
 
 
 class LoadException(Exception):

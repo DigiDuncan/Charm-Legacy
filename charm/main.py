@@ -1,7 +1,3 @@
-from charm.lib import instruments
-from charm.prototyping.notedisplay.hyperloop import HyperloopDisplay, init as hyperloop_init
-from charm.prototyping.notedisplay.inputdisplay import InputDisplay, init as input_init
-from charm.lib.nargs import nargs
 from enum import Enum
 from pathlib import Path
 
@@ -11,14 +7,15 @@ from nygame import DigiText as T
 from nygame import music
 from pygame.constants import K_DOWN, K_HOME, K_LEFT, K_RIGHT, K_SPACE, K_UP, MOUSEWHEEL
 
+from charm.lib import instruments
 from charm.lib.args import InvalidArgException, tryint
+from charm.lib.nargs import nargs
 from charm.lib.utils import clamp, nice_time
 from charm.loaders import chchart
 from charm.prototyping import loader_test
+from charm.prototyping.notedisplay.hyperloop import HyperloopDisplay, init as hyperloop_init
+from charm.prototyping.notedisplay.inputdisplay import InputDisplay, init as input_init
 from charm.prototyping.lyricanimator.lyricanimator import LyricAnimator
-
-# from charm.lib.constants import instruments, frets
-# from charm.objects.note import Note
 
 
 def draw_pause():
