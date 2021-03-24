@@ -1,6 +1,4 @@
 import pygame
-from charm.loaders.raw_chchart import RawTS
-from charm.song import TempoEvent
 import importlib.resources as pkg_resources
 
 from pygame import Rect, Surface, image, transform
@@ -89,59 +87,29 @@ def getone(items):
 class HyperloopDisplay:
     def __init__(self, chart: Chart, *, size: tuple = (400, 400), lefty = False):
         self.chart = chart
+        self.secs_to_ticks = self.chart.song.tempo_calc.secs_to_ticks
+        self.ticks_to_secs = self.chart.song.tempo_calc.ticks_to_secs
         self.size = size
         self.lefty = lefty
-        self._image = Surface(size, SRCALPHA)
-        self.tracktime = 0
-        self.length = 0.75
-        self.last_drawn = None
-        self.chord_stream = iter(c for c in self.chart.chords)
-        self.beats = self.calc_beats()
+        self.track_ticks = 0
+        self.length = 0.75  # TODO: Can't use sec_to_ticks for arbitrary deltas
+        self.px_per_sec = size[1] / self.length
+        self.strike_fadetime = 0.5  # TODO: Can't use sec_to_ticks for arbitrary deltas
         self.visible_chords = []
-        self.visible_beats = []
-        self.upcoming_chord = next(self.chord_stream)
-        self.strike_fadetime = 0.5
+        self._image = Surface(size, SRCALPHA)
+        self.last_drawn = None
 
+    @property
+    def tracktime(self):
+        return self.ticks_to_secs(self.track_ticks)
 
     @property
     def end(self):
-        return self.tracktime + self.length
+        return self.secs_to_ticks(self.tracktime + self.length)
 
-    @property
-    def px_per_sec(self):
-        return self.size[1] / self.length
-
-    def calc_beats(self):
-        _beats = {}
-        timed_beats = {}
-        current_tick = 0
-        current_bps = None
-        current_ts = 4
-        current_beat = 0
-
-        events_list = sorted(self.chart.song.tempos + self.chart.song.timesigs)
-
-        for event, next_event in events_list, events_list[1:] + [None]:
-            if isinstance(event, TempoEvent):
-                mbps = (1000 * event.ticks_per_sec) / self.chart.song.resolution
-                current_bps = mbps / 1000
-                current_tps = event.ticks_per_sec
-            if isinstance(event, RawTS):
-                current_ts = event.numerator  # I don't know how time sigs work.
-                current_beat = 0
-            while next_event and current_tick < next_event.tick_start or current_tick <= self.chart.chords[::-1][0].tick_end:
-                _beats[current_tick] = "measure" if current_beat == 0 else "beat"
-                current_beat += 1
-                current_beat %= current_ts
-                ticks_per_beat = current_tps / current_bps
-                current_tick += ticks_per_beat
-
-        timed_beats = {self.chart.song.tempo_calc.ticks_to_secs(k): v for k, v in _beats.items()}
-        return timed_beats
-
-    def get_fret_pos(self, f, diff=0):
-        if diff < 0:
-            diff = 0
+    def get_fret_pos(self, f, timediff=0):
+        if timediff < 0:
+            timediff = 0
         w, h = self.size
         fw, fh = 64, 64
         fcnt = 5
@@ -149,7 +117,7 @@ class HyperloopDisplay:
         wspace = w / fcnt
         x = (wspace * f) + (wspace / 2) - (fw / 2)
 
-        y = h - fh - (h * (diff / self.length))
+        y = h - fh - (h * (timediff / self.length))
 
         if f == 7:
             x = 0
@@ -157,17 +125,42 @@ class HyperloopDisplay:
 
         return x, y
 
+    def get_visible_beats(self):
+        timesig = self.chart.song.timesig_by_ticks[self.track_ticks]
+
+        ticks_per_quarternote = self.chart.song.resolution
+        ticks_per_wholenote = ticks_per_quarternote * 4
+        beats_per_measure = timesig.numerator
+        beats_per_wholenote = timesig.denominator
+        ticks_per_beat = ticks_per_wholenote / beats_per_wholenote
+        ticks_per_measure = ticks_per_beat * beats_per_measure
+
+        #     measureLine.tickOffset = 0
+        #     measureLine.repetitions = 1
+        #     measureLine.tickGap = resolution * (4 / denominator * numerator)
+        #     measureLine.repetitionCycleOffset = 0
+        #     beatLine.tickGap = measureLine.tickGap / numerator
+        #     beatLine.tickOffset = beatLine.tickGap
+        #     beatLine.repetitions = numerator - 1
+        #     beatLine.repetitionCycleOffset = beatLine.tickOffset
+        #     quarterBeatLine.tickGap = beatLine.tickGap
+        #     quarterBeatLine.tickOffset = beatLine.tickGap / 2
+        #     quarterBeatLine.repetitions = numerator
+        #     quarterBeatLine.repetitionCycleOffset = 0
+
+        return []
+
     def update(self, tracktime):
-        self.tracktime = tracktime
-        self.visible_chords = self.chart[self.tracktime - self.strike_fadetime:self.end]
-        self.visible_beats = {k: v for k, v in self.beats.items() if self.tracktime <= k <= self.tracktime + self.length}
+        self.track_ticks = self.secs_to_ticks(tracktime)
+        start_ticks = self.secs_to_ticks(self.tracktime - self.strike_fadetime)
+        self.visible_chords = self.chart.chord_by_ticks[start_ticks:self.end]
 
     def draw(self):
         self._image.fill("clear")
 
-        for time, beat in self.visible_beats.items():
-            diff = time - self.tracktime
-            y = self.size[1] - 32 - (diff * self.px_per_sec)
+        for tick_start, beat in self.get_visible_beats():
+            diff = tick_start - self.track_ticks
+            y = self.size[1] - 32 - (diff * self.px_per_tick)
             if beat == "beat":
                 pygame.draw.line(self._image, (128, 128, 128), (0, y), (self.size[0], y), 1)
             elif beat == "measure":
@@ -175,15 +168,15 @@ class HyperloopDisplay:
 
         fret_strikes = [0, 0, 0, 0, 0]
         for chord in self.visible_chords:
-            diff = chord.start - self.tracktime
+            diff = chord.tick_start - self.track_ticks
+            timediff = chord.start - self.tracktime
             if diff < 0:
                 for fret in chord.frets:
-                    fade = max(0, self.strike_fadetime + diff)  # 0 to 0.5
-                    fade /= self.strike_fadetime                # 0 t0 1
+                    fade = max(0, self.strike_fadetime + timediff) / self.strike_fadetime   # 0 to 1
                     fret_strikes[fret] = max(fret_strikes[fret], fade)
                 continue
             for fret in chord.frets:
-                pos = self.get_fret_pos(fret, diff)
+                pos = self.get_fret_pos(fret, timediff)
                 self._image.blit(get_sprite(chord.flag, fret), pos)
 
         for fret, fade in enumerate(fret_strikes):
@@ -199,7 +192,7 @@ class HyperloopDisplay:
     @property
     def image(self) -> Surface:
         # Don't rerender what we just rendered
-        to_draw = self.tracktime
+        to_draw = self.track_ticks
         if to_draw != self.last_drawn:
             self.draw()
             self.last_drawn = to_draw

@@ -4,8 +4,10 @@ import re
 
 from typing import Dict, List, Tuple, Union
 
-from charm.song import Chart, Chord, Event, Note, Song, SPEvent, TempoCalculator, TempoEvent
-from charm.loaders.raw_chchart import RawEvent, RawNote, RawStarPower, RawTempo, RawAnchor, RawTS, RawMetadata, load_raw
+from nygame.emoji import emojize
+
+from charm.song import Chart, Chord, Event, LyricPhrase, LyricWord, Note, Song, SPEvent, TSEvent, TempoCalculator, TempoEvent
+from charm.loaders.raw_chchart import RawEvent, RawLyric, RawNote, RawPhraseEnd, RawPhraseStart, RawStarPower, RawTempo, RawAnchor, RawTS, RawMetadata, load_raw
 
 
 class LoadException(Exception):
@@ -45,6 +47,18 @@ class MissingSongBlockException(LoadException):
 
 
 class MissingSyncTrackBlockException(LoadException):
+    pass
+
+
+class UnmatchedPhraseStartException(LoadException):
+    pass
+
+
+class UnmatchedPhraseEndException(LoadException):
+    pass
+
+
+class UncontainedLyricWordException(LoadException):
     pass
 
 
@@ -106,13 +120,13 @@ def chart_from_raw(song: Song, header: str, lines: List[RawNote, RawEvent, RawTe
 def notes_to_chord(song, chart, notes):
     frets = [n.fret for n in notes]
     if 6 in frets:
-        mode = "tap"
+        flag = "tap"
     elif 5 in frets:
-        mode = "hopo"
+        flag = "hopo"
     else:
-        mode = "note"
+        flag = "note"
     notes = [n for n in notes if n.fret not in (5, 6)]
-    chord = Chord(song, chart, mode, notes)
+    chord = Chord(song, chart, flag, notes)
     return chord
 
 
@@ -159,14 +173,14 @@ def set_metadata(song, lines: List[RawMetadata]) -> Dict[str, Union[str, int]]:
         raise UnparsedMetadataException(list(metadata.keys()))
 
 
-def parse_synctrack(song, lines: List[RawTempo, RawTS]) -> Tuple[List[RawTempo], List[RawTS]]:
-    raw_tempos = []
-    timesigs = []
+def parse_synctrack(song, lines: List[RawTempo, RawTS]) -> Tuple[TempoCalculator, List[TSEvent]]:
+    raw_tempos: List[RawTempo] = []
+    raw_timesigs: List[RawTS] = []
     for line in lines:
         if isinstance(line, RawTempo):
             raw_tempos.append(line)
         elif isinstance(line, RawTS):
-            timesigs.append(line)   # TODO: Put these in a proper class
+            raw_timesigs.append(line)
         else:
             raise InvalidSynctrackDataException(f"Invalid synctrack data {line}")
 
@@ -177,16 +191,84 @@ def parse_synctrack(song, lines: List[RawTempo, RawTS]) -> Tuple[List[RawTempo],
         tempos.append(tempo)
     tempo_calc = TempoCalculator(tempos)
 
-    return tempo_calc, tempos, timesigs
+    timesigs = []
+    for rts in raw_timesigs:
+        ticks_per_second = song.resolution * raw_tempo.mbpm / 1000 / 60
+        timesig = TSEvent(song, rts.tick_start, rts.numerator, rts.denominator if rts.denominator is not None else 4)
+        timesigs.append(timesig)
+
+    return tempo_calc, timesigs
 
 
-def parse_events(song, lines: List[RawEvent]):
+def parse_events(song: Song, raw_events: List[Union[RawEvent, RawLyric, RawPhraseStart, RawPhraseEnd]]) -> Tuple[List[Event], List[LyricPhrase]]:
+    raw_lyrics = []
+    raw_phrase_events = []
     events = []
-    for line in lines:
-        if not isinstance(line, RawEvent):
-            raise InvalidEventException(f"Invalid event {line}")
-        events.append(event_from_raw(song, None, line))
-    return sorted(events)
+    for e in raw_events:
+        if isinstance(e, RawLyric):
+            raw_lyrics.append(e)
+        elif isinstance(e, RawPhraseStart) or isinstance(e, RawPhraseEnd):
+            raw_phrase_events.append(e)
+        elif isinstance(e, RawEvent):
+            events.append(event_from_raw(song, None, e))
+        else:
+            raise InvalidEventException(f"Invalid event {e}")
+
+    raw_phrase_events.sort()
+
+    # Can't start with a phrase end
+    if isinstance(raw_phrase_events[0], RawPhraseEnd):
+        raise UnmatchedPhraseEndException("Phrase end found with no matching phrase start.")
+    # Can't end with a phrase start
+    if isinstance(raw_phrase_events[-1], RawPhraseStart):
+        raise UnmatchedPhraseStartException("Phrase start found with no matching phrase end.")
+    # Pair the events into start-end or start-start pairs
+    phrase_pairs = zip(raw_phrase_events[:-1], raw_phrase_events[1:])
+    # Remove any end-start pairs
+    phrase_pairs = [(start, end) for start, end in phrase_pairs if not (isinstance(start, RawPhraseEnd) and isinstance(end, RawPhraseStart))]
+    # Check for any end-end pairs
+    if any((start, end) for start, end in phrase_pairs if isinstance(start, RawPhraseEnd) and isinstance(end, RawPhraseEnd)):
+        raise UnmatchedPhraseEndException("Phrase end found with no matching phrase start.")
+
+    # Reduce to LyricPhrase objects
+    phrases = [LyricPhrase(song, start.tick_start, end.tick_start - start.tick_start) for start, end in phrase_pairs]
+    # Create LyricWord objects
+    words = [LyricWord(song, raw.tick_start, clean_word(raw.text)) for raw in raw_lyrics]
+    # Attach LyricWord objects to LyricPhrase objects
+    words.sort()
+    iter_phrases = iter(phrases)
+    curr_phrase = next(iter_phrases)
+    try:
+        for word in words:
+            while not curr_phrase.contains(word):
+                curr_phrase = next(iter_phrases)
+            curr_phrase.words.append(word)
+    except StopIteration:
+        raise UncontainedLyricWordException("LyricWord does not have a matching phrase")
+
+    for p in phrases:
+        p.finalize()
+
+    return events, phrases
+
+
+def clean_word(word: str):
+    if word.endswith("-"):
+        word = word.removesuffix("-")
+    else:
+        word = word + " "
+    replacements = {
+        "=": "-",
+        "''": "\"",
+        "+": "",
+        "#": "",
+        "^": "",
+        "_": " "
+    }
+    for old, new in replacements.items():
+        word = word.replace(old, new)
+    word = emojize(word)
+    return word
 
 
 def song_from_raw(datablocks: Dict[str, List[RawNote, RawEvent, RawTempo, RawAnchor, RawTS, RawStarPower, RawMetadata]]) -> Song:
@@ -199,8 +281,8 @@ def song_from_raw(datablocks: Dict[str, List[RawNote, RawEvent, RawTempo, RawAnc
 
     song = Song()
     set_metadata(song, datablocks.pop("Song"))
-    song.tempo_calc, song.tempos, song.timesigs = parse_synctrack(song, datablocks.pop("SyncTrack"))
-    song.events = parse_events(song, datablocks.pop("Events"))
+    song.tempo_calc, song.timesigs = parse_synctrack(song, datablocks.pop("SyncTrack"))
+    song.events, song.lyrics = parse_events(song, datablocks.pop("Events"))
     part_vocals = datablocks.pop("PART VOCALS", None)    # TODO Handle vocals section
 
     charts = {}
