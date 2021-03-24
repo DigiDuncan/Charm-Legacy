@@ -117,6 +117,7 @@ class HyperloopDisplay:
         current_tick = 0
         current_bps = None
         current_ts = 4
+        current_beat = 0
 
         events_list = sorted(self.chart.song.tempos + self.chart.song.timesigs)
 
@@ -127,10 +128,11 @@ class HyperloopDisplay:
                 current_tps = event.ticks_per_sec
             if isinstance(event, RawTS):
                 current_ts = event.numerator  # I don't know how time sigs work.
+                current_beat = 0
             while next_event and current_tick < next_event.tick_start or current_tick <= self.chart.chords[::-1][0].tick_end:
-                beat = 0
-                _beats[current_tick] = "measure" if beat == 0 else "beat"
-                beat = beat + 1 % current_ts
+                _beats[current_tick] = "measure" if current_beat == 0 else "beat"
+                current_beat += 1
+                current_beat %= current_ts
                 ticks_per_beat = current_tps / current_bps
                 current_tick += ticks_per_beat
 
@@ -169,7 +171,7 @@ class HyperloopDisplay:
             if beat == "beat":
                 pygame.draw.line(self._image, (128, 128, 128), (0, y), (self.size[0], y), 1)
             elif beat == "measure":
-                pygame.draw.line(self._image, (128, 128, 128), (0, y), (self.size[0], y), 3)
+                pygame.draw.line(self._image, (128, 128, 128), (0, y), (self.size[0], y), width = 5)
 
         fret_strikes = [0, 0, 0, 0, 0]
         for chord in self.visible_chords:
