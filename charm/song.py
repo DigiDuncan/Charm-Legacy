@@ -147,6 +147,7 @@ class Song:
     def __init__(self):
         self.events = []
         self.charts = {}
+        self.tempos = []
         self.timesigs = []
         self.tempo_calc = None
         self.full_name = None

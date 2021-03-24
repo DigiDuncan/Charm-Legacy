@@ -177,7 +177,7 @@ def parse_synctrack(song, lines: List[RawTempo, RawTS]) -> Tuple[List[RawTempo],
         tempos.append(tempo)
     tempo_calc = TempoCalculator(tempos)
 
-    return tempo_calc, timesigs
+    return tempo_calc, tempos, timesigs
 
 
 def parse_events(song, lines: List[RawEvent]):
@@ -199,7 +199,7 @@ def song_from_raw(datablocks: Dict[str, List[RawNote, RawEvent, RawTempo, RawAnc
 
     song = Song()
     set_metadata(song, datablocks.pop("Song"))
-    song.tempo_calc, song.timesigs = parse_synctrack(song, datablocks.pop("SyncTrack"))
+    song.tempo_calc, song.tempos, song.timesigs = parse_synctrack(song, datablocks.pop("SyncTrack"))
     song.events = parse_events(song, datablocks.pop("Events"))
     part_vocals = datablocks.pop("PART VOCALS", None)    # TODO Handle vocals section
 
