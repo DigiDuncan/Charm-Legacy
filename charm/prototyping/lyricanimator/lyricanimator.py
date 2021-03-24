@@ -1,19 +1,16 @@
-import bisect
-from pathlib import Path
+from charm.song import Chart
 
 import pygame
 import pygame.draw
 import pygame.freetype
 from nygame import DigiText as T
 
-from charm.loaders.chlyrics import load_lyrics
-
 
 class LyricAnimator:
-    def __init__(self, chart, *, size: tuple = (700, 100), font = "Segoe UI Emoji", show_next=False, show_baseline = False):
-        with Path(chart).open("r", encoding="utf-8") as f:
-            self.tempocalc, self.phrases = load_lyrics(f)   # TODO: Update this to use lyrics from Song object
-        self.phrase_starts = [p.tick_start for p in self.phrases]
+    def __init__(self, chart: Chart, *, size: tuple = (700, 100), font = "Segoe UI Emoji", show_next=False, show_baseline = False):
+        self.chart = chart
+        self.secs_to_ticks = self.chart.song.tempo_calc.secs_to_ticks
+        self.ticks_to_secs = self.chart.song.tempo_calc.ticks_to_secs
         self.width, self.height = size
         self.font = font
         self._image = None
@@ -24,33 +21,51 @@ class LyricAnimator:
 
     @property
     def tracktime(self):
-        return self.tempocalc.ticks2secs(self.track_ticks)
-
-    def get_phrase(self, index):
-        if index < 0 or index >= len(self.phrases):
-            return None
-        return self.phrases[index]
+        return self.ticks_to_secs(self.track_ticks)
 
     @property
     def phrase_index(self):
-        index = bisect.bisect_right(self.phrase_starts, self.track_ticks) - 1
-        return index
+        return self.chart.song.lyric_by_ticks.index(self.track_ticks)
+
+    @property
+    def prev_phrase_index(self):
+        curr_index = self.phrase_index
+        if curr_index is None:
+            return None
+        if curr_index == 0:
+            return None
+        return curr_index - 1
+
+    @property
+    def next_phrase_index(self):
+        curr_index = self.phrase_index
+        if curr_index is None:
+            return 0
+        if curr_index + 1 == len(self.chart.song.lyrics):
+            return None
+        return curr_index + 1
 
     @property
     def curr_phrase(self):
-        return self.get_phrase(self.phrase_index)
+        return self.chart.song.lyric_by_ticks[self.track_ticks]
 
     @property
     def next_phrase(self):
-        return self.get_phrase(self.phrase_index + 1)
+        next_index = self.next_phrase_index
+        if next_index is None:
+            return None
+        return self.chart.song.lyrics[next_index]
 
     @property
     def prev_phrase(self):
-        return self.get_phrase(self.phrase_index - 1)
+        prev_index = self.prev_phrase_index
+        if prev_index is None:
+            return None
+        return self.chart.song.lyrics[prev_index]
 
     @property
     def phrase_number(self):
-        if self.phrase_index < 0:
+        if self.phrase_index is None:
             return None
         return self.phrase_index + 1
 
@@ -99,7 +114,7 @@ class LyricAnimator:
         return surf
 
     def update(self, tracktime):
-        self.track_ticks = self.tempocalc.secs2ticks(tracktime)
+        self.track_ticks = self.secs_to_ticks(tracktime)
 
     @property
     def image(self) -> pygame.Surface:

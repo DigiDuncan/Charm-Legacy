@@ -1,7 +1,4 @@
 import pygame
-import math
-from charm.loaders.raw_chchart import RawTS
-from charm.song import TempoEvent
 import importlib.resources as pkg_resources
 
 from pygame import Rect, Surface, image, transform
@@ -95,8 +92,9 @@ class HyperloopDisplay:
         self.size = size
         self.lefty = lefty
         self.track_ticks = 0
-        self.length = self.secs_to_ticks(0.75)
-        self.strike_fadetime = self.secs_to_ticks(0.5)
+        self.length = self.secs_to_ticks(0.75)  # TODO: Can't use sec_to_ticks for arbitrary deltas
+        self.px_per_tick = size[1] / self.length
+        self.strike_fadetime = self.secs_to_ticks(0.5)  # TODO: Can't use sec_to_ticks for arbitrary deltas
         self.visible_chords = []
         self._image = Surface(size, SRCALPHA)
         self.last_drawn = None
@@ -123,12 +121,41 @@ class HyperloopDisplay:
 
         return x, y
 
+    def get_visible_beats(self):
+        ticks_per_beat = self.chart.song.resolution
+        timesig = self.chart.song.timesig_by_ticks[self.track_ticks]
+
+        x = timesig.tick_start + (1 * ticks_per_beat)
+        
+        #     measureLine.tickOffset = 0
+        #     measureLine.repetitions = 1
+        #     measureLine.tickGap = resolution * (4 / denominator * numerator)
+        #     measureLine.repetitionCycleOffset = 0
+        #     beatLine.tickGap = measureLine.tickGap / numerator
+        #     beatLine.tickOffset = beatLine.tickGap
+        #     beatLine.repetitions = numerator - 1
+        #     beatLine.repetitionCycleOffset = beatLine.tickOffset
+        #     quarterBeatLine.tickGap = beatLine.tickGap
+        #     quarterBeatLine.tickOffset = beatLine.tickGap / 2
+        #     quarterBeatLine.repetitions = numerator
+        #     quarterBeatLine.repetitionCycleOffset = 0
+    
+        return []
+
     def update(self, tracktime):
         self.track_ticks = self.secs_to_ticks(tracktime)
         self.visible_chords = self.chart.chord_by_ticks[self.track_ticks - self.strike_fadetime:self.end]
 
     def draw(self):
         self._image.fill("clear")
+
+        for tick_start, beat in self.get_visible_beats():
+            diff = tick_start - self.track_ticks
+            y = self.size[1] - 32 - (diff * self.px_per_tick)
+            if beat == "beat":
+                pygame.draw.line(self._image, (128, 128, 128), (0, y), (self.size[0], y), 1)
+            elif beat == "measure":
+                pygame.draw.line(self._image, (128, 128, 128), (0, y), (self.size[0], y), width = 5)
 
         fret_strikes = [0, 0, 0, 0, 0]
         for chord in self.visible_chords:

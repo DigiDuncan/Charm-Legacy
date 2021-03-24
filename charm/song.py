@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import bisect
-from functools import cache, total_ordering
+from functools import cache, total_ordering, wraps
 from typing import Dict, Generic, List, Optional, TypeVar, Union
 
 
@@ -28,6 +28,9 @@ class SongEvent():
     @property
     def length(self) -> float:
         return self.end - self.start
+
+    def contains(self, other: SongEvent) -> bool:
+        return self.tick_start <= other.tick_start and self.tick_end >= other.tick_end
 
     def __eq__(self, other):
         return (self.tick_start, self.tick_length) == (other.tick_start, other.tick_length)
@@ -82,6 +85,40 @@ class Event(ChartEvent):
         return f"<{self.__class__.__name__}(start = {self.start}, data = {self.data})>"
 
 
+class LyricPhrase(SongEvent):
+    def __init__(self, song: Song, tick_start: int, tick_length: int):
+        super().__init__(song, tick_start, tick_length)
+        self.words = []
+        self.word_by_ticks = []
+
+    def finalize(self):
+        self.word_by_ticks = Index(self.words, "tick_start", minzero=True)
+
+    def get_on_text(self, track_ticks: int) -> str:
+        return "".join(w.text for w in self.word_by_ticks[:track_ticks + 1])
+
+    def get_off_text(self, track_ticks: int) -> str:
+        return "".join(w.text for w in self.word_by_ticks[track_ticks + 1:])
+
+    def get_text(self) -> str:
+        return "".join(w.text for w in self.words)
+
+    def __lt__(self, other: SongEvent):
+        return self.tick_start < other.tick_start
+
+
+class LyricWord(SongEvent):
+    def __init__(self, song: Song, tick_start: int, text: str):
+        super().__init__(song, tick_start)
+        self.text = text
+
+    def is_on(self, track_ticks: int):
+        return self.tick_start <= track_ticks
+
+    def __lt__(self, other: SongEvent):
+        return self.tick_start < other.tick_start
+
+
 class Chord(ChartEvent):
     def __init__(self, song: Song, chart: Chart, flag: str, notes: List[Note]):
         tick_start = notes[0].tick_start
@@ -130,6 +167,8 @@ class Song:
         self.charts: Dict[str, Chart] = {}
         self.timesigs: List[TSEvent] = []
         self.timesig_by_ticks: Index[int, TSEvent] = None
+        self.lyrics: List[LyricPhrase] = []
+        self.lyric_by_ticks: Index[int, LyricPhrase] = None
         self.tempo_calc: TempoCalculator = None
         self.full_name: str = None
         self.title: str = None
@@ -153,6 +192,7 @@ class Song:
         self.timesigs.sort()
         self.tempo_calc.finalize()
         self.timesig_by_ticks = Index(self.timesigs, "tick_start", minzero=True)
+        self.lyric_by_ticks = Index(self.lyrics, "tick_start", minzero=True)
 
     def __hash__(self):
         return hash((
@@ -219,7 +259,7 @@ class TempoCalculator:
         diff_seconds = secs - curr_tempo.start
         diff_ticks = int(diff_seconds * curr_tempo.ticks_per_sec)
         ticks = curr_tempo.tick_start + diff_ticks
-        return ticks
+        return int(ticks)
 
     def __hash__(self):
         return hash(tuple(self.tempos))
@@ -229,44 +269,64 @@ T = TypeVar("T")
 K = TypeVar("K")
 
 
+def min_zero_key(fn):
+    @wraps(fn)
+    def wrapped(self, key, *args, **kwargs):
+        if self.minzero:
+            if isinstance(key, slice):
+                start, stop, step = key.start, key.stop, key.step
+                if start is not None and start < 0:
+                    start = 0
+                if stop is not None and stop < 0:
+                    stop = 0
+                key = slice(start, stop, step)
+            else:
+                if key < 0:
+                    key = 0
+        return fn(self, key, *args, **kwargs)
+    return wrapped
+
+
 class Index(Generic[K, T]):
     def __init__(self, items: List[T], keyattr: str, minzero: bool = False):
         self.items = items
         self.keys: List[K] = [getattr(i, keyattr) for i in items]
         self.minzero = minzero
 
+    @min_zero_key
     def __getitem__(self, key: Union[slice, K]) -> Union[None, T]:
         if isinstance(key, slice):
-            start, stop, step = key.start, key.stop, key.step
-            if self.minzero:
-                if start is not None and start < 0:
-                    start = 0
-                if stop is not None and stop < 0:
-                    stop = 0
-
-            start_index = None if start is None else find_index(self.keys, start)
-            stop_index = None if stop is None else find_index(self.keys, stop, start_index)
-            if stop_index is None:
-                stop_index = 0
-            return self.items[start_index:stop_index:step]
+            start_index, stop_index = find_index_range(self.keys, key.start, key.stop)
+            return self.items[start_index:stop_index:key.step]
         else:
-            if self.minzero and key < 0:
-                key = 0
             index = find_index(self.keys, key)
             if index is None:
                 return None
             return self.items[index]
 
+    @min_zero_key
+    def index(self, key: K) -> int:
+        return find_index(self.keys, key)
 
-def find_index(keys: List[T], value: T, start=None) -> Union[None, int]:
+
+def find_index(keys: List[T], value: T) -> Union[None, int]:
     """
-    Finds the index of the first key that is equal to or greater than the given value
+    Finds the index of the first key matching `key <= value`
     Accepts a sorted list, and a value to search for
     Returns None if there are no matching keys
     """
-    if start is None:
-        start = 0
-    index = bisect.bisect_right(keys, value, start) - 1
+    index = bisect.bisect_right(keys, value) - 1
     if index < 0:
         index = None
     return index
+
+
+def find_index_range(keys: List[T], start: T, stop: T) -> int:
+    """
+    Finds the index of the first key match `key >= value`
+    Accepts a sorted list, and a value to search for
+    Returns None if there are no matching keys
+    """
+    start_index = None if start is None else bisect.bisect_left(keys, start)
+    stop_index = None if stop is None else bisect.bisect_left(keys, stop)
+    return start_index, stop_index

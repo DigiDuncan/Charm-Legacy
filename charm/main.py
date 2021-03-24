@@ -36,11 +36,12 @@ class Game(nygame.Game):
         self.volume = 6
         songpath = Path("./charm/data/charts/run_around_the_character_code/run_around_the_character_code.chart")
         with songpath.open("r", encoding="utf-8") as f:
-            song = chchart.load(f)
-        self.la = LyricAnimator(songpath)   # TODO: Update to take Song object
+            self.song = chchart.load(f)
+        chart = self.song.charts[('Expert', 'Single')]
+        self.la = LyricAnimator(chart)   # TODO: Update to take Song object
         hyperloop_init()
-        self.nd = HyperloopDisplay(song.charts[('Expert', 'Single')], size=(400, 500))
-        music.load(songpath.parent / song.musicstream)
+        self.nd = HyperloopDisplay(chart, size=(400, 500))
+        music.load(songpath.parent / self.song.musicstream)
         self.pause_image = draw_pause()
 
     def loop(self, events):
@@ -95,7 +96,8 @@ class Game(nygame.Game):
             self.surface.blit(self.pause_image, rect)
 
     def render_clock(self):
-        text = T(nice_time(self.la.tracktime, True), font="Lato Medium", size=24, color="green")
+        timestr = nice_time(music.elapsed, True)
+        text = T(f"{timestr} [{self.la.track_ticks}]", font="Lato Medium", size=24, color="green")
         text.render_to(self.surface, (5, 45))
 
     def render_volume(self):
@@ -103,7 +105,7 @@ class Game(nygame.Game):
         text.render_to(self.surface, (5, 95))
 
     def render_phrase(self):
-        phrase_count = len(self.la.phrases)
+        phrase_count = len(self.song.lyrics)
         text = T(f"Phrase: {self.la.phrase_number}/{phrase_count}", font="Lato Medium", size=24, color="green")
         text.render_to(self.surface, (5, 70))
 

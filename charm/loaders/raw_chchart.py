@@ -44,9 +44,10 @@ def load_raw(f) -> Dict[str, List[RawNote, RawEvent, RawTempo, RawAnchor, RawTS,
     return blocks
 
 
-def parse_line(line) -> Union[RawNote, RawEvent, RawTempo, RawAnchor, RawTS, RawStarPower, RawMetadata, None]:
+def parse_line(line) -> Union[RawNote, RawLyric, RawPhraseStart, RawPhraseEnd, RawEvent, RawTempo, RawAnchor, RawTS, RawStarPower, RawMetadata, None]:
     # parse RawMetadata last, because it's ambigious
-    rawclasses = [RawNote, RawEvent, RawTempo, RawAnchor, RawTS, RawStarPower, RawMetadata]
+    # parse RawLyric, RawPhraseStart and RawPhraseEnd before RawEvent, because they're subtypes of RawEvent
+    rawclasses = [RawNote, RawLyric, RawPhraseStart, RawPhraseEnd, RawEvent, RawTempo, RawAnchor, RawTS, RawStarPower, RawMetadata]
     parsed = (c.parse(line) for c in rawclasses)
     succesfully_parsed = (obj for obj in parsed if obj is not None)
     try:
@@ -100,6 +101,25 @@ class RawEvent(RawTimedLine):
     RE_LINE = re.compile(RE_ITEM_TPL.format(r"E", RE_QUOTED_TPL))
     tick_start: int
     data: str
+
+
+@dataclass
+class RawLyric(RawTimedLine):
+    RE_LINE = re.compile(RE_ITEM_TPL.format(r"E", r"\"lyric ([^\"]+)\""))
+    tick_start: int
+    text: str
+
+
+@dataclass
+class RawPhraseStart(RawTimedLine):
+    RE_LINE = re.compile(RE_ITEM_TPL.format(r"E", r"\"phrase_start\""))
+    tick_start: int
+
+
+@dataclass
+class RawPhraseEnd(RawTimedLine):
+    RE_LINE = re.compile(RE_ITEM_TPL.format(r"E", r"\"phrase_end\""))
+    tick_start: int
 
 
 @dataclass
