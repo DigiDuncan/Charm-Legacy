@@ -1,5 +1,6 @@
 import pygame
 import importlib.resources as pkg_resources
+from itertools import count, takewhile
 
 from pygame import Rect, Surface, image, transform
 from pygame.constants import SRCALPHA
@@ -92,9 +93,9 @@ class HyperloopDisplay:
         self.size = size
         self.lefty = lefty
         self.track_ticks = 0
-        self.length = 0.75  # TODO: Can't use sec_to_ticks for arbitrary deltas
+        self.length = 0.75
         self.px_per_sec = size[1] / self.length
-        self.strike_fadetime = 0.5  # TODO: Can't use sec_to_ticks for arbitrary deltas
+        self.strike_fadetime = 0.5
         self.visible_chords = []
         self._image = Surface(size, SRCALPHA)
         self.last_drawn = None
@@ -107,25 +108,19 @@ class HyperloopDisplay:
     def end(self):
         return self.secs_to_ticks(self.tracktime + self.length)
 
-    def get_fret_pos(self, f, timediff=0):
-        if timediff < 0:
-            timediff = 0
+    def get_fret_pos(self, f):
         w, h = self.size
         fw, fh = 64, 64
         fcnt = 5
 
         wspace = w / fcnt
         x = (wspace * f) + (wspace / 2) - (fw / 2)
-
-        y = h - fh - (h * (timediff / self.length))
-
         if f == 7:
             x = 0
-            y += 16
-
-        return x, y
+        return x
 
     def get_visible_beats(self):
+        # This needs to be updated to handle multiple timesigs
         timesig = self.chart.song.timesig_by_ticks[self.track_ticks]
 
         ticks_per_quarternote = self.chart.song.resolution
@@ -134,6 +129,15 @@ class HyperloopDisplay:
         beats_per_wholenote = timesig.denominator
         ticks_per_beat = ticks_per_wholenote / beats_per_wholenote
         ticks_per_measure = ticks_per_beat * beats_per_measure
+
+        ticks_since_timesig = self.track_ticks - timesig.tick_start
+
+        first_measure = self.track_ticks - (ticks_since_timesig % ticks_per_measure)
+        first_beat = self.track_ticks - (ticks_since_timesig % ticks_per_beat)
+
+        measures = list(takewhile(lambda m: m <= self.end, count(first_measure, ticks_per_measure)))
+        beats = list(takewhile(lambda b: b <= self.end, count(first_beat, ticks_per_beat)))
+        quarterbeats = list(takewhile(lambda b: b <= self.end, count(first_beat, ticks_per_beat/2)))
 
         #     measureLine.tickOffset = 0
         #     measureLine.repetitions = 1
@@ -148,7 +152,7 @@ class HyperloopDisplay:
         #     quarterBeatLine.repetitions = numerator
         #     quarterBeatLine.repetitionCycleOffset = 0
 
-        return []
+        return measures, beats, quarterbeats
 
     def update(self, tracktime):
         self.track_ticks = self.secs_to_ticks(tracktime)
@@ -157,26 +161,29 @@ class HyperloopDisplay:
 
     def draw(self):
         self._image.fill("clear")
-
-        for tick_start, beat in self.get_visible_beats():
-            diff = tick_start - self.track_ticks
-            y = self.size[1] - 32 - (diff * self.px_per_tick)
-            if beat == "beat":
-                pygame.draw.line(self._image, (128, 128, 128), (0, y), (self.size[0], y), 1)
-            elif beat == "measure":
-                pygame.draw.line(self._image, (128, 128, 128), (0, y), (self.size[0], y), width = 5)
+        measures, beats, quarterbeats = self.get_visible_beats()
+        for q in quarterbeats:
+            y = self.gety(self.ticks_to_secs(q)) + 32
+            pygame.draw.line(self._image, (64, 64, 64), (0, y), (self.size[0], y), width = 1)
+        for b in beats:
+            y = self.gety(self.ticks_to_secs(b)) + 32
+            pygame.draw.line(self._image, (128, 128, 128), (0, y), (self.size[0], y), width = 1)
+        for m in measures:
+            y = self.gety(self.ticks_to_secs(m)) + 32
+            pygame.draw.line(self._image, (128, 128, 128), (0, y), (self.size[0], y), width = 5)
 
         fret_strikes = [0, 0, 0, 0, 0]
         for chord in self.visible_chords:
-            diff = chord.tick_start - self.track_ticks
-            timediff = chord.start - self.tracktime
-            if diff < 0:
+            if chord.tick_start < self.track_ticks:
                 for fret in chord.frets:
+                    timediff = self.tracktime - chord.start
                     fade = max(0, self.strike_fadetime + timediff) / self.strike_fadetime   # 0 to 1
                     fret_strikes[fret] = max(fret_strikes[fret], fade)
                 continue
+
+            y = self.gety(chord.start)
             for fret in chord.frets:
-                pos = self.get_fret_pos(fret, timediff)
+                pos = self.get_fret_pos(fret), y
                 self._image.blit(get_sprite(chord.flag, fret), pos)
 
         for fret, fade in enumerate(fret_strikes):
@@ -184,10 +191,18 @@ class HyperloopDisplay:
             sprite = get_sprite("strike", fret)
             sprite.set_alpha(fade_alpha)
 
-            pos = self.get_fret_pos(fret)
+            pos = self.get_fret_pos(fret), self.size[1] - 64
             self._image.blit(sprite, pos)
         if self.lefty:
             self._image = transform.flip(self._image, True, False)
+
+    def gety(self, secs):
+        secs_until = secs - self.tracktime
+        perc_screen = secs_until / self.length
+        pixels = perc_screen * self.size[1]
+        y = self.size[1] - pixels
+        return y - 64
+
 
     @property
     def image(self) -> Surface:
