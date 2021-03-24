@@ -27,7 +27,7 @@ def draw_pause():
 
 class Game(nygame.Game):
     def __init__(self):
-        super().__init__(size = (800, 600), fps = 120, showfps = True)
+        super().__init__(size = (1060, 600), fps = 120, showfps = True)
         instruments.init(self)
         self.guitar = instruments.Guitar.connect(0)
         self.paused = False
