@@ -109,7 +109,7 @@ class TicksPerSecond():
         self.tick_start < other.tick_start
 
 
-class BPMCalculator:
+class TempoCalculator:
     def __init__(self, resolution, mbpms):
         self.tps = []
         for mbpm in mbpms:
@@ -126,24 +126,35 @@ class BPMCalculator:
         seconds = curr_tps.start + curr_seconds
         return seconds
 
+    def secs2ticks(self, secs):
+        if secs == 0:
+            return 0
+        curr_tps = next(tps for tps in self.tps if tps.start <= secs)
+        curr_secs = secs - curr_tps.start
+        curr_ticks = curr_secs * curr_tps.tps
+        ticks = curr_tps.tick_start + curr_ticks
+        return ticks
+
 
 class LyricPhrase():
-    def __init__(self, start, end):
-        self.start = start
-        self.end = end
+    def __init__(self, tick_start, tick_end):
+        self.tick_start = tick_start
+        self.tick_end = tick_end
+        self.start = ticks2secs(tick_start)
+        self.end = ticks2secs(tick_end)
         self.words = []
 
-    def get_on_text(self, tracktime):
-        return "".join(w.text for w in self.words if w.is_on(tracktime - self.start))
+    def get_on_text(self, track_ticks):
+        return "".join(w.text for w in self.words if w.is_on(track_ticks - self.tick_start))
 
-    def get_off_text(self, tracktime):
-        return "".join(w.text for w in self.words if not w.is_on(tracktime - self.start))
+    def get_off_text(self, track_ticks):
+        return "".join(w.text for w in self.words if not w.is_on(track_ticks - self.tick_start))
 
     def get_text(self):
         return "".join(w.text for w in self.words)
 
     def __lt__(self, other):
-        return self.start < other.start
+        return self.tick_start < other.tick_start
 
 
 def clean_word(word: str):
@@ -157,31 +168,33 @@ def clean_word(word: str):
 
 
 class LyricWord:
-    def __init__(self, offset, text):
-        self.offset = offset
+    def __init__(self, tick_offset, text):
+        self.tick_offset = tick_offset
+        self.offset = ticks2secs(tick_offset)
         self.text = clean_word(text)
 
     def is_on(self, curr_offset):
-        return self.offset <= curr_offset
+        return self.tick_offset <= curr_offset
 
     def __lt__(self, other):
-        return self.offset < other.offset
+        return self.tick_offset < other.tick_offset
 
+
+ticks2secs = None
 
 def load_lyrics(f) -> List[LyricPhrase]:
+    global ticks2secs
     resolution, mbpms, raw_phrases = load_raw(f)
-    bpmcalc = BPMCalculator(resolution, mbpms)
-
+    tempocalc = TempoCalculator(resolution, mbpms)
+    global ticks2secs
+    ticks2secs = tempocalc.ticks2secs
     phrases = []
     for raw_phrase in raw_phrases:
-        phrase_start = bpmcalc.ticks2secs(raw_phrase.tick_start)
-        phrase_end = bpmcalc.ticks2secs(raw_phrase.tick_end)
-        phrase = LyricPhrase(phrase_start, phrase_end)
+        phrase = LyricPhrase(raw_phrase.tick_start, raw_phrase.tick_end)
         phrases.append(phrase)
         for raw_word in raw_phrase.words:
-            word_start = bpmcalc.ticks2secs(raw_word.tick_start)
-            offset = word_start - phrase_start
+            offset = raw_word.tick_start - raw_phrase.tick_start
             word = LyricWord(offset, raw_word.text)
             phrase.words.append(word)
 
-    return phrases
+    return tempocalc, phrases

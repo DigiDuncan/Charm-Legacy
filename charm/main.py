@@ -53,9 +53,9 @@ class Game(nygame.Game):
                 if event.key == K_SPACE:
                     music.playpause()
                 elif event.key == K_LEFT and self.la.prev_phrase is not None:
-                    music.elapsed = self.la.prev_phrase.start
+                    music.elapsed = self.la.prev_phrase.start + 0.0001
                 elif event.key == K_RIGHT and self.la.next_phrase is not None:
-                    music.elapsed = self.la.next_phrase.start
+                    music.elapsed = self.la.next_phrase.start + 0.0001
                 elif event.key == K_HOME:
                     music.elapsed = 0
                 elif event.key == K_UP:
@@ -103,9 +103,8 @@ class Game(nygame.Game):
         text.render_to(self.surface, (5, 95))
 
     def render_phrase(self):
-        phrase_index = self.la.phrase_index + 1
         phrase_count = len(self.la.phrases)
-        text = T(f"Phrase: {phrase_index}/{phrase_count}", font="Lato Medium", size=24, color="green")
+        text = T(f"Phrase: {self.la.phrase_number}/{phrase_count}", font="Lato Medium", size=24, color="green")
         text.render_to(self.surface, (5, 70))
 
     @property
