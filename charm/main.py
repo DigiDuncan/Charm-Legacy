@@ -103,7 +103,7 @@ class Game(nygame.Game):
         text.render_to(self.surface, (5, 95))
 
     def render_phrase(self):
-        phrase_index = 'None' if self.la.active_phrase_index is None else self.la.active_phrase_index + 1
+        phrase_index = self.la.phrase_index + 1
         phrase_count = len(self.la.phrases)
         text = T(f"Phrase: {phrase_index}/{phrase_count}", font="Lato Medium", size=24, color="green")
         text.render_to(self.surface, (5, 70))

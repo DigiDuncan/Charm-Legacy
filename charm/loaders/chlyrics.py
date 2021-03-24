@@ -1,4 +1,5 @@
 import re
+from typing import List
 
 from nygame.emoji import emojize
 
@@ -141,15 +142,6 @@ class LyricPhrase():
     def get_text(self):
         return "".join(w.text for w in self.words)
 
-    def is_active(self, tracktime):
-        return self.start <= tracktime < self.end
-
-    def is_waiting(self, tracktime):
-        return self.start > tracktime
-
-    def is_done(self, tracktime):
-        return self.end <= tracktime
-
     def __lt__(self, other):
         return self.start < other.start
 
@@ -176,7 +168,7 @@ class LyricWord:
         return self.offset < other.offset
 
 
-def load_lyrics(f):
+def load_lyrics(f) -> List[LyricPhrase]:
     resolution, mbpms, raw_phrases = load_raw(f)
     bpmcalc = BPMCalculator(resolution, mbpms)
 
