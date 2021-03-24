@@ -173,7 +173,7 @@ class HyperloopDisplay:
             pygame.draw.line(self._image, (128, 128, 128), (0, y), (self.size[0], y), width = 5)
 
         fret_strikes = [0, 0, 0, 0, 0]
-        for chord in self.visible_chords:
+        for chord in self.visible_chords[::-1]:
             if chord.tick_start < self.track_ticks:
                 for fret in chord.frets:
                     timediff = self.tracktime - chord.start
