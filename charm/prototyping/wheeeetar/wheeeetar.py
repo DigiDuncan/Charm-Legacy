@@ -1,9 +1,10 @@
 from pathlib import Path
+
 import nygame
+import pygame.image
 from nygame import joystick
 from pygame import Rect
 from pygame.constants import JOYAXISMOTION, JOYBUTTONDOWN, JOYBUTTONUP, JOYHATMOTION
-import pygame.image
 
 
 def button_prop(i):
