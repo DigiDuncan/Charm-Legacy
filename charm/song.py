@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-import bisect
-from functools import cache, total_ordering, wraps
-from typing import Dict, Generic, List, Optional, TypeVar, Union
+from functools import cache, total_ordering
+from typing import Dict, List, Optional
+
+from nygame import Index
 
 
 # Abstract class
@@ -223,12 +224,11 @@ class TempoCalculator:
         self.ticks_to_secs = cache(self.ticks_to_secs)
         self.secs_to_ticks = cache(self.secs_to_ticks)
         self.tempos = sorted(tempos)
-        self.tempo_by_ticks: Index[int, TempoEvent] = Index(self.tempos, "tick_start")
+        self.tempo_by_ticks: Index[int, TempoEvent] = None
         self.tempo_by_secs: Index[float, TempoEvent] = None
 
     def finalize(self):
-        for tempo in self.tempos:
-            self.ticks_to_secs(tempo.tick_start)
+        self.tempo_by_ticks = Index(self.tempos, "tick_start")
         self.tempo_by_secs = Index(self.tempos, "start")
 
     def ticks_to_secs(self, ticks: int) -> float:
@@ -264,49 +264,3 @@ class TempoCalculator:
     def __hash__(self):
         return hash(tuple(self.tempos))
 
-
-T = TypeVar("T")
-K = TypeVar("K")
-
-
-
-class Index(Generic[K, T]):
-    def __init__(self, items: List[T], keyattr: str):
-        self.items = items
-        self.keys: List[K] = [getattr(i, keyattr) for i in items]
-
-    def __getitem__(self, key: Union[slice, K]) -> Union[None, T]:
-        if isinstance(key, slice):
-            start_index, stop_index = find_index_range(self.keys, key.start, key.stop)
-            return self.items[start_index:stop_index:key.step]
-        else:
-            index = find_index(self.keys, key)
-            if index is None:
-                return None
-            return self.items[index]
-
-    def index(self, key: K) -> int:
-        return find_index(self.keys, key)
-
-
-def find_index(keys: List[T], value: T) -> Union[None, int]:
-    """
-    Finds the index of the first key matching `key <= value`
-    Accepts a sorted list, and a value to search for
-    Returns None if there are no matching keys
-    """
-    index = bisect.bisect_right(keys, value) - 1
-    if index < 0:
-        index = None
-    return index
-
-
-def find_index_range(keys: List[T], start: T, stop: T) -> int:
-    """
-    Finds the index of the first key match `key >= value`
-    Accepts a sorted list, and a value to search for
-    Returns None if there are no matching keys
-    """
-    start_index = None if start is None else bisect.bisect_left(keys, start)
-    stop_index = None if stop is None else bisect.bisect_left(keys, stop)
-    return start_index, stop_index
