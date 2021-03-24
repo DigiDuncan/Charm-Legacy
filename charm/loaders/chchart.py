@@ -4,7 +4,7 @@ import re
 
 from typing import Dict, List, Tuple, Union
 
-from charm.song import Chart, Chord, Event, Note, Song, SPEvent, TempoCalculator, TempoEvent
+from charm.song import Chart, Chord, Event, Note, Song, SPEvent, TSEvent, TempoCalculator, TempoEvent
 from charm.loaders.raw_chchart import RawEvent, RawNote, RawStarPower, RawTempo, RawAnchor, RawTS, RawMetadata, load_raw
 
 
@@ -106,13 +106,13 @@ def chart_from_raw(song: Song, header: str, lines: List[RawNote, RawEvent, RawTe
 def notes_to_chord(song, chart, notes):
     frets = [n.fret for n in notes]
     if 6 in frets:
-        mode = "tap"
+        flag = "tap"
     elif 5 in frets:
-        mode = "hopo"
+        flag = "hopo"
     else:
-        mode = "note"
+        flag = "note"
     notes = [n for n in notes if n.fret not in (5, 6)]
-    chord = Chord(song, chart, mode, notes)
+    chord = Chord(song, chart, flag, notes)
     return chord
 
 
@@ -159,14 +159,14 @@ def set_metadata(song, lines: List[RawMetadata]) -> Dict[str, Union[str, int]]:
         raise UnparsedMetadataException(list(metadata.keys()))
 
 
-def parse_synctrack(song, lines: List[RawTempo, RawTS]) -> Tuple[List[RawTempo], List[RawTS]]:
-    raw_tempos = []
-    timesigs = []
+def parse_synctrack(song, lines: List[RawTempo, RawTS]) -> Tuple[TempoCalculator, List[TSEvent]]:
+    raw_tempos: List[RawTempo] = []
+    raw_timesigs: List[RawTS] = []
     for line in lines:
         if isinstance(line, RawTempo):
             raw_tempos.append(line)
         elif isinstance(line, RawTS):
-            timesigs.append(line)   # TODO: Put these in a proper class
+            raw_timesigs.append(line)
         else:
             raise InvalidSynctrackDataException(f"Invalid synctrack data {line}")
 
@@ -177,7 +177,13 @@ def parse_synctrack(song, lines: List[RawTempo, RawTS]) -> Tuple[List[RawTempo],
         tempos.append(tempo)
     tempo_calc = TempoCalculator(tempos)
 
-    return tempo_calc, tempos, timesigs
+    timesigs = []
+    for rts in raw_timesigs:
+        ticks_per_second = song.resolution * raw_tempo.mbpm / 1000 / 60
+        timesig = TSEvent(song, rts.tick_start, rts.numerator, rts.denominator if rts.denominator is not None else 4)
+        timesigs.append(timesig)
+
+    return tempo_calc, timesigs
 
 
 def parse_events(song, lines: List[RawEvent]):
@@ -199,7 +205,7 @@ def song_from_raw(datablocks: Dict[str, List[RawNote, RawEvent, RawTempo, RawAnc
 
     song = Song()
     set_metadata(song, datablocks.pop("Song"))
-    song.tempo_calc, song.tempos, song.timesigs = parse_synctrack(song, datablocks.pop("SyncTrack"))
+    song.tempo_calc, song.timesigs = parse_synctrack(song, datablocks.pop("SyncTrack"))
     song.events = parse_events(song, datablocks.pop("Events"))
     part_vocals = datablocks.pop("PART VOCALS", None)    # TODO Handle vocals section
 
