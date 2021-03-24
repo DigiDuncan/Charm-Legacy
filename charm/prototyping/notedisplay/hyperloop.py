@@ -92,20 +92,24 @@ class HyperloopDisplay:
         self.size = size
         self.lefty = lefty
         self.track_ticks = 0
-        self.length = self.secs_to_ticks(0.75)  # TODO: Can't use sec_to_ticks for arbitrary deltas
-        self.px_per_tick = size[1] / self.length
-        self.strike_fadetime = self.secs_to_ticks(0.5)  # TODO: Can't use sec_to_ticks for arbitrary deltas
+        self.length = 0.75  # TODO: Can't use sec_to_ticks for arbitrary deltas
+        self.px_per_sec = size[1] / self.length
+        self.strike_fadetime = 0.5  # TODO: Can't use sec_to_ticks for arbitrary deltas
         self.visible_chords = []
         self._image = Surface(size, SRCALPHA)
         self.last_drawn = None
 
     @property
-    def end(self):
-        return self.track_ticks + self.length
+    def tracktime(self):
+        return self.ticks_to_secs(self.track_ticks)
 
-    def get_fret_pos(self, f, diff=0):
-        if diff < 0:
-            diff = 0
+    @property
+    def end(self):
+        return self.secs_to_ticks(self.tracktime + self.length)
+
+    def get_fret_pos(self, f, timediff=0):
+        if timediff < 0:
+            timediff = 0
         w, h = self.size
         fw, fh = 64, 64
         fcnt = 5
@@ -113,7 +117,7 @@ class HyperloopDisplay:
         wspace = w / fcnt
         x = (wspace * f) + (wspace / 2) - (fw / 2)
 
-        y = h - fh - (h * (diff / self.length))
+        y = h - fh - (h * (timediff / self.length))
 
         if f == 7:
             x = 0
@@ -144,7 +148,8 @@ class HyperloopDisplay:
 
     def update(self, tracktime):
         self.track_ticks = self.secs_to_ticks(tracktime)
-        self.visible_chords = self.chart.chord_by_ticks[self.track_ticks - self.strike_fadetime:self.end]
+        start_ticks = self.secs_to_ticks(self.tracktime - self.strike_fadetime)
+        self.visible_chords = self.chart.chord_by_ticks[start_ticks:self.end]
 
     def draw(self):
         self._image.fill("clear")
@@ -160,14 +165,14 @@ class HyperloopDisplay:
         fret_strikes = [0, 0, 0, 0, 0]
         for chord in self.visible_chords:
             diff = chord.tick_start - self.track_ticks
+            timediff = chord.start - self.tracktime
             if diff < 0:
                 for fret in chord.frets:
-                    fade = max(0, self.strike_fadetime + diff)
-                    fade /= self.strike_fadetime                # 0 to 1
+                    fade = max(0, self.strike_fadetime + timediff) / self.strike_fadetime   # 0 to 1
                     fret_strikes[fret] = max(fret_strikes[fret], fade)
                 continue
             for fret in chord.frets:
-                pos = self.get_fret_pos(fret, diff)
+                pos = self.get_fret_pos(fret, timediff)
                 self._image.blit(get_sprite(chord.flag, fret), pos)
 
         for fret, fade in enumerate(fret_strikes):

@@ -92,7 +92,7 @@ class LyricPhrase(SongEvent):
         self.word_by_ticks = []
 
     def finalize(self):
-        self.word_by_ticks = Index(self.words, "tick_start", minzero=True)
+        self.word_by_ticks = Index(self.words, "tick_start")
 
     def get_on_text(self, track_ticks: int) -> str:
         return "".join(w.text for w in self.word_by_ticks[:track_ticks + 1])
@@ -191,8 +191,8 @@ class Song:
         self.events.sort()
         self.timesigs.sort()
         self.tempo_calc.finalize()
-        self.timesig_by_ticks = Index(self.timesigs, "tick_start", minzero=True)
-        self.lyric_by_ticks = Index(self.lyrics, "tick_start", minzero=True)
+        self.timesig_by_ticks = Index(self.timesigs, "tick_start")
+        self.lyric_by_ticks = Index(self.lyrics, "tick_start")
 
     def __hash__(self):
         return hash((
@@ -223,13 +223,13 @@ class TempoCalculator:
         self.ticks_to_secs = cache(self.ticks_to_secs)
         self.secs_to_ticks = cache(self.secs_to_ticks)
         self.tempos = sorted(tempos)
-        self.tempo_by_ticks: Index[int, TempoEvent] = Index(self.tempos, "tick_start", minzero=True)
+        self.tempo_by_ticks: Index[int, TempoEvent] = Index(self.tempos, "tick_start")
         self.tempo_by_secs: Index[float, TempoEvent] = None
 
     def finalize(self):
         for tempo in self.tempos:
             self.ticks_to_secs(tempo.tick_start)
-        self.tempo_by_secs = Index(self.tempos, "start", minzero=True)
+        self.tempo_by_secs = Index(self.tempos, "start")
 
     def ticks_to_secs(self, ticks: int) -> float:
         if ticks is None:
@@ -269,31 +269,12 @@ T = TypeVar("T")
 K = TypeVar("K")
 
 
-def min_zero_key(fn):
-    @wraps(fn)
-    def wrapped(self, key, *args, **kwargs):
-        if self.minzero:
-            if isinstance(key, slice):
-                start, stop, step = key.start, key.stop, key.step
-                if start is not None and start < 0:
-                    start = 0
-                if stop is not None and stop < 0:
-                    stop = 0
-                key = slice(start, stop, step)
-            else:
-                if key < 0:
-                    key = 0
-        return fn(self, key, *args, **kwargs)
-    return wrapped
-
 
 class Index(Generic[K, T]):
-    def __init__(self, items: List[T], keyattr: str, minzero: bool = False):
+    def __init__(self, items: List[T], keyattr: str):
         self.items = items
         self.keys: List[K] = [getattr(i, keyattr) for i in items]
-        self.minzero = minzero
 
-    @min_zero_key
     def __getitem__(self, key: Union[slice, K]) -> Union[None, T]:
         if isinstance(key, slice):
             start_index, stop_index = find_index_range(self.keys, key.start, key.stop)
@@ -304,7 +285,6 @@ class Index(Generic[K, T]):
                 return None
             return self.items[index]
 
-    @min_zero_key
     def index(self, key: K) -> int:
         return find_index(self.keys, key)
 
