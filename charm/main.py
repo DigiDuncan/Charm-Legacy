@@ -38,7 +38,7 @@ class Game(nygame.Game):
         chart = self.song.charts[('Expert', 'Single')]
         self.la = LyricAnimator(chart)   # TODO: Update to take Song object
         hyperloop_init()
-        self.nd = HyperloopDisplay(self.song.charts[('Expert', 'Single')], size=(400, 500))
+        self.nd = HyperloopDisplay(chart, size=(400, 500))
         input_init()
         self.id = InputDisplay(self.guitar, size=(400, 100))
         music.load(songpath.parent / self.song.musicstream)

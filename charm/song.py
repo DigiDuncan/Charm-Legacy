@@ -89,8 +89,8 @@ class Event(ChartEvent):
 class LyricPhrase(SongEvent):
     def __init__(self, song: Song, tick_start: int, tick_length: int):
         super().__init__(song, tick_start, tick_length)
-        self.words = []
-        self.word_by_ticks = []
+        self.words: List[LyricWord] = []
+        self.word_by_ticks: Index[int, LyricWord] = None
 
     def finalize(self):
         self.word_by_ticks = Index(self.words, "tick_start")

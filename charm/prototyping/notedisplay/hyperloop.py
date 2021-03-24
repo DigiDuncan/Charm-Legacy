@@ -1,5 +1,6 @@
 import importlib.resources as pkg_resources
-from itertools import count, takewhile
+from itertools import count, filterfalse, takewhile, tee
+from typing import Union
 
 import pygame
 from pygame import Rect, Surface, image, transform
@@ -42,11 +43,11 @@ gh_sheet: Surface = None
 fret_images = {}
 
 
-def get_sprite(flag, fret):
+def get_sprite(flag: str, fret: Union[str, int]) -> Surface:
     return fret_images[flag][fret]
 
 
-def set_sprite(flag, fretname, sprite):
+def set_sprite(flag: str, fretname: str, sprite: Surface):
     fret_images[flag][fretname] = sprite
     if fretname in fretnums:
         fretnum = fretnums[fretname]
@@ -108,17 +109,6 @@ class HyperloopDisplay:
     def end(self):
         return self.secs_to_ticks(self.tracktime + self.length)
 
-    def get_fret_pos(self, f):
-        w, h = self.size
-        fw, fh = 64, 64
-        fcnt = 5
-
-        wspace = w / fcnt
-        x = (wspace * f) + (wspace / 2) - (fw / 2)
-        if f == 7:
-            x = 0
-        return x
-
     def get_visible_beats(self):
         # This needs to be updated to handle multiple timesigs
         timesig = self.chart.song.timesig_by_ticks[self.track_ticks]
@@ -137,7 +127,7 @@ class HyperloopDisplay:
 
         measures = list(takewhile(lambda m: m <= self.end, count(first_measure, ticks_per_measure)))
         beats = list(takewhile(lambda b: b <= self.end, count(first_beat, ticks_per_beat)))
-        quarterbeats = list(takewhile(lambda b: b <= self.end, count(first_beat, ticks_per_beat/2)))
+        quarterbeats = list(takewhile(lambda b: b <= self.end, count(first_beat, ticks_per_beat / 2)))
 
         #     measureLine.tickOffset = 0
         #     measureLine.repetitions = 1
@@ -156,53 +146,77 @@ class HyperloopDisplay:
 
     def update(self, tracktime):
         self.track_ticks = self.secs_to_ticks(tracktime)
-        start_ticks = self.secs_to_ticks(self.tracktime - self.strike_fadetime)
-        self.visible_chords = self.chart.chord_by_ticks[start_ticks:self.end]
+        self.visible_chords = self.chart.chord_by_ticks[self.track_ticks:self.end]
+        last_fade = self.secs_to_ticks(self.tracktime - self.strike_fadetime)
+        self.old_chords = self.chart.chord_by_ticks[last_fade:self.track_ticks]
 
     def draw(self):
         self._image.fill("clear")
-        measures, beats, quarterbeats = self.get_visible_beats()
-        for q in quarterbeats:
-            y = self.gety(self.ticks_to_secs(q)) + 32
-            pygame.draw.line(self._image, (64, 64, 64), (0, y), (self.size[0], y), width = 1)
-        for b in beats:
-            y = self.gety(self.ticks_to_secs(b)) + 32
-            pygame.draw.line(self._image, (128, 128, 128), (0, y), (self.size[0], y), width = 1)
-        for m in measures:
-            y = self.gety(self.ticks_to_secs(m)) + 32
-            pygame.draw.line(self._image, (128, 128, 128), (0, y), (self.size[0], y), width = 5)
 
-        fret_strikes = [0, 0, 0, 0, 0]
-        for chord in self.visible_chords[::-1]:
-            if chord.tick_start < self.track_ticks:
-                for fret in chord.frets:
-                    timediff = self.tracktime - chord.start
-                    fade = max(0, self.strike_fadetime + timediff) / self.strike_fadetime   # 0 to 1
-                    fret_strikes[fret] = max(fret_strikes[fret], fade)
-                continue
+        self.draw_beatlines()
+        self.draw_strikes()
+        self.draw_chords()
+        self.draw_zero()
 
-            y = self.gety(chord.start)
-            for fret in chord.frets:
-                pos = self.get_fret_pos(fret), y
-                self._image.blit(get_sprite(chord.flag, fret), pos)
-
-        for fret, fade in enumerate(fret_strikes):
-            fade_alpha = 255 * fade
-            sprite = get_sprite("strike", fret)
-            sprite.set_alpha(fade_alpha)
-
-            pos = self.get_fret_pos(fret), self.size[1] - 64
-            self._image.blit(sprite, pos)
         if self.lefty:
             self._image = transform.flip(self._image, True, False)
+
+    def draw_beatlines(self):
+        measures, beats, quarterbeats = self.get_visible_beats()
+        for q in quarterbeats:
+            y = self.gety(self.ticks_to_secs(q))
+            pygame.draw.line(self._image, (64, 64, 64), (0, y), (self.size[0], y), width = 1)
+        for b in beats:
+            y = self.gety(self.ticks_to_secs(b))
+            pygame.draw.line(self._image, (128, 128, 128), (0, y), (self.size[0], y), width = 1)
+        for m in measures:
+            y = self.gety(self.ticks_to_secs(m))
+            pygame.draw.line(self._image, (128, 128, 128), (0, y), (self.size[0], y), width = 5)
+
+    def draw_strikes(self):
+        fret_strikes = [0, 0, 0, 0, 0]
+        for chord in self.old_chords:
+            timediff = self.tracktime - chord.start
+            # 0 - 1
+            fade = max(0, self.strike_fadetime - timediff) / self.strike_fadetime
+            for fret in chord.frets:
+                fret_strikes[fret] = max(fret_strikes[fret], fade)
+
+        for fret, fade in enumerate(fret_strikes):
+            self.draw_fret(fret, "strike", self.tracktime, fade=fade)
+
+    def draw_chords(self):
+        for chord in self.visible_chords[::-1]:
+            for fret in chord.frets:
+                self.draw_fret(fret, chord.flag, chord.start)
+
+    def draw_zero(self):
+        y = self.gety(self.tracktime)
+        pygame.draw.line(self._image, (128, 0, 0), (0, y), (self.size[0], y), width = 3)
+
+    def draw_fret(self, fret, flag, secs, fade=1):
+        x = self.get_fretx(fret)
+        y = self.gety(secs)
+        sprite = get_sprite(flag, fret)
+        x -= sprite.get_width() / 2
+        y -= sprite.get_height() / 2
+        sprite.set_alpha(255 * fade)
+        self._image.blit(sprite, (x, y))
 
     def gety(self, secs):
         secs_until = secs - self.tracktime
         perc_screen = secs_until / self.length
         pixels = perc_screen * self.size[1]
         y = self.size[1] - pixels
-        return y - 64
+        return y - 32
 
+    def get_fretx(self, fret):
+        w = self.size[0]
+        fret_count = 5
+        fret_space = w / fret_count
+        fret_space_mid = fret_space / 2
+        x = (fret_space * fret) + fret_space_mid
+        return x
 
     @property
     def image(self) -> Surface:
