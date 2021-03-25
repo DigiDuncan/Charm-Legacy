@@ -1,5 +1,7 @@
+from PIL import Image
+
 import importlib.resources as pkg_resources
-from itertools import count, filterfalse, takewhile, tee
+from itertools import count, takewhile
 from typing import Union
 
 import pygame
@@ -100,6 +102,7 @@ class HyperloopDisplay:
         self.visible_chords = []
         self._image = Surface(size, SRCALPHA)
         self.last_drawn = None
+        self.tilt = False
 
     @property
     def tracktime(self):
@@ -160,6 +163,26 @@ class HyperloopDisplay:
 
         if self.lefty:
             self._image = transform.flip(self._image, True, False)
+        if self.tilt:
+            self.project()
+
+    def project(self):
+        def surfaceToPillow(surf):
+            strFormat = 'RGBA'
+            raw_str = pygame.image.tostring(surf, strFormat, False)
+            pill = Image.frombytes(strFormat, surf.get_size(), raw_str)
+            return pill
+
+        def pillowToSurface(pill):
+            strFormat = 'RGBA'
+            raw_str = pill.tobytes("raw", strFormat)
+            surf = pygame.image.fromstring(raw_str, pill.size, strFormat)
+            return surf
+        pill = surfaceToPillow(self._image)
+        # *･゜ﾟ･*:.｡. .｡.:*･゜ﾟ･* MAGIC NUMBERS *･゜ﾟ･*:.｡. .｡.:*･゜ﾟ･*
+        data = [3.000000000000009, 0.6999999999999772, -399.99999999999875, 4.86855971119568e-16, 2.7600000000000042, -5.534368761468802e-13, 3.0653091558265384e-18, 0.003500000000000005]
+        pill = pill.transform(pill.size, Image.PERSPECTIVE, data=data)
+        self._image = pillowToSurface(pill)
 
     def draw_beatlines(self):
         measures, beats, quarterbeats = self.get_visible_beats()
@@ -198,6 +221,7 @@ class HyperloopDisplay:
         x = self.get_fretx(fret)
         y = self.gety(secs)
         sprite = get_sprite(flag, fret)
+        # Center fret sprites
         x -= sprite.get_width() / 2
         y -= sprite.get_height() / 2
         sprite.set_alpha(255 * fade)
