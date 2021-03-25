@@ -79,6 +79,7 @@ class Game(nygame.Game):
         self.render_pause()
         self.render_volume()
         self.render_phrase()
+        self.render_bpm()
 
     def render_lyrics(self):
         dest = self.la.image.get_rect()
@@ -112,12 +113,19 @@ class Game(nygame.Game):
 
     def render_volume(self):
         text = T(f"VOL {'|' * int(music.volume)}", font="Lato Medium", size=24, color="green")
-        text.render_to(self.surface, (5, 95))
+        text.render_to(self.surface, (5, 120))
 
     def render_phrase(self):
         phrase_count = len(self.song.lyrics)
         text = T(f"Phrase: {self.la.phrase_number}/{phrase_count}", font="Lato Medium", size=24, color="green")
         text.render_to(self.surface, (5, 70))
+
+    def render_bpm(self):
+        bpm = self.song.tempo_calc.tempo_by_secs[music.elapsed]
+        ts = self.song.timesig_by_ticks[self.song.tempo_calc.secs_to_ticks(music.elapsed)]
+        # TODO: This is TPS, not BPM
+        text = T(f"{bpm.ticks_per_sec:.3f}BPM | {ts.numerator}/{ts.denominator}", font="Lato Medium", size=24, color="green")
+        text.render_to(self.surface, (5, 95))
 
     @property
     def volume(self):
