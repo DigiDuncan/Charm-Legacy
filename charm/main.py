@@ -27,7 +27,7 @@ def draw_pause():
 
 class Game(nygame.Game):
     def __init__(self):
-        super().__init__(size = (1060, 600), fps = 120, showfps = True)
+        super().__init__(size = (1280, 720), fps = 120, showfps = True)
         instruments.init(self)
         self.guitar = instruments.Guitar.connect(0)
         self.paused = False
@@ -38,7 +38,7 @@ class Game(nygame.Game):
         chart = self.song.charts[('Expert', 'Single')]
         self.la = LyricAnimator(chart)   # TODO: Update to take Song object
         hyperloop_init()
-        self.nd = HyperloopDisplay(chart, size=(400, 500))
+        self.nd = HyperloopDisplay(chart, size=(400, 620))
         input_init()
         self.id = InputDisplay(self.guitar, size=(400, 100))
         music.load(songpath.parent / self.song.musicstream)
