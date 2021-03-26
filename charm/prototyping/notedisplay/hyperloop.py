@@ -1,4 +1,5 @@
 import importlib.resources as pkg_resources
+import math
 from itertools import count, takewhile
 from pathlib import Path
 from typing import Union
@@ -102,6 +103,7 @@ class HyperloopDisplay:
         self.strike_fadetime = 0.5
         self.visible_chords = []
         self._image = Surface(size, SRCALPHA)
+        self.bg_tile_height = 0
         self.bg_image = None
         self.last_drawn = None
         self.tilt = False
@@ -154,11 +156,24 @@ class HyperloopDisplay:
     def create_bg(self):
         if self.bg is None:
             return
-        self.bg_image = image.load(self.bg)
-        self.bg_image.convert_alpha()
-        width = self.size[0]
-        height = int(width * (self.bg_image.get_rect().height / self.bg_image.get_rect().width))
-        self.bg_image = pygame.transform.smoothscale(self.bg_image, (width, height))
+        bg_tile = image.load(self.bg)
+        bg_tile.convert_alpha()
+        w, h = self.size
+        # Scale height to fit hyperloop width but maintain aspect ratio.
+        aspect = bg_tile.get_rect().height / bg_tile.get_rect().width
+        tile_height = int(w * aspect)
+        bg_tile = pygame.transform.smoothscale(bg_tile, (w, tile_height))
+
+        tile_count = (math.ceil(h / tile_height) + 1)
+        full_height = tile_height * tile_count
+
+        rect = bg_tile.get_rect()
+        self.bg_tile_height = tile_height
+        self.bg_image = Surface((w, full_height))
+
+        for i in range(tile_count):
+            rect.y = i * tile_height
+            self.bg_image.blit(bg_tile, rect)
 
     def update(self, tracktime):
         self.track_ticks = self.secs_to_ticks(tracktime)
@@ -244,13 +259,11 @@ class HyperloopDisplay:
         self._image.blit(sprite, (x, y))
 
     def draw_bg(self):
-        starting_position = self.size[1] - self.bg_image.get_rect().height
-        offset = (self.tracktime * self.px_per_sec) % self.size[1]
-        position = starting_position + offset
-        self._image.blit(self.bg_image, (0, position))
-        while position > 0 - self.bg_image.get_rect().height:  # TODO: Stitching doesn't seem to be smooth
-            position -= self.bg_image.get_rect().height
-            self._image.blit(self.bg_image, (0, position))
+        bg_rect = self.bg_image.get_rect()
+        offset = ((self.tracktime * self.px_per_sec) % self.bg_tile_height) - self.bg_tile_height
+        bg_rect.y = offset
+
+        self._image.blit(self.bg_image, bg_rect)
 
     def gety(self, secs):
         secs_until = secs - self.tracktime
