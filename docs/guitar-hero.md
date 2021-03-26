@@ -45,6 +45,19 @@ Notes are ordered, from low to high, "open" (or no fret), green, red, yellow, bl
 ## Solos
 Solo phrases show the currently hit percentage of the total solo on screen. If by the end of the phrase, the player has a certain percentage, they get a certain score bonus.
 
+## Scoring
+
+### Default Scoring
+Without any modifiers or external forces at play, single notes give 50 points, and held sustains give 25 points per beat.
+
+Hitting a combo of 10 sets your multiplier to 2x, 20 sets it to 3x, and 30 sets it to 4x.
+
+Activating Star Power doubles your multiplier.
+
+Whammying (in Clone Hero, at least) gives no extra score.
+
+[Solo phrases](#solos) also give extra points.
+
 ## Footnotes
 <b id="f1">1</b>: There appears to be some wiggle room here (a few milliseconds?) where the player can strum the strumbar and *then* hold the correct note. This is not the intended way to play, however, and this document will continue describing the intended playstyle as if these engine idiosyncrasies did not exist. [↩](#a1)
 
