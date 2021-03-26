@@ -8,7 +8,8 @@ This document attempts to describe the gameplay of the *Guitar Hero*-style gamem
   * **Open notes** are purple bars on the highway, which indicate no fret should be held.
 * The **strikeline** is the area on screen where a note will be when it's the optimal time to hit that note.
 * "**Hitting a note/chord**" refers to successfully activating it within its timing window.
-* * **Chord shapes** are the sequence of frets a player must hold to correctly hit a chord or note.
+* **Chord shapes** are the sequence of frets a player must hold to correctly hit a chord or note.
+* **Combo** is maintaining a streak of notes successfully hit, without overstrums or missed notes.
 
 ## Different Kinds of Notes
 *Guitar Hero* has three main types of notes.
@@ -28,9 +29,21 @@ Open notes act differently than almost anything else in the game. An open note i
 ## Chords
 Often, you are meant to press multiple notes at once. These are represented by multiple notes appearing on screen in a line. To successfully hit a chord, *all* frets in the chord must be pressed before the strum.<sup id="a1">[1](#f1)</sup> (Or, in the case of tap/hopo chords, before the activation.)
 
+## Star Power Phrases
+If a chain of notes exists within a Star Power Phrase, hitting every note in that phrase (and not breaking combo) gives a player a quarter bar of Star Power. Players can activate Star Power when they have at least half a bar of Star Power. Whammying sustains during SP phrases (if they haven't been broken) also gives small amounts of Star Power.
+
+## Extended Sustains
+Extended sustains are notes whose sustains extended over other notes on the chart. Regardless of the notes' priority on the low -> high scale, holding in these sustains to their completion is valid.
+
+## Disjointed Chords
+Disjointed Chords are chords whose beginnings are offset from each other. In theory, this is a consequence of design; you can hold notes that are lower than the current note while playing the new one, and you can hold notes before they are meant to be played.
+
 ## Anchoring
 For single-note chords, it is a valid chord shape to hold any "lower" fret or combination of lower frets as well as the note that you're supposed to be holding.
 Notes are ordered, from low to high, "open" (or no fret), green, red, yellow, blue, orange.
+
+## Solos
+Solo phrases show the currently hit percentage of the total solo on screen. If by the end of the phrase, the player has a certain percentage, they get a certain score bonus.
 
 ## Footnotes
 <b id="f1">1</b>: There appears to be some wiggle room here (a few milliseconds?) where the player can strum the strumbar and *then* hold the correct note. This is not the intended way to play, however, and this document will continue describing the intended playstyle as if these engine idiosyncrasies did not exist. [↩](#a1)
