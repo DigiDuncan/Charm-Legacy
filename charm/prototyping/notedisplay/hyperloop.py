@@ -1,10 +1,10 @@
-from PIL import Image
-
 import importlib.resources as pkg_resources
 from itertools import count, takewhile
+from pathlib import Path
 from typing import Union
 
 import pygame
+from PIL import Image
 from pygame import Rect, Surface, image, transform
 from pygame.constants import SRCALPHA
 
@@ -89,20 +89,24 @@ def getone(items):
 
 
 class HyperloopDisplay:
-    def __init__(self, chart: Chart, *, size: tuple = (400, 400), lefty = False):
+    def __init__(self, chart: Chart, *, size: tuple = (400, 400), lefty = False, bg: str = None):
         self.chart = chart
         self.secs_to_ticks = self.chart.song.tempo_calc.secs_to_ticks
         self.ticks_to_secs = self.chart.song.tempo_calc.ticks_to_secs
         self.size = size
         self.lefty = lefty
+        self.bg = Path(bg)
         self.track_ticks = 0
         self.length = 0.75
-        self.px_per_sec = size[1] / self.length
+        self.px_per_sec = size[1] / self.length  # This will mess up with BPM scaling, eventually.
         self.strike_fadetime = 0.5
         self.visible_chords = []
         self._image = Surface(size, SRCALPHA)
+        self.bg_image = None
         self.last_drawn = None
         self.tilt = False
+
+        self.create_bg()
 
     @property
     def tracktime(self):
@@ -147,6 +151,15 @@ class HyperloopDisplay:
 
         return measures, beats, quarterbeats
 
+    def create_bg(self):
+        if self.bg is None:
+            return
+        self.bg_image = image.load(self.bg)
+        self.bg_image.convert_alpha()
+        width = self.size[0]
+        height = int(width * (self.bg_image.get_rect().height / self.bg_image.get_rect().width))
+        self.bg_image = pygame.transform.smoothscale(self.bg_image, (width, height))
+
     def update(self, tracktime):
         self.track_ticks = self.secs_to_ticks(tracktime)
         self.visible_chords = self.chart.chord_by_ticks[self.track_ticks:self.end]
@@ -156,6 +169,8 @@ class HyperloopDisplay:
     def draw(self):
         self._image.fill("clear")
 
+        if self.bg_image:
+            self.draw_bg()
         self.draw_beatlines()
         self.draw_strikes()
         self.draw_chords()
@@ -226,6 +241,15 @@ class HyperloopDisplay:
         y -= sprite.get_height() / 2
         sprite.set_alpha(255 * fade)
         self._image.blit(sprite, (x, y))
+
+    def draw_bg(self):
+        starting_position = self.size[1] - self.bg_image.get_rect().height
+        offset = (self.tracktime * self.px_per_sec) % self.size[1]
+        position = starting_position + offset
+        self._image.blit(self.bg_image, (0, position))
+        while position < 0 - self.bg_image.get_rect().height:
+            position -= self.bg_image.get_rect().height
+            self._image.blit(self.bg_image, (0, position))
 
     def gety(self, secs):
         secs_until = secs - self.tracktime
