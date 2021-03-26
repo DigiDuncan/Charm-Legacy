@@ -247,7 +247,7 @@ class HyperloopDisplay:
         offset = (self.tracktime * self.px_per_sec) % self.size[1]
         position = starting_position + offset
         self._image.blit(self.bg_image, (0, position))
-        while position < 0 - self.bg_image.get_rect().height:
+        while position > 0 - self.bg_image.get_rect().height:
             position -= self.bg_image.get_rect().height
             self._image.blit(self.bg_image, (0, position))
 
