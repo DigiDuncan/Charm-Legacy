@@ -194,6 +194,7 @@ class HyperloopDisplay:
             surf = pygame.image.fromstring(raw_str, pill.size, strFormat)
             return surf
         pill = surfaceToPillow(self._image)
+        # TODO: This doesn't work anymore because I changed the resolution of the screen...
         # *･゜ﾟ･*:.｡. .｡.:*･゜ﾟ･* MAGIC NUMBERS *･゜ﾟ･*:.｡. .｡.:*･゜ﾟ･*
         data = [3.000000000000009, 0.6999999999999772, -399.99999999999875, 4.86855971119568e-16, 2.7600000000000042, -5.534368761468802e-13, 3.0653091558265384e-18, 0.003500000000000005]
         pill = pill.transform(pill.size, Image.PERSPECTIVE, data=data)
@@ -247,7 +248,7 @@ class HyperloopDisplay:
         offset = (self.tracktime * self.px_per_sec) % self.size[1]
         position = starting_position + offset
         self._image.blit(self.bg_image, (0, position))
-        while position > 0 - self.bg_image.get_rect().height:
+        while position > 0 - self.bg_image.get_rect().height:  # TODO: Stitching doesn't seem to be smooth
             position -= self.bg_image.get_rect().height
             self._image.blit(self.bg_image, (0, position))
 
