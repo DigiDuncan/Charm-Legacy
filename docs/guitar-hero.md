@@ -84,6 +84,6 @@ Whammying (in Clone Hero, at least) gives no extra score.
 [Solo phrases](#solos) also give extra points.
 
 ## Footnotes
-<b id="f1">1</b>: There appears to be some wiggle room here (a few milliseconds?) where the player can strum the strumbar and *then* hold the correct note. This is not the intended way to play, however, and this document will continue describing the intended playstyle as if these engine idiosyncrasies did not exist. [↩](#a1)
+<b id="f1">1</b>: There appears to be some wiggle room here (a few milliseconds?) where the player can strum the strumbar and *then* hold the correct note. This is not the intended way to play, however, and this document will continue describing the intended playstyle as if these engine idiosyncrasies did not exist. I would like to note though that this implentation detail may be required for the engine to "feel good".[↩](#a1)
 
 <b id="f1">2</b>: This makes a string of tap/HOPO open notes (often confusingly referred to as "pull-offs" regardless of if they are HOPOs or tap notes) essentially self-activating. [↩](#a2)
