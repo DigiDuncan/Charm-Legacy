@@ -94,6 +94,7 @@ Measure bars display on screen according to the Time Signature
 ```
 [PART VOCALS]
     {TICKS} = N 105 {L}     # Lyric Phrase
+    {TICKS} = N 106 {L}     # Lyric Phrase (also)
     {TICKS} = N {P} {L}     # Lyric Word Prefix
                  ^          # Pitch (36-84)
     {TICKS} = E "{WORD}"    # Lyric Word
