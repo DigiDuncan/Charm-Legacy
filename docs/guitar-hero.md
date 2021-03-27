@@ -8,6 +8,7 @@ This document attempts to describe the gameplay of the *Guitar Hero*-style gamem
   * **Open notes** are purple bars on the highway, which indicate no fret should be held.
 * The **strikeline** is the area on screen where a note will be when it's the optimal time to hit that note.
 * "**Hitting a note/chord**" refers to successfully activating it within its timing window.
+* **Overstrumming** is strumming the guitar when no note should be being hit right now.
 * **Chord shapes** are the sequence of frets a player must hold to correctly hit a chord or note.
 * **Combo** is maintaining a streak of notes successfully hit, without overstrums or missed notes.
 
@@ -49,7 +50,7 @@ Often, you are meant to press multiple notes at once. These are represented by m
 ## Star Power Phrases
 ![Star power phrase notes.](images/sp_phrase.png)
 
-If a chain of notes exists within a Star Power Phrase, hitting every note in that phrase (and not breaking combo) gives a player a quarter bar of Star Power. Players can activate Star Power when they have at least half a bar of Star Power. Whammying sustains during SP phrases (if they haven't been broken) also gives small amounts of Star Power.
+A Star Power phrase is an event of a certain length on a chart at a specific time. If a chain of notes exists within a Star Power Phrase, hitting every note in that phrase (and not breaking combo) gives a player a quarter bar of Star Power. Players can activate Star Power when they have at least half a bar of Star Power. Whammying sustains during SP phrases (if they haven't been broken) also gives small amounts of Star Power.
 
 ## Extended Sustains
 ![An extended sustain.](images/extended_sustain.png)
@@ -64,22 +65,39 @@ Disjointed Chords are chords whose beginnings are offset from each other. In the
 ## Anchoring
 ![An exmaple of anchoring.](images/anchor.png)
 
+### Guitar Hero
 For single-note chords, it is a valid chord shape to hold any "lower" fret or combination of lower frets as well as the note that you're supposed to be holding.
 Notes are ordered, from low to high, "open" (or no fret), green, red, yellow, blue, orange.
+
+### Clone Hero
+In *Clone Hero*, you are able to anchor chords that are either HOPOs (so long as you've hit the chord previous successfully) or taps. Normal chords can never be anchored.
+
+| Chord on Highway | Chord Type | Chord Held | GH? | CH? |
+|------------------|------------|------------|-----|-----|
+| GRY\_\_          | Normal     | GRY\_\_    | ✅   | ✅   |
+| \_RYB\_          | Normal     | GRYB\_     | ❌   | ❌   |
+| \_RYB\_          | Tap        | GRYB\_     | ❌   | ✅   |
+| \_R\_B\_         | Tap        | GR\_B\_    | ❌   | ✅   |
+| \_R\_B\_         | Tap        | GRYB\_     | ❌   | ❌   |
+|                  |            |            |     |     |
 
 ## Solos
 Solo phrases show the currently hit percentage of the total solo on screen. If by the end of the phrase, the player has a certain percentage, they get a certain score bonus.
 
+## Countdown
+A countdown appears on screen during long periods (over 5 seconds<sup id="a3">[3](#f3)</sup>) of no upcoming notes.
+
 ## Scoring
 
-### Default Scoring
 Without any modifiers or external forces at play, single notes give 50 points, and held sustains give 25 points per beat.
 
 Hitting a combo of 10 sets your multiplier to 2x, 20 sets it to 3x, and 30 sets it to 4x.
 
+Overstrumming before the first note or after the last note does not break combo.
+
 Activating Star Power doubles your multiplier.
 
-Whammying (in Clone Hero, at least) gives no extra score.
+Whammying (in Clone Hero, at least) gives no extra score.<sup id="a3">[3](#f3)</sup>
 
 [Solo phrases](#solos) also give extra points.
 
@@ -87,3 +105,5 @@ Whammying (in Clone Hero, at least) gives no extra score.
 <b id="f1">1</b>: There appears to be some wiggle room here (a few milliseconds?) where the player can strum the strumbar and *then* hold the correct note. This is not the intended way to play, however, and this document will continue describing the intended playstyle as if these engine idiosyncrasies did not exist. I would like to note though that this implentation detail may be required for the engine to "feel good".[↩](#a1)
 
 <b id="f1">2</b>: This makes a string of tap/HOPO open notes (often confusingly referred to as "pull-offs" regardless of if they are HOPOs or tap notes) essentially self-activating. [↩](#a2)
+
+<b id="f3">3</b>: This may be changed for Charm, or in applicable situations, a toggleable feature (since I want score parity with Clone Hero for those who want to participate in score challenges.)[↩](#a3)
