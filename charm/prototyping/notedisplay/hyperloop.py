@@ -1,3 +1,4 @@
+from charm.lib.instruments.instrument import Instrument
 import importlib.resources as pkg_resources
 import math
 from itertools import count, takewhile
@@ -10,7 +11,9 @@ from pygame import Rect, Surface, image, transform
 from pygame.constants import SRCALPHA
 
 import charm.data.images.spritesheets as image_folder
+from charm.lib.instruments.guitar import Guitar
 from charm.loaders.chchart import Chart
+from charm.prototyping.notedisplay.inputdisplay import InputDisplay, init as input_init
 
 HIT_WINDOW = 0.140  # 140ms
 
@@ -90,8 +93,9 @@ def getone(items):
 
 
 class HyperloopDisplay:
-    def __init__(self, chart: Chart, *, size: tuple = (400, 400), lefty = False, bg: str = None):
+    def __init__(self, chart: Chart, instrument: Instrument, *, size: tuple = (400, 400), lefty = False, bg: str = None):
         self.chart = chart
+        self.instrument = instrument
         self.secs_to_ticks = self.chart.song.tempo_calc.secs_to_ticks
         self.ticks_to_secs = self.chart.song.tempo_calc.ticks_to_secs
         self.size = size
@@ -109,6 +113,8 @@ class HyperloopDisplay:
         self.tilt = False
 
         self.create_bg()
+        input_init()
+        self.id = InputDisplay(self.instrument, size=(400, 100))
 
     @property
     def tracktime(self):
@@ -180,6 +186,7 @@ class HyperloopDisplay:
         self.visible_chords = self.chart.chord_by_ticks[self.track_ticks:self.end]
         last_fade = self.secs_to_ticks(self.tracktime - self.strike_fadetime)
         self.old_chords = self.chart.chord_by_ticks[last_fade:self.track_ticks]
+        self.id.update()
 
     def draw(self):
         self._image.fill("clear")
@@ -187,6 +194,7 @@ class HyperloopDisplay:
         if self.bg_image:
             self.draw_bg()
         self.draw_beatlines()
+        self.draw_input()
         self.draw_strikes()
         self.draw_chords()
         self.draw_zero()
@@ -247,6 +255,12 @@ class HyperloopDisplay:
     def draw_zero(self):
         y = self.gety(self.tracktime)
         pygame.draw.line(self._image, (128, 0, 0), (0, y), (self.size[0], y), width = 3)
+
+    def draw_input(self):
+        dest = self.id.image.get_rect()
+        dest.centerx = self._image.get_rect().centerx
+        dest.bottom = self._image.get_rect().bottom
+        self._image.blit(self.id.image, dest)
 
     def draw_fret(self, fret, flag, secs, fade=1):
         x = self.get_fretx(fret)

@@ -79,7 +79,7 @@ def init():
 
 class InputDisplay:
     def __init__(self, guitar: Guitar, *, size: tuple = (400, 100)):
-        self.guitar = guitar
+        self.guitar = guitar  # VERY game unagnostic
         self.size = size
         self.opacity = 128
         self.pressed = None

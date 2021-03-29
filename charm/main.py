@@ -14,7 +14,6 @@ from charm.lib.utils import clamp, nice_time
 from charm.loaders import chchart
 from charm.prototyping import loader_test
 from charm.prototyping.notedisplay.hyperloop import HyperloopDisplay, init as hyperloop_init
-from charm.prototyping.notedisplay.inputdisplay import InputDisplay, init as input_init
 from charm.prototyping.lyricanimator.lyricanimator import LyricAnimator
 
 
@@ -38,16 +37,13 @@ class Game(nygame.Game):
         chart = self.song.charts[('Expert', 'Single')]
         self.la = LyricAnimator(chart)   # TODO: Update to take Song object
         hyperloop_init()
-        self.nd = HyperloopDisplay(chart, size=(400, 620), bg = "./charm/data/images/highway.png")
-        input_init()
-        self.id = InputDisplay(self.guitar, size=(400, 100))
+        self.nd = HyperloopDisplay(chart, self.guitar, size=(400, 620), bg = "./charm/data/images/highway.png")
         music.load(songpath.parent / self.song.musicstream)
         self.pause_image = draw_pause()
 
     def loop(self, events):
         self.la.update(music.elapsed)
         self.nd.update(music.elapsed)
-        self.id.update()
         # print(self.guitar.debug)
 
         for event in events:
@@ -73,7 +69,6 @@ class Game(nygame.Game):
         # self.surface.blit(note.image, (0, 0))
 
         self.render_lyrics()
-        self.render_input()
         self.render_notes()
         self.render_clock()
         self.render_pause()
@@ -92,12 +87,6 @@ class Game(nygame.Game):
         dest.centerx = self.surface.get_rect().centerx
         dest.bottom = self.surface.get_rect().bottom
         self.surface.blit(self.nd.image, dest)
-
-    def render_input(self):
-        dest = self.id.image.get_rect()
-        dest.centerx = self.surface.get_rect().centerx
-        dest.bottom = self.surface.get_rect().bottom
-        self.surface.blit(self.id.image, dest)
 
     def render_pause(self):
         if music.paused:
