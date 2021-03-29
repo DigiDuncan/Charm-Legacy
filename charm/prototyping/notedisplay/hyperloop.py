@@ -11,7 +11,6 @@ from pygame import Rect, Surface, image, transform
 from pygame.constants import SRCALPHA
 
 import charm.data.images.spritesheets as image_folder
-from charm.lib.instruments.guitar import Guitar
 from charm.loaders.chchart import Chart
 from charm.prototyping.notedisplay.inputdisplay import InputDisplay, init as input_init
 

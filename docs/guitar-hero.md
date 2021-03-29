@@ -23,7 +23,7 @@ This document attempts to describe the gameplay of the *Guitar Hero*-style gamem
 ### Tap Notes
 ![Tap notes.](images/tap_notes.png)
 
-"Tap" notes do not *require* the user to strum to activate them, though this is a valid method of hitting the note. If there are two or more of the same tap note in a row, the subsequent notes after the first ust either be strummed, or the fret button must be released and re-pressed.<sup id="a2">[1](#f2)</sup>
+"Tap" notes do not *require* the user to strum to activate them, though this is a valid method of hitting the note. If there are two or more of the same tap note in a row, the subsequent notes after the first ust either be strummed, or the fret button must be released and re-pressed.<sup id="a2">[2](#f2)</sup>
 
 ### HOPO Notes
 ![HOPO notes.](images/hopo_notes.png)
@@ -104,6 +104,6 @@ Whammying (in Clone Hero, at least) gives no extra score.<sup id="a3">[3](#f3)</
 ## Footnotes
 <b id="f1">1</b>: There appears to be some wiggle room here (a few milliseconds?) where the player can strum the strumbar and *then* hold the correct note. This is not the intended way to play, however, and this document will continue describing the intended playstyle as if these engine idiosyncrasies did not exist. I would like to note though that this implentation detail may be required for the engine to "feel good".[↩](#a1)
 
-<b id="f1">2</b>: This makes a string of tap/HOPO open notes (often confusingly referred to as "pull-offs" regardless of if they are HOPOs or tap notes) essentially self-activating. [↩](#a2)
+<b id="f2">2</b>: This makes a string of tap/HOPO open notes (often confusingly referred to as "pull-offs" regardless of if they are HOPOs or tap notes) essentially self-activating. [↩](#a2)
 
 <b id="f3">3</b>: This may be changed for Charm, or in applicable situations, a toggleable feature (since I want score parity with Clone Hero for those who want to participate in score challenges.)[↩](#a3)
