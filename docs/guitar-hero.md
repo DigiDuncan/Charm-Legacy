@@ -72,14 +72,14 @@ Notes are ordered, from low to high, "open" (or no fret), green, red, yellow, bl
 ### Clone Hero
 In *Clone Hero*, you are able to anchor chords that are either HOPOs (so long as you've hit the chord previous successfully) or taps. Normal chords can never be anchored.
 
-| Chord on Highway | Chord Type | Chord Held | GH? | CH? |
-|------------------|------------|------------|-----|-----|
+| Chord on Highway | Chord Type | Chord Held | GH?  | CH?  |
+|------------------|------------|------------|------|------|
 | GRY\_\_          | Normal     | GRY\_\_    | ✅   | ✅   |
 | \_RYB\_          | Normal     | GRYB\_     | ❌   | ❌   |
 | \_RYB\_          | Tap        | GRYB\_     | ❌   | ✅   |
 | \_R\_B\_         | Tap        | GR\_B\_    | ❌   | ✅   |
 | \_R\_B\_         | Tap        | GRYB\_     | ❌   | ❌   |
-|                  |            |            |     |     |
+|                  |            |            |      |      |
 
 ## Solos
 Solo phrases show the currently hit percentage of the total solo on screen. If by the end of the phrase, the player has a certain percentage, they get a certain score bonus.
