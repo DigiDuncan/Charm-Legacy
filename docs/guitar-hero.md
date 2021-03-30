@@ -87,6 +87,8 @@ Solo phrases show the currently hit percentage of the total solo on screen. If b
 ## Countdown
 A countdown appears on screen during long periods (over 5 seconds<sup id="a3">[3](#f3)</sup>) of no upcoming notes.
 
+You may tap and strum randomly during a Countdown without breaking combo.<sup id="a4">[4](#f4)</sup>
+
 ## Scoring
 
 Without any modifiers or external forces at play, single notes give 50 points, and held sustains give 25 points per beat.
@@ -107,3 +109,5 @@ Whammying (in Clone Hero, at least) gives no extra score.<sup id="a3">[3](#f3)</
 <b id="f2">2</b>: This makes a string of tap/HOPO open notes (often confusingly referred to as "pull-offs" regardless of if they are HOPOs or tap notes) essentially self-activating. [↩](#a2)
 
 <b id="f3">3</b>: This may be changed for Charm, or in applicable situations, a toggleable feature (since I want score parity with Clone Hero for those who want to participate in score challenges.)[↩](#a3)
+
+<b id="f4">4</b>: Only in Charm.[↩](#a4)
