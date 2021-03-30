@@ -69,7 +69,7 @@ Chord Length    # Length of longest note in chord
 ```
 
 ## Time Signatures
-Measure bars display on screen according to the Time Signature
+Measure bars display on screen according to the Time Signature.
 
 # Events Block
 ```
