@@ -31,9 +31,13 @@ fretmap = {
     "yellow": 2,
     "blue": 3,
     "orange": 4,
-    "sp": 5,
-    "open": (6, 5),
-    "opensp": (11, 5)
+    "green_sp": 5,
+    "red_sp": 6,
+    "yellow_sp": 7,
+    "blue_sp": 8,
+    "oramge_sp": 9,
+    "open": (10, 5),
+    "opensp": (15, 5)
 }
 
 flagmap = {
@@ -69,7 +73,7 @@ def init():
         gh_sheet.convert_alpha()
 
     if gh_sheet.get_size[1] == 1280:
-        gh_sheet = pygame.transform.scale(gh_sheet, (1024, 640))  # TODO: This is hacky and needs to be flexible.
+        gh_sheet = pygame.transform.scale(gh_sheet, (1280, 640))  # TODO: This is hacky and needs to be flexible.
 
     for flag, sy in flagmap.items():
         fret_images[flag] = {}
