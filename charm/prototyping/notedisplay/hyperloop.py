@@ -68,6 +68,9 @@ def init():
         gh_sheet = image.load(p)
         gh_sheet.convert_alpha()
 
+    if gh_sheet.get_size[1] == 1280:
+        gh_sheet = pygame.transform.scale(gh_sheet, (1024, 640))  # TODO: This is hacky and needs to be flexible.
+
     for flag, sy in flagmap.items():
         fret_images[flag] = {}
         for fret, sxw in fretmap.items():
