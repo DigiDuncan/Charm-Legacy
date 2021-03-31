@@ -228,7 +228,7 @@ class HyperloopDisplay:
         pill = surfaceToPillow(self._image)
         # TODO: This doesn't work anymore because I changed the resolution of the screen...
         # *･゜ﾟ･*:.｡. .｡.:*･゜ﾟ･* MAGIC NUMBERS *･゜ﾟ･*:.｡. .｡.:*･゜ﾟ･*
-        data = [3.000000000000009, 0.6999999999999772, -399.99999999999875, 4.86855971119568e-16, 2.7600000000000042, -5.534368761468802e-13, 3.0653091558265384e-18, 0.003500000000000005]
+        data = [3, 0.7, -400, 0, 2.76, 0, 0, 0.0035]
         pill = pill.transform(pill.size, Image.PERSPECTIVE, data=data)
         self._image = pillowToSurface(pill)
 
