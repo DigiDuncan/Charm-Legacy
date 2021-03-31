@@ -113,7 +113,8 @@ class Game(nygame.Game):
         bpm = self.song.tempo_calc.tempo_by_secs[music.elapsed]
         ts = self.song.timesig_by_ticks[self.song.tempo_calc.secs_to_ticks(music.elapsed)]
         # TODO: This is TPS, not BPM
-        text = T(f"{bpm.ticks_per_sec:.3f}BPM | {ts.numerator}/{ts.denominator}", font="Lato Medium", size=24, color="green")
+        # text = T(f"{bpm.ticks_per_sec:.3f}BPM | {ts.numerator}/{ts.denominator}", font="Lato Medium", size=24, color="green")
+        text = T(f"???BPM | {ts.numerator}/{ts.denominator}", font="Lato Medium", size=24, color="green")
         text.render_to(self.surface, (5, 95))
 
     @property
