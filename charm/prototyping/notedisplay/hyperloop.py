@@ -25,17 +25,19 @@ fretnums = {
     "open": 7
 }
 
+fretnums_rev = {v: k for k, v in fretnums.items()}
+
 fretmap = {
     "green": 0,
     "red": 1,
     "yellow": 2,
     "blue": 3,
     "orange": 4,
-    "green_sp": 5,
-    "red_sp": 6,
-    "yellow_sp": 7,
-    "blue_sp": 8,
-    "oramge_sp": 9,
+    "greensp": 5,
+    "redsp": 6,
+    "yellowsp": 7,
+    "bluesp": 8,
+    "orangesp": 9,
     "open": (10, 5),
     "opensp": (15, 5)
 }
@@ -72,7 +74,7 @@ def init():
         gh_sheet = image.load(p)
         gh_sheet.convert_alpha()
 
-    if gh_sheet.get_size[1] == 1280:
+    if gh_sheet.get_size()[1] == 1280:
         gh_sheet = pygame.transform.scale(gh_sheet, (1280, 640))  # TODO: This is hacky and needs to be flexible.
 
     for flag, sy in flagmap.items():
@@ -117,6 +119,7 @@ class HyperloopDisplay:
         self.bg_image = None
         self.last_drawn = None
         self.tilt = False
+        self.sp = False
 
         self.create_bg()
         input_init()
@@ -271,6 +274,8 @@ class HyperloopDisplay:
     def draw_fret(self, fret, flag, secs, fade=1):
         x = self.get_fretx(fret)
         y = self.gety(secs)
+        if self.sp:
+            fret = fretnums_rev[fret] + "sp"
         sprite = get_sprite(flag, fret)
         # Center fret sprites
         x -= sprite.get_width() / 2
