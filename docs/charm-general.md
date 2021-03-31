@@ -10,15 +10,15 @@ As you play, very note you hit falls within a certain *hit window*. Depending on
 
 The following table assumes a ±70ms hit window, the default for *Guitar Hero* gamemode. However, the percentage of the window each judgement fills is the same for each gamemode (by default, they can be modified by the user and loaded into presets.)
 
-| Name                       | Sprite | ±ms (min) | ±ms (max) | ±%              | Percent Range | Points |
-|----------------------------|--------|-----------|-----------|-----------------|---------------|--------|
+| Name                       | Sprite                                                                                       | ±ms (min) | ±ms (max) | ±%              | Percent Range | Points |
+|----------------------------|----------------------------------------------------------------------------------------------|-----------|-----------|-----------------|---------------|--------|
 | Charming! (Super Charming) |<img src="../charm/data/images/judgements/supercharming.png" alt="Super Charming" width="64"/>| 0         | 10        | 0% / 14.29%     | 14.29%        | 1000   |
-| Charming                   |<img src="../charm/data/images/judgements/charming.png" alt="Charming" width="64"/>| 10        | 25        | 14.29% / 35.71% | 21.43%        | 1000   |
-| Excellent                  |<img src="../charm/data/images/judgements/excellent.png" alt="Excellent" width="64"/>| 25        | 35        | 35.71% / 50%    | 14.29%        | 800    |
-| Great                      |<img src="../charm/data/images/judgements/great.png" alt="Great" width="64"/>| 35        | 45        | 50% / 64.29%    | 14.29%        | 600    |
-| Good                       |<img src="../charm/data/images/judgements/good.png" alt="Good" width="64"/>| 45        | 60        | 64.29% / 85.71% | 21.43%        | 400    |
-| OK                         |<img src="../charm/data/images/judgements/ok.png" alt="OK" width="64"/>| 60        | 70        | 85.71% / 100%   | 14.29%        | 200    |
-| Miss                       |<img src="../charm/data/images/judgements/miss.png" alt="Miss" width="64"/>| 70        | Inf       | N/A             | N/A           | 0      |
+| Charming                   |<img src="../charm/data/images/judgements/charming.png" alt="Charming" width="64"/>           | 10        | 25        | 14.29% / 35.71% | 21.43%        | 1000   |
+| Excellent                  |<img src="../charm/data/images/judgements/excellent.png" alt="Excellent" width="64"/>         | 25        | 35        | 35.71% / 50%    | 14.29%        | 800    |
+| Great                      |<img src="../charm/data/images/judgements/great.png" alt="Great" width="64"/>                 | 35        | 45        | 50% / 64.29%    | 14.29%        | 600    |
+| Good                       |<img src="../charm/data/images/judgements/good.png" alt="Good" width="64"/>                   | 45        | 60        | 64.29% / 85.71% | 21.43%        | 400    |
+| OK                         |<img src="../charm/data/images/judgements/ok.png" alt="OK" width="64"/>                       | 60        | 70        | 85.71% / 100%   | 14.29%        | 200    |
+| Miss                       |<img src="../charm/data/images/judgements/miss.png" alt="Miss" width="64"/>                   | 70        | Inf       | N/A             | N/A           | 0      |
 
 Here's a visualization of the above window:
 
