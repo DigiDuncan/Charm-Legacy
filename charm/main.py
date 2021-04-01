@@ -29,8 +29,11 @@ class Game(nygame.Game):
     def __init__(self):
         super().__init__(size = (1280, 720), fps = 120, showfps = True)
         instruments.init(self)
-        self.guitar = instruments.Guitar.connect(0)
-        self.ir = InputRecorder(self.guitar)
+        self.guitar = None
+        self.ir = None
+        if instruments.get_count() > 0:
+            self.guitar = instruments.Guitar.connect(0)
+            self.ir = InputRecorder(self.guitar)
         self.paused = False
         self.volume = 6
         songpath = Path("./charm/data/charts/run_around_the_character_code/run_around_the_character_code.chart")
@@ -44,8 +47,9 @@ class Game(nygame.Game):
         self.pause_image = draw_pause()
 
     def loop(self, events):
-        if not self.paused:
-            self.ir.update(music.elapsed)
+        if self.ir:
+            if not self.paused:
+                self.ir.update(music.elapsed)
         self.la.update(music.elapsed)
         self.nd.update(music.elapsed)
         # print(self.guitar.debug)

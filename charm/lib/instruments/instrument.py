@@ -13,7 +13,7 @@ def init(game: nygame.Game):
 
 
 def get_count():
-    joystick.get_count()
+    return joystick.get_count()
 
 
 # TODO: Detect instrument type

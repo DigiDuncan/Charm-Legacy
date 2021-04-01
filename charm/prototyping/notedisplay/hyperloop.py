@@ -123,7 +123,9 @@ class HyperloopDisplay:
 
         self.create_bg()
         input_init()
-        self.id = InputDisplay(self.instrument, size=(400, 100))
+        self.id = None
+        if self.instrument:
+            self.id = InputDisplay(self.instrument, size=(400, 100))
 
     @property
     def tracktime(self):
@@ -195,7 +197,8 @@ class HyperloopDisplay:
         self.visible_chords = self.chart.chord_by_ticks[self.track_ticks:self.end]
         last_fade = self.secs_to_ticks(self.tracktime - self.strike_fadetime)
         self.old_chords = self.chart.chord_by_ticks[last_fade:self.track_ticks]
-        self.id.update()
+        if self.id:
+            self.id.update()
 
     def draw(self):
         self._image.fill("clear")
@@ -203,7 +206,8 @@ class HyperloopDisplay:
         if self.bg_image:
             self.draw_bg()
         self.draw_beatlines()
-        self.draw_input()
+        if self.id:
+            self.draw_input()
         self.draw_strikes()
         self.draw_chords()
         self.draw_zero()
