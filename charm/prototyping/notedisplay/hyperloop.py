@@ -19,17 +19,25 @@ from charm.prototyping.notedisplay.inputdisplay import InputDisplay, init as inp
 
 HIT_WINDOW = 0.140  # 140ms
 
+# Map sprite names to fret numbers
+# get_sprite(1) returns the sprite for a red fret
 fretnums = {
     "green": 0,
     "red": 1,
     "yellow": 2,
     "blue": 3,
     "orange": 4,
-    "open": 7
+    "open": 7,
+    "greensp": 10,
+    "redsp": 11,
+    "yellowsp": 12,
+    "bluesp": 13,
+    "orangesp": 14,
+    "opensp": 17
 }
 
-fretnums_rev = {v: k for k, v in fretnums.items()}
-
+# Map sprite names to sprite_sheet x coordinates and widths, width defaults to 1
+# get_sprite("red") returns the sprite for a red fret
 fretmap = {
     "green": 0,
     "red": 1,
@@ -45,6 +53,7 @@ fretmap = {
     "opensp": (15, 5)
 }
 
+# Map flag names to flag numbers
 flagmap = {
     "note": 0,
     "hopo": 1,
@@ -261,12 +270,12 @@ class HyperloopDisplay:
                 fret_strikes[fret] = max(fret_strikes[fret], fade)
 
         for fret, fade in enumerate(fret_strikes):
-            self.draw_fret(fret, "strike", self.tracktime, fade=fade)
+            self.draw_fret(fret, "strike", self.tracktime, fade=fade, sp=self.sp)
 
     def draw_chords(self):
         for chord in self.visible_chords[::-1]:
             for fret in chord.frets:
-                self.draw_fret(fret, chord.flag, chord.start)
+                self.draw_fret(fret, chord.flag, chord.start, sp=self.sp)
 
     def draw_zero(self):
         y = self.gety(self.tracktime)
@@ -278,12 +287,13 @@ class HyperloopDisplay:
         dest.bottom = self._image.get_rect().bottom
         self._image.blit(self.id.image, dest)
 
-    def draw_fret(self, fret: int, flag: str, secs: float, fade: float = 1):
+    def draw_fret(self, fret: int, flag: str, secs: float, fade: float = 1, sp: bool = True):
         x = self.get_fretx(fret)
         y = self.gety(secs)
-        if self.sp:
-            fret = fretnums_rev[fret] + "sp"
-        sprite = get_sprite(flag, fret)
+        fret_index = fret
+        if sp:
+            fret_index += 10
+        sprite = get_sprite(flag, fret_index)
         # Center fret sprites
         x -= sprite.get_width() / 2
         y -= sprite.get_height() / 2
