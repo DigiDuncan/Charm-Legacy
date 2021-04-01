@@ -44,7 +44,8 @@ class Game(nygame.Game):
         self.pause_image = draw_pause()
 
     def loop(self, events):
-        self.ir.update(music.elapsed)
+        if not self.paused:
+            self.ir.update(music.elapsed)
         self.la.update(music.elapsed)
         self.nd.update(music.elapsed)
         # print(self.guitar.debug)
