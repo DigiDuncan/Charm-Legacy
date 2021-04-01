@@ -13,6 +13,7 @@ from charm.lib.nargs import nargs
 from charm.lib.utils import clamp, nice_time
 from charm.loaders import chchart
 from charm.prototyping import loader_test
+from charm.prototyping.hitdetection.inputrecorder import InputRecorder
 from charm.prototyping.notedisplay.hyperloop import HyperloopDisplay, init as hyperloop_init
 from charm.prototyping.lyricanimator.lyricanimator import LyricAnimator
 
@@ -29,6 +30,7 @@ class Game(nygame.Game):
         super().__init__(size = (1280, 720), fps = 120, showfps = True)
         instruments.init(self)
         self.guitar = instruments.Guitar.connect(0)
+        self.ir = InputRecorder(self.guitar)
         self.paused = False
         self.volume = 6
         songpath = Path("./charm/data/charts/run_around_the_character_code/run_around_the_character_code.chart")
@@ -42,6 +44,7 @@ class Game(nygame.Game):
         self.pause_image = draw_pause()
 
     def loop(self, events):
+        self.ir.update(music.elapsed)
         self.la.update(music.elapsed)
         self.nd.update(music.elapsed)
         # print(self.guitar.debug)

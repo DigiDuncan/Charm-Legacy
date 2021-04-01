@@ -133,6 +133,23 @@ class Guitar(Instrument):
         return self._whammy
 
     @property
+    def state(self):
+        return {
+            "green": self.green,
+            "red": self.red,
+            "yellow": self.yellow,
+            "blue": self.blue,
+            "orange": self.orange,
+            "strumup": self.strumup,
+            "strumdown": self.strumdown,
+            "joy": self.joy,
+            "tilt": self.tilt,
+            "whammy": self.whammy,
+            "start": self.start,
+            "select": self.select
+        }
+
+    @property
     def debug(self):
         fretstr = ''.join(str(int(f)) for f in self._frets)
         btnstr = f"{int(self._select)}{int(self._start)}"

@@ -34,6 +34,10 @@ class Instrument:
 
         return cls.instruments[joyid]
 
+    @property
+    def state(self):
+        raise NotImplementedError
+
     def __init__(self, rawjoy):
         self._rawjoy = rawjoy
 
