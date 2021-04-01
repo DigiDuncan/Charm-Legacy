@@ -123,10 +123,6 @@ class InputDisplay:
         if self.pressed is None:
             return
 
-        for n, f in enumerate(self.guitar.shape):
-            if f:
-                self._image.blit(get_sprite("note", n), self.get_fret_pos(n))
-
         if self.guitar.strumup:
             strum_image = self.strum_image
             rect = strum_image.get_rect()
@@ -138,6 +134,10 @@ class InputDisplay:
             rect = strum_image.get_rect()
             rect.bottomright = self._image.get_rect().bottomright
             self._image.blit(strum_image, rect)
+
+        for n, f in enumerate(self.guitar.shape):
+            if f:
+                self._image.blit(get_sprite("note", n), self.get_fret_pos(n))
 
         self._image.set_alpha(self.opacity)
 

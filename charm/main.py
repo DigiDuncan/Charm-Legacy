@@ -5,7 +5,7 @@ import nygame
 import pygame
 from nygame import DigiText as T
 from nygame import music
-from pygame.constants import K_DOWN, K_HOME, K_KP7, K_LEFT, K_RIGHT, K_SPACE, K_UP, K_7, K_s, MOUSEWHEEL
+from pygame.constants import K_DOWN, K_HOME, K_KP7, K_LEFT, K_RIGHT, K_SPACE, K_UP, K_7, K_l, K_s, MOUSEWHEEL
 
 from charm.lib import instruments
 from charm.lib.args import InvalidArgException, tryint
@@ -68,6 +68,8 @@ class Game(nygame.Game):
                     self.nd.tilt = not self.nd.tilt
                 elif event.key == K_s:
                     self.nd.sp = not self.nd.sp
+                elif event.key == K_l:
+                    self.nd.lefty = not self.nd.lefty
             elif event.type == MOUSEWHEEL:
                 music.elapsed -= event.y / 20
 
