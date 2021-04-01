@@ -119,7 +119,7 @@ class HyperloopDisplay:
         self.visible_chords: List[Chord] = []
         self._image = Surface(size, SRCALPHA)
         self.bg_tile_height = 0
-        self.bg_image: Optional[Surface]] = None
+        self.bg_image: Optional[Surface] = None
         self.last_drawn = None
         self.tilt: bool = False
         self.sp: bool = False
