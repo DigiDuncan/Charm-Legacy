@@ -180,7 +180,7 @@ class Song:
         self.year: str = None
         self.charter: str = None
         self.offset: str = None
-        self.resolution: str = None
+        self.resolution: int = None
         self.difficulty: str = None
         self.previewstart: str = None
         self.previewend: str = None

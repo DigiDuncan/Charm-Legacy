@@ -3,15 +3,18 @@ import importlib.resources as pkg_resources
 import math
 from itertools import count, takewhile
 from pathlib import Path
-from typing import Union
+from typing import Callable, List, Optional, Tuple, Union
 
 import pygame
-from PIL import Image
+import pygame.transform
+import pygame.image
+import pygame.draw
+import PIL.Image
 from pygame import Rect, Surface, image, transform
 from pygame.constants import SRCALPHA
 
 import charm.data.images.spritesheets as image_folder
-from charm.loaders.chchart import Chart
+from charm.song import Chart, Chord
 from charm.prototyping.notedisplay.inputdisplay import InputDisplay, init as input_init
 
 HIT_WINDOW = 0.140  # 140ms
@@ -101,29 +104,29 @@ def getone(items):
 
 
 class HyperloopDisplay:
-    def __init__(self, chart: Chart, instrument: Instrument, *, size: tuple = (400, 400), lefty = False, bg: str = None):
+    def __init__(self, chart: Chart, instrument: Optional[Instrument], *, size: Tuple[int, int] = (400, 400), lefty: bool = False, bg: str = None):
         self.chart = chart
         self.instrument = instrument
-        self.secs_to_ticks = self.chart.song.tempo_calc.secs_to_ticks
-        self.ticks_to_secs = self.chart.song.tempo_calc.ticks_to_secs
+        self.secs_to_ticks: Callable[[float], int] = self.chart.song.tempo_calc.secs_to_ticks
+        self.ticks_to_secs: Callable[[int], float] = self.chart.song.tempo_calc.ticks_to_secs
         self.size = size
         self.lefty = lefty
-        self.bg = Path(bg)
-        self.track_ticks = 0
-        self.length = 0.75
+        self.bg: Path = Path(bg)
+        self.track_ticks: int = 0
+        self.length: float = 0.75
         self.px_per_sec = size[1] / self.length  # This will mess up with BPM scaling, eventually.
         self.strike_fadetime = 0.5
-        self.visible_chords = []
+        self.visible_chords: List[Chord] = []
         self._image = Surface(size, SRCALPHA)
         self.bg_tile_height = 0
-        self.bg_image = None
+        self.bg_image: Optional[Surface]] = None
         self.last_drawn = None
-        self.tilt = False
-        self.sp = False
+        self.tilt: bool = False
+        self.sp: bool = False
 
         self.create_bg()
         input_init()
-        self.id = None
+        self.id: Optional[InputDisplay] = None
         if self.instrument:
             self.id = InputDisplay(self.instrument, size=(400, 100))
 
@@ -192,11 +195,11 @@ class HyperloopDisplay:
             rect.y = i * tile_height
             self.bg_image.blit(bg_tile, rect)
 
-    def update(self, tracktime):
+    def update(self, tracktime: float):
         self.track_ticks = self.secs_to_ticks(tracktime)
         self.visible_chords = self.chart.chord_by_ticks[self.track_ticks:self.end]
         last_fade = self.secs_to_ticks(self.tracktime - self.strike_fadetime)
-        self.old_chords = self.chart.chord_by_ticks[last_fade:self.track_ticks]
+        self.old_chords: List[Chord] = self.chart.chord_by_ticks[last_fade:self.track_ticks]
         if self.id:
             self.id.update()
 
@@ -218,13 +221,13 @@ class HyperloopDisplay:
             self.project()
 
     def project(self):
-        def surfaceToPillow(surf):
+        def surfaceToPillow(surf: Surface) -> PIL.Image.Image:
             strFormat = 'RGBA'
             raw_str = pygame.image.tostring(surf, strFormat, False)
-            pill = Image.frombytes(strFormat, surf.get_size(), raw_str)
+            pill = PIL.Image.frombytes(strFormat, surf.get_size(), raw_str)
             return pill
 
-        def pillowToSurface(pill):
+        def pillowToSurface(pill: PIL.Image.Image) -> Surface:
             strFormat = 'RGBA'
             raw_str = pill.tobytes("raw", strFormat)
             surf = pygame.image.fromstring(raw_str, pill.size, strFormat)
@@ -233,7 +236,7 @@ class HyperloopDisplay:
         # TODO: This doesn't work anymore because I changed the resolution of the screen...
         # *･゜ﾟ･*:.｡. .｡.:*･゜ﾟ･* MAGIC NUMBERS *･゜ﾟ･*:.｡. .｡.:*･゜ﾟ･*
         data = [3, 0.7, -400, 0, 2.76, 0, 0, 0.0035]
-        pill = pill.transform(pill.size, Image.PERSPECTIVE, data=data)
+        pill = pill.transform(pill.size, PIL.Image.PERSPECTIVE, data=data)
         self._image = pillowToSurface(pill)
 
     def draw_beatlines(self):
@@ -275,7 +278,7 @@ class HyperloopDisplay:
         dest.bottom = self._image.get_rect().bottom
         self._image.blit(self.id.image, dest)
 
-    def draw_fret(self, fret, flag, secs, fade=1):
+    def draw_fret(self, fret: int, flag: str, secs: float, fade: float = 1):
         x = self.get_fretx(fret)
         y = self.gety(secs)
         if self.sp:
@@ -294,14 +297,14 @@ class HyperloopDisplay:
 
         self._image.blit(self.bg_image, bg_rect)
 
-    def gety(self, secs):
+    def gety(self, secs: float) -> float:
         secs_until = secs - self.tracktime
         perc_screen = secs_until / self.length
         pixels = perc_screen * self.size[1]
         y = self.size[1] - pixels
         return y - 32
 
-    def get_fretx(self, fret):
+    def get_fretx(self, fret: int):
         w = self.size[0]
         fret_count = 5
         fret_space = w / fret_count
