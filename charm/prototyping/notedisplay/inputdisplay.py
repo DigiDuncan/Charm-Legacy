@@ -1,4 +1,5 @@
 import importlib.resources as pkg_resources
+from typing import Union
 
 import pygame
 from pygame import Rect, Surface, image
@@ -6,6 +7,7 @@ from pygame.constants import SRCALPHA
 
 import charm.data.images.spritesheets as image_folder
 from charm.lib.instruments.guitar import Guitar
+from charm.lib.pgutils import gradientRect
 
 HIT_WINDOW = 0.140  # 140ms
 
@@ -18,15 +20,21 @@ fretnums = {
     "open": 7
 }
 
+fretnums_rev = {v: k for k, v in fretnums.items()}
+
 fretmap = {
     "green": 0,
     "red": 1,
     "yellow": 2,
     "blue": 3,
     "orange": 4,
-    "sp": 5,
-    "open": (6, 5),
-    "opensp": (11, 5)
+    "greensp": 5,
+    "redsp": 6,
+    "yellowsp": 7,
+    "bluesp": 8,
+    "orangesp": 9,
+    "open": (10, 5),
+    "opensp": (15, 5)
 }
 
 flagmap = {
@@ -41,11 +49,11 @@ gh_sheet: Surface = None
 fret_images = {}
 
 
-def get_sprite(flag, fret):
+def get_sprite(flag: str, fret: Union[str, int]) -> Surface:
     return fret_images[flag][fret]
 
 
-def set_sprite(flag, fretname, sprite):
+def set_sprite(flag: str, fretname: str, sprite: Surface):
     fret_images[flag][fretname] = sprite
     if fretname in fretnums:
         fretnum = fretnums[fretname]
@@ -60,6 +68,9 @@ def init():
     with pkg_resources.path(image_folder, "gh.png") as p:
         gh_sheet = image.load(p)
         gh_sheet.convert_alpha()
+
+    if gh_sheet.get_size()[1] == 1280:
+        gh_sheet = pygame.transform.scale(gh_sheet, (1280, 640))  # TODO: This is hacky and needs to be flexible.
 
     for flag, sy in flagmap.items():
         fret_images[flag] = {}
@@ -85,6 +96,7 @@ class InputDisplay:
         self.pressed = None
         self.last_drawn = None
         self._image = Surface(size, SRCALPHA)
+        self.strum_image = gradientRect((255, 255, 255, 127), (255, 255, 255, 0), Rect(0, 0, self.size[0] / 2, 64))
 
     def get_fret_pos(self, f):
         w, h = self.size
@@ -116,10 +128,16 @@ class InputDisplay:
                 self._image.blit(get_sprite("note", n), self.get_fret_pos(n))
 
         if self.guitar.strumup:
-            pygame.draw.line(self._image, (255, 0, 255), (0, self.size[1] - 64), (0, self.size[1]), width = 10)
+            strum_image = self.strum_image
+            rect = strum_image.get_rect()
+            rect.bottomleft = self._image.get_rect().bottomleft
+            self._image.blit(strum_image, rect)
 
         if self.guitar.strumdown:
-            pygame.draw.line(self._image, (255, 0, 255), (self.size[0], self.size[1] - 64), (self.size[0], self.size[1]), width = 10)
+            strum_image = pygame.transform.flip(self.strum_image, True, False)
+            rect = strum_image.get_rect()
+            rect.bottomright = self._image.get_rect().bottomright
+            self._image.blit(strum_image, rect)
 
         self._image.set_alpha(self.opacity)
 
