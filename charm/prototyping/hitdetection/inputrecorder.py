@@ -34,6 +34,7 @@ class InputRecorder:
             return
         else:
             # Process events.
+            # TODO: Agnosticism.
             events = []
             for eventtype in ("green", "red", "yellow", "blue", "orange", "strumup", "strumdown", "start", "select"):
                 if self._previous_state[eventtype] is False and self.instrument.state[eventtype] is True:
