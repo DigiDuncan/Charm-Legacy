@@ -1,3 +1,4 @@
+from charm.lib.instruments.instrument import Instrument
 import importlib.resources as pkg_resources
 from typing import Union
 
@@ -89,7 +90,7 @@ def init():
 
 
 class InputDisplay:
-    def __init__(self, guitar: Guitar, *, size: tuple = (400, 100)):
+    def __init__(self, guitar: Instrument, *, size: tuple = (400, 100)):
         self.guitar = guitar  # VERY game unagnostic
         self.size = size
         self.opacity = 128

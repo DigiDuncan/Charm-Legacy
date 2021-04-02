@@ -1,111 +1,38 @@
+from importlib import resources as pkg_resources
 from charm.lib.instruments.instrument import Instrument
-import importlib.resources as pkg_resources
 import math
 from itertools import count, takewhile
 from pathlib import Path
-from typing import Callable, List, Optional, Tuple, Union
+from typing import Callable, Iterator, List, Optional, Tuple, TypeVar
 
 import pygame
 import pygame.transform
 import pygame.image
 import pygame.draw
 import PIL.Image
-from pygame import Rect, Surface, image, transform
+from pygame import transform
+from pygame.surface import Surface
 from pygame.constants import SRCALPHA
 
-import charm.data.images.spritesheets as image_folder
 from charm.song import Chart, Chord
 from charm.prototyping.notedisplay.inputdisplay import InputDisplay, init as input_init
 
+import charm.data.images.spritesheets as image_folder
+
+from .spriteloader import SpriteSheet
+
 HIT_WINDOW = 0.140  # 140ms
-
-# Map sprite names to fret numbers
-# get_sprite(1) returns the sprite for a red fret
-fretnums = {
-    "green": 0,
-    "red": 1,
-    "yellow": 2,
-    "blue": 3,
-    "orange": 4,
-    "open": 7,
-    "greensp": 10,
-    "redsp": 11,
-    "yellowsp": 12,
-    "bluesp": 13,
-    "orangesp": 14,
-    "opensp": 17
-}
-
-# Map sprite names to sprite_sheet x coordinates and widths, width defaults to 1
-# get_sprite("red") returns the sprite for a red fret
-fretmap = {
-    "green": 0,
-    "red": 1,
-    "yellow": 2,
-    "blue": 3,
-    "orange": 4,
-    "greensp": 5,
-    "redsp": 6,
-    "yellowsp": 7,
-    "bluesp": 8,
-    "orangesp": 9,
-    "open": (10, 5),
-    "opensp": (15, 5)
-}
-
-# Map flag names to flag numbers
-flagmap = {
-    "note": 0,
-    "hopo": 1,
-    "tap": 2,
-    "strike": 6
-}
-
-gh_sheet: Surface = None
-
-fret_images = {}
-
-
-def get_sprite(flag: str, fret: Union[str, int]) -> Surface:
-    return fret_images[flag][fret]
-
-
-def set_sprite(flag: str, fretname: str, sprite: Surface):
-    fret_images[flag][fretname] = sprite
-    if fretname in fretnums:
-        fretnum = fretnums[fretname]
-        fret_images[flag][fretnum] = sprite
+sprite_sheet = None
 
 
 def init():
-    global gh_sheet
-
-    SPRITE_SIZE = 64
-
+    global sprite_sheet
     with pkg_resources.path(image_folder, "gh.png") as p:
-        gh_sheet = image.load(p)
-        gh_sheet.convert_alpha()
+        sprite_sheet = SpriteSheet.load(p)
 
-    if gh_sheet.get_size()[1] == 1280:
-        gh_sheet = pygame.transform.scale(gh_sheet, (1280, 640))  # TODO: This is hacky and needs to be flexible.
+T = TypeVar("T")
 
-    for flag, sy in flagmap.items():
-        fret_images[flag] = {}
-        for fret, sxw in fretmap.items():
-            sw = 1
-            try:
-                sx, sw = sxw
-            except TypeError:
-                sx = sxw
-            x = sx * SPRITE_SIZE
-            y = sy * SPRITE_SIZE
-            w = sw * SPRITE_SIZE
-            h = SPRITE_SIZE
-            img = gh_sheet.subsurface(Rect(x, y, w, h))
-            set_sprite(flag, fret, img)
-
-
-def getone(items):
+def getone(items: Iterator[T]) -> Optional[T]:
     try:
         return next(items)
     except StopIteration:
@@ -113,14 +40,14 @@ def getone(items):
 
 
 class HyperloopDisplay:
-    def __init__(self, chart: Chart, instrument: Optional[Instrument], *, size: Tuple[int, int] = (400, 400), lefty: bool = False, bg: str = None):
+    def __init__(self, chart: Chart, instrument: Optional[Instrument], *, size: Tuple[int, int] = (400, 400), lefty: bool = False, bg: Optional[str] = None):
         self.chart = chart
         self.instrument = instrument
         self.secs_to_ticks: Callable[[float], int] = self.chart.song.tempo_calc.secs_to_ticks
         self.ticks_to_secs: Callable[[int], float] = self.chart.song.tempo_calc.ticks_to_secs
         self.size = size
         self.lefty = lefty
-        self.bg: Path = Path(bg)
+        self.bg: Optional[Path] = None if bg is None else Path(bg)
         self.track_ticks: int = 0
         self.length: float = 0.75
         self.px_per_sec = size[1] / self.length  # This will mess up with BPM scaling, eventually.
@@ -147,9 +74,11 @@ class HyperloopDisplay:
     def end(self):
         return self.secs_to_ticks(self.tracktime + self.length)
 
-    def get_visible_beats(self):
+    def get_visible_beats(self) -> Tuple[List[float], List[float], List[float]]:
         # This needs to be updated to handle multiple timesigs
         timesig = self.chart.song.timesig_by_ticks[self.track_ticks]
+        if timesig is None:
+            return [], [], []
 
         ticks_per_quarternote = self.chart.song.resolution
         ticks_per_wholenote = ticks_per_quarternote * 4
@@ -185,7 +114,7 @@ class HyperloopDisplay:
     def create_bg(self):
         if self.bg is None:
             return
-        bg_tile = image.load(self.bg)
+        bg_tile = pygame.image.load(str(self.bg))
         bg_tile.convert_alpha()
         w, h = self.size
         # Scale height to fit hyperloop width but maintain aspect ratio.
@@ -216,7 +145,7 @@ class HyperloopDisplay:
         self._image.fill("clear")
 
         if self.bg_image:
-            self.draw_bg()
+            self.draw_bg(self.bg_image)
         self.draw_beatlines()
         if self.id:
             self.draw_input()
@@ -236,7 +165,7 @@ class HyperloopDisplay:
             pill = PIL.Image.frombytes(strFormat, surf.get_size(), raw_str)
             return pill
 
-        def pillowToSurface(pill: PIL.Image.Image) -> Surface:
+        def pillowToSurface(pill: PIL.Image.Image) -> pygame.surface.Surface:
             strFormat = 'RGBA'
             raw_str = pill.tobytes("raw", strFormat)
             surf = pygame.image.fromstring(raw_str, pill.size, strFormat)
@@ -251,17 +180,17 @@ class HyperloopDisplay:
     def draw_beatlines(self):
         measures, beats, quarterbeats = self.get_visible_beats()
         for q in quarterbeats:
-            y = self.gety(self.ticks_to_secs(q))
+            y = self.gety(self.ticks_to_secs(int(q)))
             pygame.draw.line(self._image, (64, 64, 64), (0, y), (self.size[0], y), width = 1)
         for b in beats:
-            y = self.gety(self.ticks_to_secs(b))
+            y = self.gety(self.ticks_to_secs(int(b)))
             pygame.draw.line(self._image, (128, 128, 128), (0, y), (self.size[0], y), width = 1)
         for m in measures:
-            y = self.gety(self.ticks_to_secs(m))
+            y = self.gety(self.ticks_to_secs(int(m)))
             pygame.draw.line(self._image, (128, 128, 128), (0, y), (self.size[0], y), width = 5)
 
     def draw_strikes(self):
-        fret_strikes = [0, 0, 0, 0, 0]
+        fret_strikes = [0.0, 0.0, 0.0, 0.0, 0.0]
         for chord in self.old_chords:
             timediff = self.tracktime - chord.start
             # 0 - 1
@@ -293,19 +222,19 @@ class HyperloopDisplay:
         fret_index = fret
         if sp:
             fret_index += 10
-        sprite = get_sprite(flag, fret_index)
+        sprite = sprite_sheet.get_sprite(flag, fret_index)
         # Center fret sprites
         x -= sprite.get_width() / 2
         y -= sprite.get_height() / 2
         sprite.set_alpha(255 * fade)
         self._image.blit(sprite, (x, y))
 
-    def draw_bg(self):
-        bg_rect = self.bg_image.get_rect()
+    def draw_bg(self, bg_image: Surface):
+        bg_rect = bg_image.get_rect()
         offset = ((self.tracktime * self.px_per_sec) % self.bg_tile_height) - self.bg_tile_height
         bg_rect.y = offset
 
-        self._image.blit(self.bg_image, bg_rect)
+        self._image.blit(bg_image, bg_rect)
 
     def gety(self, secs: float) -> float:
         secs_until = secs - self.tracktime
