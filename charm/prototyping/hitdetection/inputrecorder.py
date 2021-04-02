@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import Iterable
+from typing import Iterable, List
 
 from charm.lib.instruments.instrument import Instrument
 
@@ -9,6 +9,16 @@ class Input:
         self.time = time
         self.events = events
 
+    def toJSON(self):
+        return {"time": self.time,
+                "events": self.events}
+
+    @classmethod
+    def fromJSON(self, data):
+        inp = Input()
+        inp.time = data["time"]
+        inp.events = data.get("events", [])
+
 
 class InputRecorder:
     def __init__(self, instrument: Instrument):
@@ -17,13 +27,14 @@ class InputRecorder:
         self._previous_state = defaultdict(bool)
 
         # People probably shouldn't touch this.
-        self._inputs = []
+        self._inputs: List[Input] = []
 
     def update(self, tracktime):
         if self.instrument.state == self._previous_state:
             return
         else:
             # Process events.
+            # TODO: Agnosticism.
             events = []
             for eventtype in ("green", "red", "yellow", "blue", "orange", "strumup", "strumdown", "start", "select"):
                 if self._previous_state[eventtype] is False and self.instrument.state[eventtype] is True:
@@ -63,3 +74,9 @@ class InputRecorder:
 
     def __setitem__(self, key, value):
         raise PermissionError("Don't use this like that, please. (__setitem__ on a InputRecorder).")
+
+    def inputstoJSON(self):
+        return [i.toJSON() for i in self._inputs]
+
+    def inputsfromJSON(self, data):
+        self._inputs = [Input.fromJSON(d) for d in data]
