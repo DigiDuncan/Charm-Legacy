@@ -73,8 +73,8 @@ class SpriteSheet:
     def load(cls, p: Path):
         gh_sheet = pygame.image.load(p)
         gh_sheet.convert_alpha()
-        if gh_sheet.get_size() != (1280, 640):
-            gh_sheet = pygame.transform.scale(gh_sheet, (1280, 640))  # TODO: This is hacky and needs to be flexible.
+        if gh_sheet.get_size() != (1280, 576):
+            gh_sheet = pygame.transform.scale(gh_sheet, (1280, 576))  # TODO: This is hacky and needs to be flexible.
 
         sprites: List[Sprite] = []
         SPRITE_SIZE = 64
