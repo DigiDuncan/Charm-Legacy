@@ -49,6 +49,7 @@ class Sprite():
         self.spact: bool = spact
         self.img: Surface = img
 
+
 class SpriteSheet:
     SPRITE_SIZE = 64
 
@@ -60,12 +61,12 @@ class SpriteSheet:
     def get(self, *, fretname: Optional[FretName] = None, fretnum: Optional[FretNum] = None, mode: Mode = "note", spnote: bool = False, spact: bool = False) -> Surface:
         if fretname is not None and fretnum is not None:
             raise ValueError("fretname or fretnum arguments are mutually exclusive.")
-        
+
         if fretname is not None:
             return self.fretname_index[(fretname, mode, spnote, spact)]
         elif fretnum is not None:
             return self.fretnum_index[(fretnum, mode, spnote, spact)]
-        
+
         raise ValueError("Either fretname or fretnum argument must be provided.")
 
     @classmethod
