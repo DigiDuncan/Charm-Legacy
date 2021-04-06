@@ -5,7 +5,7 @@ import nygame
 import pygame
 from nygame import DigiText as T
 from nygame import music
-from pygame.constants import K_DOWN, K_HOME, K_KP7, K_LEFT, K_RIGHT, K_SPACE, K_UP, K_7, K_l, K_s, MOUSEWHEEL
+from pygame.constants import K_DOWN, K_HOME, K_KP7, K_LEFT, K_PAUSE, K_RIGHT, K_SPACE, K_UP, K_7, K_l, K_s, MOUSEWHEEL
 
 from charm.lib import instruments
 from charm.lib.args import InvalidArgException, tryint
@@ -34,6 +34,9 @@ class Game(nygame.Game):
         if instruments.get_count() > 0:
             self.guitar = instruments.Guitar.connect(0)
             self.ir = InputRecorder(self.guitar)
+        else:
+            self.guitar = instruments.Keyboard()
+            self.register_eventhandler(self.guitar.handle_event)
         self.paused = False
         self.volume = 6
         songpath = Path("./charm/data/charts/run_around_the_character_code/run_around_the_character_code.chart")
@@ -52,11 +55,11 @@ class Game(nygame.Game):
                 self.ir.update(music.elapsed)
         self.la.update(music.elapsed)
         self.nd.update(music.elapsed)
-        # print(self.guitar.debug)
+        print(self.guitar.debug)
 
         for event in events:
             if event.type == pygame.KEYDOWN:
-                if event.key == K_SPACE:
+                if event.key == K_PAUSE:
                     music.playpause()
                 elif event.key == K_LEFT and self.la.prev_phrase is not None:
                     music.elapsed = self.la.prev_phrase.start + 0.0001
