@@ -68,7 +68,9 @@ class InputRecorder:
             if stop is None:
                 stop = float('inf')
 
-            return [i for i in self._inputs if start <= i.time < stop][::step]
+            ir = InputRecorder(self.instrument)
+            ir._inputs = [i for i in self._inputs if start <= i.time < stop][::step]
+            return ir
 
         return self._inputs[value]
 

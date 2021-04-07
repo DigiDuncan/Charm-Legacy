@@ -143,12 +143,21 @@ class Chart:
         self.events: List[Event] = []
         self.chords: List[Chord] = []
         self.chord_by_ticks: Index[int, Chord] = None
+        self.countdowns = {}  # {tickstart: ticklength}
+
+    def calculate_countdowns(self):
+        for chord, nextchord in zip(self.chords, self.chords[1:] + [None]):
+            chord_end = chord.tick_start + chord.tick_length
+            gap = nextchord.tick_start - chord_end
+            if gap >= 5:  # god this is hardcoded
+                self.countdowns[chord_end] = gap
 
     def finalize(self):
         self.notes.sort()
         self.star_powers.sort()
         self.events.sort()
         self.chords.sort()
+        self.calculate_countdowns()
         self.chord_by_ticks = Index(self.chords, "tick_start")
 
     def __hash__(self):

@@ -1,7 +1,15 @@
+from dataclasses import dataclass
 from typing import List
 
-from charm.prototyping.hitdetection.inputrecorder import Input, InputRecorder
+from charm.prototyping.hitdetection.inputrecorder import InputRecorder
 from charm.song import Chart
+
+
+@dataclass
+class ParsedInput:
+    tick: int
+    eventtype: str
+    eventdata: str
 
 
 class InputParser:
@@ -14,6 +22,35 @@ class InputParser:
         first_note_time = self.chart.song.tempo_calc.ticks_to_secs(self.chart.notes[0].tick_start)
         last_note_time = self.chart.song.tempo_calc.ticks_to_secs(self.chart.notes[0].tick_start)
 
+        # You can mess around before or after the notes.
         inputs = self.inputrecorder[first_note_time:last_note_time]
 
-        return inputs  # TODO: Not done.
+        # You can mess around during countdowns.
+        for countdown_start, countdown_length in self.chart.countdowns.items():
+            del inputs[countdown_start:countdown_start + countdown_length]
+
+        current_state = {
+            "green":     False,
+            "red":       False,
+            "yellow":    False,
+            "blue":      False,
+            "orange":    False,
+            "strumup":   False,
+            "strumdown": False,
+            "start":     False,
+            "select":    False,
+            "tilt":      False,
+            "whammy":    False,
+        }
+        last_state = None
+        parsed_inputs: List[ParsedInput] = []
+
+        for inp in inputs:
+            ...
+            parsed_inputs.append(self.calculate_input(last_state, current_state))
+            last_state = current_state
+
+        return parsed_inputs  # TODO: Not done.
+
+    def calculate_input(self, last_state, current_state):
+        return ParsedInput()
