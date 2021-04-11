@@ -1,4 +1,4 @@
-from collections import defaultdict
+from collections import defaultdict, deque
 from typing import Dict, Iterable, List
 
 from charm.lib.instruments.instrument import Instrument
@@ -30,6 +30,7 @@ class InputRecorder:
         self._previous_state = defaultdict(bool)
         self._previous_tilt = 0
         self.previous_whammy = 0
+        self._whammy_data = deque([0] * 4, 4)
         self._whammy_last_messed_with = 0
         self._previous_whammying = None
         self._whammying = False
@@ -63,9 +64,11 @@ class InputRecorder:
                 events.append("tilt_off")
             self._previous_tilt = self.instrument.state["tilt"]
 
-            if -self.threshold <= (self.previous_whammy - self.instrument.state["whammy"]) <= self.threshold:
+            self._whammy_data.append(abs(self.previous_whammy - self.instrument.state["whammy"]))
+            if sum(self._whammy_data) >= self.threshold:
                 self._whammy_last_messed_with = tracktime
             self.previous_whammy = self.instrument.state["whammy"]
+
             self._previous_whammying = self._whammying
             if tracktime - self._whammy_last_messed_with <= 0.5:
                 self._whammying = True
