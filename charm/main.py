@@ -5,7 +5,7 @@ import nygame
 import pygame
 from nygame import DigiText as T
 from nygame import music
-from pygame.constants import K_DOWN, K_HOME, K_KP7, K_LEFT, K_PAUSE, K_RIGHT, K_SPACE, K_UP, K_7, K_l, K_s, MOUSEWHEEL
+from pygame.constants import K_HOME, K_KP7, K_KP_MINUS, K_KP_PLUS, K_KP4, K_KP6, K_PAUSE, K_7, K_l, K_s, MOUSEWHEEL
 
 from charm.lib import instruments
 from charm.lib.args import InvalidArgException, tryint
@@ -61,15 +61,15 @@ class Game(nygame.Game):
             if event.type == pygame.KEYDOWN:
                 if event.key == K_PAUSE:
                     music.playpause()
-                elif event.key == K_LEFT and self.la.prev_phrase is not None:
+                elif event.key == K_KP4 and self.la.prev_phrase is not None:
                     music.elapsed = self.la.prev_phrase.start + 0.0001
-                elif event.key == K_RIGHT and self.la.next_phrase is not None:
+                elif event.key == K_KP6 and self.la.next_phrase is not None:
                     music.elapsed = self.la.next_phrase.start + 0.0001
                 elif event.key == K_HOME:
                     music.elapsed = 0
-                elif event.key == K_UP:
+                elif event.key == K_KP_PLUS:
                     self.volume += 1
-                elif event.key == K_DOWN:
+                elif event.key == K_KP_MINUS:
                     self.volume -= 1
                 elif event.key in (K_7, K_KP7):
                     self.nd.tilt = not self.nd.tilt
