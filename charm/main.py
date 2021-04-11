@@ -30,6 +30,10 @@ class Game(nygame.Game):
     def __init__(self):
         super().__init__(size = (1280, 720), fps = 120, showfps = True)
         instruments.init(self)
+        songpath = Path("./charm/data/charts/run_around_the_character_code/run_around_the_character_code.chart")
+        with songpath.open("r", encoding="utf-8") as f:
+            self.song = chchart.load(f)
+        chart = self.song.charts[('Expert', 'Single')]
         self.guitar = None
         self.ir = None
         if instruments.get_count() > 0:
@@ -41,10 +45,6 @@ class Game(nygame.Game):
             self.register_eventhandler(self.guitar.handle_event)
         self.paused = False
         self.volume = 6
-        songpath = Path("./charm/data/charts/run_around_the_character_code/run_around_the_character_code.chart")
-        with songpath.open("r", encoding="utf-8") as f:
-            self.song = chchart.load(f)
-        chart = self.song.charts[('Expert', 'Single')]
         self.la = LyricAnimator(chart)   # TODO: Update to take Song object
         hyperloop_init()
         self.nd = HyperloopDisplay(chart, self.guitar, size=(400, 620), bg = "./charm/data/images/highway.png")
@@ -94,7 +94,8 @@ class Game(nygame.Game):
         self.render_volume()
         self.render_phrase()
         self.render_bpm()
-        self.render_score()
+        if self.sc:
+            self.render_score()
 
     def render_lyrics(self):
         dest = self.la.image.get_rect()
