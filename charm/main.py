@@ -35,6 +35,7 @@ class Game(nygame.Game):
         if instruments.get_count() > 0:
             self.guitar = instruments.Guitar.connect(0)
             self.ir = InputRecorder(self.guitar)
+            self.sc = ScoreCalculator(chart, self.ir)
         else:
             self.guitar = instruments.Keyboard()
             self.register_eventhandler(self.guitar.handle_event)
@@ -47,7 +48,6 @@ class Game(nygame.Game):
         self.la = LyricAnimator(chart)   # TODO: Update to take Song object
         hyperloop_init()
         self.nd = HyperloopDisplay(chart, self.guitar, size=(400, 620), bg = "./charm/data/images/highway.png")
-        self.sc = ScoreCalculator(chart, self.ir)
         music.load(songpath.parent / self.song.musicstream)
         self.pause_image = draw_pause()
 
@@ -55,9 +55,10 @@ class Game(nygame.Game):
         if self.ir is not None:
             if not self.paused:
                 self.ir.update(music.elapsed)
+                self.sc.update(music.elapsed)
         self.la.update(music.elapsed)
         self.nd.update(music.elapsed)
-        self.sc.update(music.elapsed)
+
         # print(self.guitar.debug)
 
         for event in events:
