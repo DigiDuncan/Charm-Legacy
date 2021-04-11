@@ -1,23 +1,26 @@
 from collections import defaultdict
-from typing import Iterable, List
+from typing import Dict, Iterable, List
 
 from charm.lib.instruments.instrument import Instrument
 
 
 class Input:
-    def __init__(self, time, events: Iterable) -> None:
+    def __init__(self, time, events: Iterable = [], states: Dict = {}) -> None:
         self.time = time
         self.events = events
+        self.states = states
 
     def toJSON(self):
         return {"time": self.time,
-                "events": self.events}
+                "events": self.events,
+                "states": self.states}
 
     @classmethod
     def fromJSON(self, data):
         inp = Input()
         inp.time = data["time"]
         inp.events = data.get("events", [])
+        inp.states = data.get("states", {})
 
 
 class InputRecorder:
@@ -25,27 +28,70 @@ class InputRecorder:
         self.instrument = instrument
 
         self._previous_state = defaultdict(bool)
+        self._previous_tilt = 0
+        self.previous_whammy = 0
+        self._whammy_last_messed_with = 0
+        self._previous_whammying = None
+        self._whammying = False
+
+        self.threshold = 0.01
 
         # People probably shouldn't touch this.
         self._inputs: List[Input] = []
+        self._states: Dict[Dict] = {}
 
     def update(self, tracktime):
+        self._states[tracktime] = self.instrument.state
         if self.instrument.state == self._previous_state:
             return
         else:
             # Process events.
             # TODO: Agnosticism.
             events = []
-            for eventtype in ("green", "red", "yellow", "blue", "orange", "strumup", "strumdown", "start", "select"):
+            for eventtype in ("green", "red", "yellow", "blue", "orange", "start", "select"):
                 if self._previous_state[eventtype] is False and self.instrument.state[eventtype] is True:
                     events.append(eventtype + "_on")
                 if self._previous_state[eventtype] is True and self.instrument.state[eventtype] is False:
                     events.append(eventtype + "_off")
-            for eventtype in ("joy", "tilt", "whammy"):
-                if self._previous_state[eventtype] != self.instrument.state[eventtype]:
-                    events.append({eventtype: self.instrument.state[eventtype]})
+            if ((self._previous_state["strumup"] is False and self.instrument.state["strumup"] is True)
+               or (self._previous_state["strumdown"] is False and self.instrument.state["strumdown"] is True)):
+                events.append("strum")
+            if self._previous_tilt < 0.5:
+                if self.instrument.state["tilt"] >= 0.5:
+                    events.append("tilt_on")
+            if self._previous_tilt >= 0.5:
+                if self.instrument.state["tilt"] < 0.5:
+                    events.append("tilt_off")
+            self._previous_tilt == self.instrument.state["tilt"]
+            if -self.threshold <= (self.previous_whammy - self.instrument.state["whammy"]) <= self.threshold:
+                self._whammy_last_messed_with = tracktime
+            self.previous_whammy = self.instrument.state["whammy"]
+            self._previous_whammying == self._whammying
+            if tracktime - self._whammy_last_messed_with <= 0.5:
+                self._whammying = True
+            if tracktime - self._whammy_last_messed_with > 0.5:
+                self._whammying = False
+
+            if self._previous_whammying is False and self._whammying is True:
+                events.append("whammy_on")
+            if self._previous_whammying is True and self._whammying is False:
+                events.append("whammy_off")
+
             self.add(tracktime, events)
-            self._previous_state = self.instrument.state
+        self._previous_state = self.instrument.state
+
+        if events != []:
+            print(f"{tracktime:>9} {events}")
+        if self.instrument.state != self._previous_state:
+            print(self.instrument.state)
+
+    @property
+    def inputs(self):
+        return self._inputs
+
+    @property
+    def states(self):
+        return self._states
 
     def add(self, time, events: Iterable):
         i = Input(time, events)

@@ -146,7 +146,7 @@ class Chart:
         self.countdowns = {}  # {tickstart: ticklength}
 
     def calculate_countdowns(self):
-        for chord, nextchord in zip(self.chords, self.chords[1:] + [None]):
+        for chord, nextchord in zip(self.chords, self.chords[1:] + [self.chords[-1]]):
             chord_end = chord.tick_start + chord.tick_length
             gap = nextchord.tick_start - chord_end
             if gap >= 5:  # god this is hardcoded

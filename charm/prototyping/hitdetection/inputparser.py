@@ -18,16 +18,18 @@ class InputParser:
         self.inputrecorder = inputrecorder
 
     @property
-    def cleaned_inputs(self, *, start, stop):
+    def cleaned_inputs(self, *, start = None, stop = None):
         first_note_time = self.chart.song.tempo_calc.ticks_to_secs(self.chart.notes[0].tick_start)
-        last_note_time = self.chart.song.tempo_calc.ticks_to_secs(self.chart.notes[0].tick_start)
+        last_note_time = self.chart.song.tempo_calc.ticks_to_secs(self.chart.notes[-1].tick_start)
 
         # You can mess around before or after the notes.
         inputs = self.inputrecorder[first_note_time:last_note_time]
 
         # You can mess around during countdowns.
         for countdown_start, countdown_length in self.chart.countdowns.items():
-            del inputs[countdown_start:countdown_start + countdown_length]
+            countdown_start_secs = self.chart.song.tempo_calc.ticks_to_secs(countdown_start)
+            countdown_end_secs = self.chart.song.tempo_calc.ticks_to_secs(countdown_start + countdown_length)
+            del inputs[countdown_start_secs:countdown_end_secs]
 
         current_state = {
             "green":     False,
