@@ -59,7 +59,7 @@ class ScoreCalculator:
             relevant_events = self.input_recorder[tracktime - 0.070:tracktime + 0.070]
             if chord.flag == "note":
                 try:
-                    strum = next((e for e in relevant_events if "strum" in e.events))
+                    strum = next((e for e in relevant_events[::-1] if "strum" in e.events))
                 except StopIteration:
                     self.miss_note()
                     return
