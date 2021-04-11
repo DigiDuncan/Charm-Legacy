@@ -78,13 +78,13 @@ class Guitar(Instrument):
     def fret3(self):
         return self._frets[2]
 
-    blue = fret3
+    yellow = fret3
 
     @property
     def fret4(self):
         return self._frets[3]
 
-    yellow = fret4
+    blue = fret4
 
     @property
     def fret5(self):
