@@ -56,17 +56,17 @@ class InputRecorder:
             if ((self._previous_state["strumup"] is False and self.instrument.state["strumup"] is True)
                or (self._previous_state["strumdown"] is False and self.instrument.state["strumdown"] is True)):
                 events.append("strum")
-            if self._previous_tilt < 0.5:
-                if self.instrument.state["tilt"] >= 0.5:
-                    events.append("tilt_on")
-            if self._previous_tilt >= 0.5:
-                if self.instrument.state["tilt"] < 0.5:
-                    events.append("tilt_off")
-            self._previous_tilt == self.instrument.state["tilt"]
+
+            if self._previous_tilt < 0.5 and self.instrument.state["tilt"] >= 0.5:
+                events.append("tilt_on")
+            if self._previous_tilt >= 0.5 and self.instrument.state["tilt"] < 0.5:
+                events.append("tilt_off")
+            self._previous_tilt = self.instrument.state["tilt"]
+
             if -self.threshold <= (self.previous_whammy - self.instrument.state["whammy"]) <= self.threshold:
                 self._whammy_last_messed_with = tracktime
             self.previous_whammy = self.instrument.state["whammy"]
-            self._previous_whammying == self._whammying
+            self._previous_whammying = self._whammying
             if tracktime - self._whammy_last_messed_with <= 0.5:
                 self._whammying = True
             if tracktime - self._whammy_last_messed_with > 0.5:
