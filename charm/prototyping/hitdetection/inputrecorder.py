@@ -80,11 +80,11 @@ class InputRecorder:
             if self._previous_whammying is True and self._whammying is False:
                 events.append("whammy_off")
 
-            self.add(tracktime, events)
+            self.add(tracktime, events, self.instrument.state)
         self._previous_state = self.instrument.state
 
         if events != []:
-            print(f"{tracktime:>9} {events}")
+            print(f"{round(tracktime, 3):>9} {events}")
         if self.instrument.state != self._previous_state:
             print(self.instrument.state)
 
@@ -96,8 +96,8 @@ class InputRecorder:
     def states(self):
         return self._states
 
-    def add(self, time, events: Iterable):
-        i = Input(time, events)
+    def add(self, time, events: Iterable, states: Dict):
+        i = Input(time, events, states)
         self._inputs.append(i)
 
     def remove(self, time, end_time = None):
@@ -111,7 +111,7 @@ class InputRecorder:
 
     def __getitem__(self, value):
         if isinstance(value, slice):
-            start, stop, step = value  # Always a 3-tuple.
+            start, stop, step = value.start, value.stop, value.step  # Always a 3-tuple.
             if start is None:
                 start = 0
             if stop is None:

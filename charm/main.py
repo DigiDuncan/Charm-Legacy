@@ -1,3 +1,4 @@
+from charm.prototyping.hitdetection.scorecalculator import ScoreCalculator
 from enum import Enum
 from pathlib import Path
 
@@ -46,6 +47,7 @@ class Game(nygame.Game):
         self.la = LyricAnimator(chart)   # TODO: Update to take Song object
         hyperloop_init()
         self.nd = HyperloopDisplay(chart, self.guitar, size=(400, 620), bg = "./charm/data/images/highway.png")
+        self.sc = ScoreCalculator(chart, self.ir)
         music.load(songpath.parent / self.song.musicstream)
         self.pause_image = draw_pause()
 
@@ -55,6 +57,7 @@ class Game(nygame.Game):
                 self.ir.update(music.elapsed)
         self.la.update(music.elapsed)
         self.nd.update(music.elapsed)
+        self.sc.update(music.elapsed)
         # print(self.guitar.debug)
 
         for event in events:
@@ -90,6 +93,7 @@ class Game(nygame.Game):
         self.render_volume()
         self.render_phrase()
         self.render_bpm()
+        self.render_score()
 
     def render_lyrics(self):
         dest = self.la.image.get_rect()
@@ -131,6 +135,10 @@ class Game(nygame.Game):
         # text = T(f"{bpm.ticks_per_sec:.3f}BPM | {ts.numerator}/{ts.denominator}", font="Lato Medium", size=24, color="green")
         text = T(f"???BPM | {ts.numerator}/{ts.denominator}", font="Lato Medium", size=24, color="green")
         text.render_to(self.surface, (5, 95))
+
+    def render_score(self):
+        text = T(f"SCORE: {self.sc.score}", font="Lato Medium", size=24, color="green")
+        text.render_to(self.surface, (5, 145))
 
     @property
     def volume(self):
