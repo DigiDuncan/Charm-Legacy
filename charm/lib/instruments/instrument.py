@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import Dict, TYPE_CHECKING
 if TYPE_CHECKING:
     import nygame
 
@@ -35,7 +35,7 @@ class Instrument:
         return cls.instruments[joyid]
 
     @property
-    def state(self):
+    def state(self) -> Dict[str, bool]:
         raise NotImplementedError
 
     def __init__(self, rawjoy):
@@ -50,3 +50,7 @@ class Instrument:
         if joyid not in cls.instruments:
             return
         cls.instruments[joyid].handle_event(e)
+
+    @property
+    def debug(self) -> str:
+        raise NotImplementedError()
