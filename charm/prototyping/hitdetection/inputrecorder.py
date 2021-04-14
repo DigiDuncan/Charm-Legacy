@@ -1,130 +1,135 @@
 from collections import defaultdict, deque
-from typing import Dict, Iterable, List
+from typing import Dict, Iterable, List, Literal, Union
 
 from charm.lib.instruments.instrument import Instrument
 
+Seconds = float
+StateName = Literal[
+    "green",
+    "red",
+    "yellow",
+    "blue",
+    "orange",
+    "start",
+    "select",
+    "strum",
+    "tilt",
+    "whammy"
+]
+EventName = Literal[
+    "green_on",
+    "red_on",
+    "yellow_on",
+    "blue_on",
+    "orange_on",
+    "start_on",
+    "select_on",
+    "strum_on",
+    "tilt_on",
+    "whammy_on",
+    "green_off",
+    "red_off",
+    "yellow_off",
+    "blue_off",
+    "orange_off",
+    "start_off",
+    "select_off",
+    "strum_off",
+    "tilt_off",
+    "whammy_off"
+]
+
 
 class Input:
-    def __init__(self, time, events: Iterable = [], states: Dict = {}) -> None:
-        self.time = time
+    def __init__(self, start: Seconds, events: List[EventName], state: Dict[StateName, bool]) -> None:
+        self.start = start
         self.events = events
-        self.states = states
+        self.state = state
 
     def toJSON(self):
-        return {"time": self.time,
-                "events": self.events,
-                "states": self.states}
+        return {
+            "start": self.start,
+            "events": self.events,
+            "state": self.state
+        }
 
     @classmethod
     def fromJSON(self, data):
         inp = Input()
-        inp.time = data["time"]
+        inp.start = data["start"]
         inp.events = data.get("events", [])
-        inp.states = data.get("states", {})
+        inp.state = data.get("state", {})
+
+
+def make_event(key: str, state: bool) -> str:
+    ON_OFF = {True: "on", False: "off"}
+    return f"{key}_{ON_OFF[state]}"
 
 
 class InputRecorder:
     def __init__(self, instrument: Instrument):
         self.instrument = instrument
+        self._tilt_threshold = 0.5
+        self._whammy_threshold = 0.05
+        self._whammy_delay = 0.5
 
-        self._previous_state = defaultdict(bool)
-        self._previous_tilt = 0
-        self.previous_whammy = 0
-        self._whammy_data = deque([0] * 4, 4)
+        self._whammy_data = deque([0] * 5, 5)
         self._whammy_last_messed_with = 0
-        self._previous_whammying = None
-        self._whammying = False
-
-        self.threshold = 0.01
 
         # People probably shouldn't touch this.
         self._inputs: List[Input] = []
-        self._states: Dict[Dict] = {}
+        self._last_state: Dict[StateName, bool] = defaultdict(bool)
 
-    def update(self, tracktime):
-        self._states[tracktime] = self.instrument.state
-        if self.instrument.state == self._previous_state:
+    def is_whammy_messed_with(self) -> bool:
+        return sum(abs(b - a) for a, b in zip(list(self._whammy_data)[:-1], list(self._whammy_data)[1:])) > self._whammy_threshold
+
+    def update(self, tracktime: Seconds):
+        raw_state = self.instrument.state
+
+        self._whammy_data.append(raw_state["whammy"])
+        if self.is_whammy_messed_with():
+            self._whammy_last_messed_with = tracktime
+
+        state: Dict[StateName, bool] = {
+            "green": raw_state["green"],
+            "red": raw_state["red"],
+            "yellow": raw_state["yellow"],
+            "blue": raw_state["blue"],
+            "orange": raw_state["orange"],
+            "start": raw_state["start"],
+            "select": raw_state["select"],
+            "strum": raw_state["strumup"] or raw_state["strumdown"],
+            "tilt": raw_state["tilt"] >= self._tilt_threshold,
+            "whammy": tracktime <= self._whammy_last_messed_with + self._whammy_delay
+        }
+        last_state = self._last_state
+
+        # Process events.
+        # TODO: Agnosticism.
+
+        if state == last_state:
             return
-        else:
-            # Process events.
-            # TODO: Agnosticism.
-            events = []
-            for eventtype in ("green", "red", "yellow", "blue", "orange", "start", "select"):
-                if self._previous_state[eventtype] is False and self.instrument.state[eventtype] is True:
-                    events.append(eventtype + "_on")
-                if self._previous_state[eventtype] is True and self.instrument.state[eventtype] is False:
-                    events.append(eventtype + "_off")
-            if ((self._previous_state["strumup"] is False and self.instrument.state["strumup"] is True)
-               or (self._previous_state["strumdown"] is False and self.instrument.state["strumdown"] is True)):
-                events.append("strum")
 
-            if self._previous_tilt < 0.5 and self.instrument.state["tilt"] >= 0.5:
-                events.append("tilt_on")
-            if self._previous_tilt >= 0.5 and self.instrument.state["tilt"] < 0.5:
-                events.append("tilt_off")
-            self._previous_tilt = self.instrument.state["tilt"]
+        self._last_state = state
 
-            self._whammy_data.append(abs(self.previous_whammy - self.instrument.state["whammy"]))
-            if sum(self._whammy_data) >= self.threshold:
-                self._whammy_last_messed_with = tracktime
-            self.previous_whammy = self.instrument.state["whammy"]
+        curr_events: List[EventName] = []
+        for evt, val in state.items():
+            if last_state[evt] == val:
+                continue
+            suffix = "on" if val else "off"
+            curr_events.append(f"{evt}_{suffix}")
 
-            self._previous_whammying = self._whammying
-            if tracktime - self._whammy_last_messed_with <= 0.5:
-                self._whammying = True
-            if tracktime - self._whammy_last_messed_with > 0.5:
-                self._whammying = False
+        self._inputs.append(Input(tracktime, curr_events, state))
 
-            if self._previous_whammying is False and self._whammying is True:
-                events.append("whammy_on")
-            if self._previous_whammying is True and self._whammying is False:
-                events.append("whammy_off")
-
-            self.add(tracktime, events, self.instrument.state)
-        self._previous_state = self.instrument.state
-
-        if events != []:
-            print(f"{round(tracktime, 3):>9} {events}")
-        if self.instrument.state != self._previous_state:
-            print(self.instrument.state)
+        #if curr_events:
+        #    print(f"{round(tracktime, 3):>9} {curr_events}")
 
     @property
     def inputs(self):
         return self._inputs
 
-    @property
-    def states(self):
-        return self._states
-
-    def add(self, time, events: Iterable, states: Dict):
-        i = Input(time, events, states)
-        self._inputs.append(i)
-
-    def remove(self, time, end_time = None):
-        if end_time:
-            del self[time:end_time]
-        else:
-            del self[time]
-
     def __len__(self):
         return len(self._inputs)
-
-    def __getitem__(self, value):
-        if isinstance(value, slice):
-            start, stop, step = value.start, value.stop, value.step  # Always a 3-tuple.
-            if start is None:
-                start = 0
-            if stop is None:
-                stop = float('inf')
-
-            ir = InputRecorder(self.instrument)
-            ir._inputs = [i for i in self._inputs if start <= i.time < stop][::step]
-            return ir
-
-        return self._inputs[value]
-
-    def __setitem__(self, key, value):
-        raise PermissionError("Don't use this like that, please. (__setitem__ on a InputRecorder).")
 
     def inputstoJSON(self):
         return [i.toJSON() for i in self._inputs]

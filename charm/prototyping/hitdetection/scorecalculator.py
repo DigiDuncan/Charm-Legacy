@@ -1,23 +1,15 @@
+from typing import List
 from charm.song import Chart
 from charm.prototyping.hitdetection.inputrecorder import InputRecorder
+from nygame import Index
 
 
-class ScoreCalculator:
-    def __init__(self, chart: Chart, input_recorder: InputRecorder):
-        self.chart = chart
-        self.input_recorder = input_recorder
-
-        self._score = 0
-        self._previous_score = 0
+class ScoreCounter:
+    def __init__(self):
+        self.score = 0
         self.streak = 0
         self._sp_amount = 0
         self._sp_on = False
-
-        self._calculating = False
-
-    @property
-    def score(self):
-        return self._previous_score if self._calculating else self._score
 
     @property
     def multiplier(self):
@@ -37,67 +29,105 @@ class ScoreCalculator:
         return mult
 
     def hit_note(self):
+        print("hit_note")
         self.streak += 1
-        self._score += (50 * self.multiplier)
-        self._calculating = False
+        self.score += (50 * self.multiplier)
 
     def miss_note(self):
         self.streak = 0
-        self._calculating = False
 
-    def update(self, tracktime):
-        self._calculating = True
-        self._previous_score = self._score
 
+class ScoreCalculator:
+    def __init__(self, chart: Chart, input_recorder: InputRecorder):
+        self.chart = chart
+        self.input_recorder = input_recorder
+
+    def get_score(self, tracktime):
         # Reset the score every calculation
-        self._score = 0
-        self.streak = 0
-        self._sp_amount = 0
+        counter = ScoreCounter()
+        inputs = InputTracker(self.input_recorder.inputs)
 
         current_tick = self.chart.song.tempo_calc.secs_to_ticks(tracktime)
+
         for chord in self.chart.chord_by_ticks[:current_tick]:
-            relevant_events = self.input_recorder[tracktime - 0.070:tracktime + 0.070]
-            if chord.flag == "note":
-                try:
-                    strum = next((e for e in relevant_events[::-1] if "strum" in e.events))
-                except StopIteration:
-                    self.miss_note()
-                    return
+            if chord.flag != "note":
+                continue
+            chord_min = chord.start - 0.07
+            chord_max = chord.start + 0.07
 
-                # One note strum, can be anchored
-                if len(chord.frets) == 1:
-                    note = chord.frets[0]
-                    if note == 7 and strum.states["green"] is False and strum.states["red"] is False and strum.states["yellow"] is False and strum.states["blue"] is False and strum.states["orange"] is False:
-                        self.hit_note()
-                    elif note == 0 and strum.states["green"] is True and strum.states["red"] is False and strum.states["yellow"] is False and strum.states["blue"] is False and strum.states["orange"] is False:
-                        self.hit_note()
-                    elif note == 1 and strum.states["red"] is True and strum.states["yellow"] is False and strum.states["blue"] is False and strum.states["orange"] is False:
-                        self.hit_note()
-                    elif note == 2 and strum.states["yellow"] is True and strum.states["blue"] is False and strum.states["orange"] is False:
-                        self.hit_note()
-                    elif note == 3 and strum.states["blue"] is True and strum.states["orange"] is False:
-                        self.hit_note()
-                    elif note == 4 and strum.states["orange"] is True:
-                        self.hit_note()
+            inputs.update(chord_min, chord_max)
 
-                else:
-                    shape = [
-                        0 in chord.frets,
-                        1 in chord.frets,
-                        2 in chord.frets,
-                        3 in chord.frets,
-                        4 in chord.frets
-                    ]
+            if is_hit(inputs.active, chord):
+                counter.hit_note()
+            else:
+                counter.miss_note()
 
-                    held_chord = [
-                        strum.states["green"],
-                        strum.states["red"],
-                        strum.states["yellow"],
-                        strum.states["blue"],
-                        strum.states["orange"]
-                    ]
+        return counter.score
 
-                    if shape == held_chord:
-                        self.hit_note()
-                    else:
-                        self.miss_note()
+
+class InputTracker:
+    def __init__(self, inputs):
+        self.inputs = iter(inputs)
+        self.active = []
+        self.next_input = None
+        self.next()
+        print("---------------------")
+
+    def next(self):
+        try:
+            self.next_input = next(self.inputs)
+            print(self.next_input.events)
+        except StopIteration:
+            self.next_input = None
+
+    def update(self, min, max):
+        # Remove stale inputs
+        while self.active and self.active[0].start < min:
+            del self.active[0]
+
+        # Fetch new inputs
+        while self.next_input and self.next_input.start <= max:
+            if "strum_on" in self.next_input.events:
+                self.active.append(self.next_input)
+            self.next()
+
+
+def is_hit(active_inputs, chord):
+    if not active_inputs:
+        return False
+
+    shape = [
+        0 in chord.frets,
+        1 in chord.frets,
+        2 in chord.frets,
+        3 in chord.frets,
+        4 in chord.frets
+    ]
+
+    for i, strum in enumerate(active_inputs):
+        # One note strum, can be anchored
+        if len(chord.frets) == 1:
+            if strum.state["orange"]:
+                held_chord = [False, False, False, False, True]
+            elif strum.state["blue"]:
+                held_chord = [False, False, False, True, False]
+            elif strum.state["yellow"]:
+                held_chord = [False, False, True, False, False]
+            elif strum.state["red"]:
+                held_chord = [False, True, False, False, False]
+            elif strum.state["green"]:
+                held_chord = [True, False, False, False, False]
+        else:
+            held_chord = [
+                strum.state["green"],
+                strum.state["red"],
+                strum.state["yellow"],
+                strum.state["blue"],
+                strum.state["orange"]
+            ]
+
+        if shape == held_chord:
+            del active_inputs[i]
+            return True
+
+    return False
