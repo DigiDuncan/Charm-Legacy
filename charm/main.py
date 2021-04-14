@@ -38,11 +38,11 @@ class Game(nygame.Game):
         self.ir = None
         if instruments.get_count() > 0:
             self.guitar = instruments.Guitar.connect(0)
-            self.ir = InputRecorder(self.guitar)
-            self.sc = ScoreCalculator(chart, self.ir)
         else:
             self.guitar = instruments.Keyboard()
             self.register_eventhandler(self.guitar.handle_event)
+        self.ir = InputRecorder(self.guitar)
+        self.sc = ScoreCalculator(chart, self.ir)
         self.paused = False
         self.volume = 6
         self.la = LyricAnimator(chart)   # TODO: Update to take Song object
