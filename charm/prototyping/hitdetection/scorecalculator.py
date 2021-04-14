@@ -29,7 +29,6 @@ class ScoreCounter:
         return mult
 
     def hit_note(self):
-        print("hit_note")
         self.streak += 1
         self.score += (50 * self.multiplier)
 
@@ -71,12 +70,10 @@ class InputTracker:
         self.active = []
         self.next_input = None
         self.next()
-        print("---------------------")
 
     def next(self):
         try:
             self.next_input = next(self.inputs)
-            print(self.next_input.events)
         except StopIteration:
             self.next_input = None
 
