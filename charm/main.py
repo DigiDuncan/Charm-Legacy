@@ -55,7 +55,7 @@ class Game(nygame.Game):
         if self.ir is not None:
             if not self.paused:
                 self.ir.update(music.elapsed)
-                self.sc.update(music.elapsed)
+                self.score = self.sc.get_score(music.elapsed)
         self.la.update(music.elapsed)
         self.nd.update(music.elapsed)
 
@@ -94,8 +94,7 @@ class Game(nygame.Game):
         self.render_volume()
         self.render_phrase()
         self.render_bpm()
-        if self.sc:
-            self.render_score()
+        self.render_score()
 
     def render_lyrics(self):
         dest = self.la.image.get_rect()
@@ -139,7 +138,9 @@ class Game(nygame.Game):
         text.render_to(self.surface, (5, 95))
 
     def render_score(self):
-        text = T(f"SCORE: {self.sc.score}", font="Lato Medium", size=24, color="green")
+        if not self.sc:
+            return
+        text = T(f"SCORE: {self.score}", font="Lato Medium", size=24, color="green")
         text.render_to(self.surface, (5, 145))
 
     @property
