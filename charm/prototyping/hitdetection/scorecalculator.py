@@ -103,28 +103,27 @@ def is_hit(active_inputs, chord):
 
     for i, strum in enumerate(active_inputs):
         # One note strum, can be anchored
+        held_chord = [
+            strum.state["green"],
+            strum.state["red"],
+            strum.state["yellow"],
+            strum.state["blue"],
+            strum.state["orange"]
+        ]
         if len(chord.frets) == 1:
-            if strum.state["orange"]:
-                held_chord = [False, False, False, False, True]
-            elif strum.state["blue"]:
-                held_chord = [False, False, False, True, False]
-            elif strum.state["yellow"]:
-                held_chord = [False, False, True, False, False]
-            elif strum.state["red"]:
-                held_chord = [False, True, False, False, False]
-            elif strum.state["green"]:
-                held_chord = [True, False, False, False, False]
-        else:
-            held_chord = [
-                strum.state["green"],
-                strum.state["red"],
-                strum.state["yellow"],
-                strum.state["blue"],
-                strum.state["orange"]
-            ]
+            held_chord = anchor_chord(held_chord)
 
         if shape == held_chord:
             del active_inputs[i]
             return True
 
     return False
+
+
+def anchor_chord(frets):
+    anchored = []
+    for f in frets[::-1]:
+        if any(anchored):
+            f = False
+        anchored.insert(0, f)
+    return anchored
