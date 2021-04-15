@@ -47,7 +47,7 @@ class Game(nygame.Game):
         self.volume = 6
         self.la = LyricAnimator(chart)   # TODO: Update to take Song object
         hyperloop_init()
-        self.nd = HyperloopDisplay(chart, self.guitar, size=(400, 620), bg = "./charm/data/images/highway.png")
+        self.nd = HyperloopDisplay(chart, self.guitar, size=(400, 620), hitwindow_vis = True, bg = "./charm/data/images/highway.png")
         music.load(songpath.parent / self.song.musicstream)
         self.pause_image = draw_pause()
 
@@ -140,8 +140,11 @@ class Game(nygame.Game):
     def render_score(self):
         if not self.sc:
             return
+        multmap = {1: "green", 2: "yellow", 3: "blue", 4: "purple"}
         text = T(f"SCORE: {self.score}", font="Lato Medium", size=24, color="green")
+        extra_text = T(f"{self.sc.multiplier}x", font="Lato Medium", size=24, color=multmap[self.sc.multiplier]) + T(f" | {self.sc.streak} streak", font="Lato Medium", size=24, color="green")
         text.render_to(self.surface, (5, 145))
+        extra_text.render_to(self.surface, (5, 170))
 
     @property
     def volume(self):

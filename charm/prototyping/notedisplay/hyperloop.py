@@ -10,7 +10,7 @@ import pygame.transform
 import pygame.image
 import pygame.draw
 import PIL.Image
-from pygame import transform
+from pygame import Rect, transform
 from pygame.surface import Surface
 from pygame.constants import SRCALPHA
 
@@ -30,7 +30,9 @@ def init():
     with pkg_resources.path(image_folder, "gh.png") as p:
         sprite_sheet = SpriteSheet.load(p)
 
+
 T = TypeVar("T")
+
 
 def getone(items: Iterator[T]) -> Optional[T]:
     try:
@@ -40,7 +42,7 @@ def getone(items: Iterator[T]) -> Optional[T]:
 
 
 class HyperloopDisplay:
-    def __init__(self, chart: Chart, instrument: Optional[Instrument], *, size: Tuple[int, int] = (400, 400), lefty: bool = False, bg: Optional[str] = None):
+    def __init__(self, chart: Chart, instrument: Optional[Instrument], *, size: Tuple[int, int] = (400, 400), lefty: bool = False, hitwindow_vis: bool = False, bg: Optional[str] = None):
         self.chart = chart
         self.instrument = instrument
         self.secs_to_ticks: Callable[[float], int] = self.chart.song.tempo_calc.secs_to_ticks
@@ -59,6 +61,7 @@ class HyperloopDisplay:
         self.last_drawn = None
         self.tilt: bool = False
         self.sp: bool = False
+        self.hitwindow_vis = hitwindow_vis
 
         self.create_bg()
         input_init()
@@ -209,6 +212,13 @@ class HyperloopDisplay:
     def draw_zero(self):
         y = self.gety(self.tracktime)
         pygame.draw.line(self._image, (128, 0, 0), (0, y), (self.size[0], y), width = 3)
+        if self.hitwindow_vis:
+            hitwindow_size = self.px_per_sec * HIT_WINDOW
+            hit_rect = Rect(0, 0, self.size[0], hitwindow_size)
+            hit_rect.centery = y
+            hit_surf = Surface((self.size[0], hitwindow_size), SRCALPHA)
+            hit_surf.fill((255, 0, 0, 64))
+            self._image.blit(hit_surf, hit_rect)
 
     def draw_input(self):
         dest = self.id.image.get_rect()

@@ -1,7 +1,5 @@
-from typing import List
 from charm.song import Chart
 from charm.prototyping.hitdetection.inputrecorder import InputRecorder
-from nygame import Index
 
 
 class ScoreCounter:
@@ -41,6 +39,9 @@ class ScoreCalculator:
         self.chart = chart
         self.input_recorder = input_recorder
 
+        self.streak = 0
+        self.multiplier = 1
+
     def get_score(self, tracktime):
         # Reset the score every calculation
         counter = ScoreCounter()
@@ -60,6 +61,9 @@ class ScoreCalculator:
                 counter.hit_note()
             else:
                 counter.miss_note()
+
+            self.streak = counter.streak
+            self.multiplier = counter.multiplier
 
         return counter.score
 
