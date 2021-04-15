@@ -8,7 +8,7 @@ I'm just messing around for now. I want to get Clone Hero (and everything elses)
 
 ## Planned Supported Chart Formats
 
-* `.chart`, various guitar games **(somewhat complete)**
+* `.chart`, [various guitar games](https://docs.google.com/document/d/1v2v0U-9HQ5qHeccpExDOLJ5CMPZZ3QytPmAG5WF0Kzs/edit) **(somewhat complete)**
 * `.mid` (chart), various guitar games, notably Frets on Fire
 * `.osu` and `.osz` (mania/taiko), [osu!mania and osu!taiko](https://osu.ppy.sh/wiki/en/osu%21_File_Formats)\*
 * `.sm`, [StepMania](https://strategywiki.org/wiki/StepMania/Creating_songs)
