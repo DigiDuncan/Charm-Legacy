@@ -14,6 +14,9 @@ I'm just messing around for now. I want to get Clone Hero (and everything elses)
 * Game accurate scoring for every gamemode
 * Customizable hit windows, judgement timings, grade windows, score systems, and more
 * An arcade-feel menu system that is a modern twist on a classic style
+* Custom Charm-only events and built-in modchart features
+* Customizable layouts
+* Streamer features
 
 ## Planned Supported Chart Formats
 
