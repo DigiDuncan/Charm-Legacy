@@ -3,7 +3,7 @@ from charm.lib.instruments.instrument import Instrument
 import math
 from itertools import count, takewhile
 from pathlib import Path
-from typing import Callable, Iterator, List, Optional, Tuple, TypeVar
+from typing import Callable, List, Optional, Tuple
 
 import pygame
 import pygame.transform
@@ -29,16 +29,6 @@ def init():
     global sprite_sheet
     with pkg_resources.path(image_folder, "gh.png") as p:
         sprite_sheet = SpriteSheet.load(p)
-
-
-T = TypeVar("T")
-
-
-def getone(items: Iterator[T]) -> Optional[T]:
-    try:
-        return next(items)
-    except StopIteration:
-        return None
 
 
 class HyperloopDisplay:

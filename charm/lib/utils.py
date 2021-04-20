@@ -1,5 +1,5 @@
 from functools import wraps
-from typing import Tuple
+from typing import Tuple, Iterator, TypeVar, Optional
 
 
 def nice_time(seconds: float, milliseconds = False):
@@ -77,3 +77,13 @@ def cache_on(*attrs):
             return cached_result
         return wrapped
     return wrapper
+
+
+T = TypeVar("T")
+
+
+def getone(items: Iterator[T]) -> Optional[T]:
+    try:
+        return next(items)
+    except StopIteration:
+        return None
