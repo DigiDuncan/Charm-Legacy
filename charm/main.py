@@ -29,6 +29,10 @@ def draw_pause():
 class Game(nygame.Game):
     def __init__(self):
         super().__init__(size = (1280, 720), fps = 120, showfps = True)
+        pygame.display.set_caption("Charm")
+        charm_icon = pygame.image.load("./charm/data/images/charm-icon32t.png")
+        charm_icon.convert_alpha()
+        pygame.display.set_icon(charm_icon)
         instruments.init(self)
         songpath = Path("./charm/data/charts/run_around_the_character_code/run_around_the_character_code.chart")
         with songpath.open("r", encoding="utf-8") as f:
