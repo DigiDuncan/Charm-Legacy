@@ -146,7 +146,7 @@ class Game(nygame.Game):
             return
         multmap = {1: "green", 2: "yellow", 3: "blue", 4: "purple"}
         text = T(f"SCORE: {self.score}", font="Lato Medium", size=24, color="green")
-        extra_text = T(f"{self.sc.multiplier}x", font="Lato Medium", size=24, color=multmap[self.sc.multiplier]) + T(f" | {self.sc.streak} streak", font="Lato Medium", size=24, color="green")
+        extra_text = T(f"{self.sc.multiplier}x", font="Lato Medium", size=24, color="cyan" if self.nd.sp else multmap[self.sc.multiplier]) + T(f" | {self.sc.streak} streak", font="Lato Medium", size=24, color="green")
         text.render_to(self.surface, (5, 145))
         extra_text.render_to(self.surface, (5, 170))
 
