@@ -198,7 +198,7 @@ class HyperloopDisplay:
     def draw_chords(self):
         for chord in self.visible_chords[::-1]:
             for fret in chord.frets:
-                self.draw_fret(fret, chord.flag, chord.start, spact=self.sp)
+                self.draw_fret(fret, chord.flag, chord.start, spact=self.sp, length=chord.length)
 
     def draw_zero(self):
         y = self.gety(self.tracktime)
@@ -217,7 +217,7 @@ class HyperloopDisplay:
         dest.bottom = self._image.get_rect().bottom
         self._image.blit(self.id.image, dest)
 
-    def draw_fret(self, fretnum: int, mode: str, secs: float, fade: float = 1, spact: bool = True):
+    def draw_fret(self, fretnum: int, mode: str, secs: float, fade: float = 1, spact: bool = True, length = 0):
         x = self.get_fretx(fretnum)
         y = self.gety(secs)
         sprite = sprite_sheet.get(fretnum=fretnum, mode=mode, spact=spact)
@@ -225,6 +225,20 @@ class HyperloopDisplay:
         x -= sprite.get_width() / 2
         y -= sprite.get_height() / 2
         sprite.set_alpha(255 * fade)
+        if length != 0:
+            sustain_img = sprite_sheet.get(fretnum=fretnum, mode="sustainbody", spact=spact)
+            sustaincap_img = sprite_sheet.get(fretnum=fretnum, mode="sustaintop", spact=spact)
+            width = sustain_img.get_width()
+            height = math.ceil(length * self.px_per_sec) - sustaincap_img.get_height()
+            sustain_img = pygame.transform.scale(sustain_img, (width, height))
+            sx = self.get_fretx(fretnum)
+            sy = self.gety(secs)
+            sustain_dest = sustain_img.get_rect()
+            sustain_dest.midbottom = (sx, sy)
+            sustaincap_dest = sustaincap_img.get_rect()
+            sustaincap_dest.midbottom = sustain_dest.midtop
+            self._image.blit(sustain_img, sustain_dest)
+            self._image.blit(sustaincap_img, sustaincap_dest)
         self._image.blit(sprite, (x, y))
 
     def draw_bg(self, bg_image: Surface):
