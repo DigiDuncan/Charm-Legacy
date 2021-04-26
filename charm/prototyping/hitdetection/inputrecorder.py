@@ -1,5 +1,5 @@
 from collections import defaultdict, deque
-from typing import Dict, Iterable, List, Literal, Union
+from typing import Dict, List, Literal
 
 from charm.lib.instruments.instrument import Instrument
 
@@ -73,8 +73,8 @@ class InputRecorder:
         self._whammy_threshold = 0.05
         self._whammy_delay = 0.5
 
-        self._whammy_data = deque([0] * 5, 5)
-        self._whammy_last_messed_with = 0
+        self._whammy_data = deque([0] * 5, 5) # TODO: This is average last 5 frames. Should be average [?] ms.
+        self._whammy_last_messed_with = 0 # TODO: This should probably default to None
 
         # People probably shouldn't touch this.
         self._inputs: List[Input] = []
@@ -121,7 +121,7 @@ class InputRecorder:
 
         self._inputs.append(Input(tracktime, curr_events, state))
 
-        #if curr_events:
+        # if curr_events:
         #    print(f"{round(tracktime, 3):>9} {curr_events}")
 
     @property

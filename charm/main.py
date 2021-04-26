@@ -33,18 +33,18 @@ class Game(nygame.Game):
         charm_icon = pygame.image.load("./charm/data/images/charm-icon32t.png")
         charm_icon.convert_alpha()
         pygame.display.set_icon(charm_icon)
-        instruments.init(self)
         songpath = Path("./charm/data/charts/run_around_the_character_code/run_around_the_character_code.chart")
         with songpath.open("r", encoding="utf-8") as f:
             self.song = chchart.load(f)
         chart = self.song.charts[('Expert', 'Single')]
         self.guitar = None
         self.ir = None
-        if instruments.get_count() > 0:
+        if instruments.Guitar.get_count() > 0:
             self.guitar = instruments.Guitar.connect(0)
+            print("Connection to Guitar 0")
         else:
-            self.guitar = instruments.Keyboard()
-            self.register_eventhandler(self.guitar.handle_event)
+            self.guitar = instruments.Keyboard.connect()
+            print("Connection to Keyboard")
         self.ir = InputRecorder(self.guitar)
         self.sc = ScoreCalculator(chart, self.ir)
         self.paused = False
@@ -64,6 +64,7 @@ class Game(nygame.Game):
         self.nd.update(music.elapsed)
 
         # print(self.guitar.debug)
+        instruments.Instrument.update(music.elapsed, events)
 
         for event in events:
             if event.type == pygame.KEYDOWN:

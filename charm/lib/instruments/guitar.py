@@ -1,6 +1,6 @@
 from nygame import Coord
 from pygame.constants import JOYAXISMOTION, JOYBUTTONDOWN, JOYBUTTONUP, JOYHATMOTION
-from .instrument import Instrument
+from .instrument import Instrument, InstrumentEvent
 
 
 arrows = " ←→↑↓↖↗↘↙"
@@ -33,8 +33,7 @@ def from_raw_whammy(value):
 
 
 class Guitar(Instrument):
-    def __init__(self, rawjoy):
-        super().__init__(rawjoy)
+    def __init__(self):
         self._frets = [False] * 5
         self._select = False
         self._start = False
@@ -42,25 +41,26 @@ class Guitar(Instrument):
         self._tilt = 0
         self._whammy = 0
 
-    def handle_event(self, e):
-        if e.type == JOYHATMOTION:
-            # Strum bar / Joystick
-            self._joy = Coord(e.value)
-        elif e.type == JOYBUTTONDOWN or e.type == JOYBUTTONUP:
-            state = e.type == JOYBUTTONDOWN
-            btn = e.button
-            if btn in (0, 1, 2, 3, 4):
-                btn = [0, 1, 3, 2, 4][btn]
-                self._frets[btn] = state
-            elif btn == 6:
-                self._select = state
-            elif btn == 7:
-                self._start = state
-        elif e.type == JOYAXISMOTION:
-            if e.axis == 3:
-                self._tilt = from_raw_tilt(e.value)
-            elif e.axis == 2:
-                self._whammy = from_raw_whammy(e.value)
+    def update(self, tracktime, events):
+        for e in events:
+            if e.type == JOYHATMOTION:
+                # Strum bar / Joystick
+                self._joy = Coord(e.value)
+            elif e.type == JOYBUTTONDOWN or e.type == JOYBUTTONUP:
+                state = e.type == JOYBUTTONDOWN
+                btn = e.button
+                if btn in (0, 1, 2, 3, 4):
+                    btn = [0, 1, 3, 2, 4][btn]
+                    self._frets[btn] = state
+                elif btn == 6:
+                    self._select = state
+                elif btn == 7:
+                    self._start = state
+            elif e.type == JOYAXISMOTION:
+                if e.axis == 3:
+                    self._tilt = from_raw_tilt(e.value)
+                elif e.axis == 2:
+                    self._whammy = from_raw_whammy(e.value)
 
     @property
     def fret1(self):
