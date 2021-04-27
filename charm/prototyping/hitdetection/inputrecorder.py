@@ -84,7 +84,9 @@ class InputRecorder:
         return sum(abs(b - a) for a, b in zip(list(self._whammy_data)[:-1], list(self._whammy_data)[1:])) > self._whammy_threshold
 
     def update(self, tracktime: Seconds):
-        raw_state = self.instrument.state
+        raw_state = defaultdict(bool)
+        for e in self.instrument.get_events():
+            print(e)
 
         self._whammy_data.append(raw_state["whammy"])
         if self.is_whammy_messed_with():

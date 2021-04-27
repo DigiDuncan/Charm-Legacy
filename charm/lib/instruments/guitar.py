@@ -1,5 +1,6 @@
+from typing import Literal
+from charm.lib.utils import onoff
 from nygame import Coord
-from pygame.constants import JOYAXISMOTION, JOYBUTTONDOWN, JOYBUTTONUP, JOYHATMOTION
 from .instrument import Instrument, InstrumentEvent
 
 
@@ -24,43 +25,15 @@ def num2bar(num, token, w=20):
     return format(token, f">{left}") + (right * " ")
 
 
-def from_raw_tilt(value):
-    return value * -1
-
-
-def from_raw_whammy(value):
-    return (value + 1) / 2
-
-
 class Guitar(Instrument):
-    def __init__(self):
+    def __init__(self, joydev):
+        super().__init__(joydev)
         self._frets = [False] * 5
-        self._select = False
+        self._star = False
         self._start = False
         self._joy = Coord(0, 0)
-        self._tilt = 0
-        self._whammy = 0
-
-    def update(self, tracktime, events):
-        for e in events:
-            if e.type == JOYHATMOTION:
-                # Strum bar / Joystick
-                self._joy = Coord(e.value)
-            elif e.type == JOYBUTTONDOWN or e.type == JOYBUTTONUP:
-                state = e.type == JOYBUTTONDOWN
-                btn = e.button
-                if btn in (0, 1, 2, 3, 4):
-                    btn = [0, 1, 3, 2, 4][btn]
-                    self._frets[btn] = state
-                elif btn == 6:
-                    self._select = state
-                elif btn == 7:
-                    self._start = state
-            elif e.type == JOYAXISMOTION:
-                if e.axis == 3:
-                    self._tilt = from_raw_tilt(e.value)
-                elif e.axis == 2:
-                    self._whammy = from_raw_whammy(e.value)
+        self._whammy = False
+        self._whammy_pos = 0
 
     @property
     def fret1(self):
@@ -97,16 +70,12 @@ class Guitar(Instrument):
         return (self.fret1, self.fret2, self.fret3, self.fret4, self.fret5)
 
     @property
-    def select(self):
-        return self._select
-
-    minus = starpower = select
+    def star(self):
+        return self._star
 
     @property
     def start(self):
         return self._start
-
-    plus = start
 
     @property
     def strumbar(self):
@@ -125,29 +94,12 @@ class Guitar(Instrument):
         return self._joy
 
     @property
-    def tilt(self):
-        return self._tilt
-
-    @property
     def whammy(self):
         return self._whammy
 
     @property
-    def state(self):
-        return {
-            "green": self.green,
-            "red": self.red,
-            "yellow": self.yellow,
-            "blue": self.blue,
-            "orange": self.orange,
-            "strumup": self.strumup,
-            "strumdown": self.strumdown,
-            "joy": self.joy,
-            "tilt": self.tilt,
-            "whammy": self.whammy,
-            "start": self.start,
-            "select": self.select
-        }
+    def whammy_pos(self):
+        return self._whammy_pos
 
     @property
     def debug(self):
@@ -157,3 +109,61 @@ class Guitar(Instrument):
         tiltstr = num2bar(self._tilt, "o")
         whamstr = num2bar(self._whammy, "/")
         return f"[ {fretstr} {btnstr} ]   [ {joystr} ]   [{tiltstr}]   [{whamstr}]"
+
+
+class ToggleEvent(InstrumentEvent):
+    def __init__(self, tracktime: float, state: bool):
+        self.name = f"{self._prefix}_{onoff(state)}"
+        self.tracktime = tracktime
+
+
+class FretEvent(ToggleEvent):
+    _prefix = "FRET"
+
+    def __init__(self, tracktime: float, state: bool, fretnum: int):
+        super().__init__(tracktime, state)
+        self.fretnum = fretnum
+
+    @property
+    def fretcolor(self) -> str:
+        return ["green", "red", "yellow", "blue", "orange"][self.fretnum - 1]
+
+    def __str__(self):
+        return f"{self.name}({self.fretnum}, {self.fretcolor})"
+
+
+class WhammyEvent(ToggleEvent):
+    _prefix = "WHAMMY"
+
+
+class StarEvent(ToggleEvent):
+    _prefix = "STAR"
+
+
+class StartEvent(ToggleEvent):
+    _prefix = "START"
+
+
+class StrumEvent(ToggleEvent):
+    _prefix = "STRUM"
+
+
+class JoyEvent(ToggleEvent):
+    _prefix = "JOY"
+
+    def __init__(self, tracktime: float, state: bool, direction: Literal["UP", "DOWN", "LEFT", "RIGHT"]):
+        super().__init__(tracktime, state)
+        self.direction = direction
+
+    def __str__(self):
+        return f"{self.name}({self.direction})"
+
+
+class WhammyMotion(InstrumentEvent):
+    def __init__(self, tracktime: float, position: float):
+        self.name = "WHAMMY_MOTION"
+        self.tracktime = tracktime
+        self.position = position
+
+    def __str__(self):
+        return f"{self.name}({self.position})"

@@ -1,13 +1,11 @@
 from __future__ import annotations
 
-from typing import Dict, List
+from typing import List
 
 from pygame import joystick
 from pygame.constants import JOYAXISMOTION, JOYBUTTONDOWN, JOYBUTTONUP, JOYHATMOTION, KEYDOWN, KEYUP
 
 KBID = -1
-
-joystick.init()
 
 
 # TODO: Detect instrument type
@@ -18,18 +16,21 @@ joystick.init()
 class Instrument:
     instruments = {}
 
-    def __init__(self):
+    def __init__(self, joydev):
+        self._joydev = joydev  # Required to prevent pygame from deleting the joystick
         self._events: List[InstrumentEvent] = []
 
     @classmethod
     def connect(cls, joynum: int):
         if joynum == KBID:
+            joydev = None
             instid = KBID
         else:
-            instid = joystick.Joystick(joynum).get_instance_id()
+            joydev = joystick.Joystick(joynum)
+            instid = joydev.get_instance_id()
 
         if instid not in cls.instruments:
-            cls.instruments[instid] = cls()
+            cls.instruments[instid] = cls(joydev)
 
         return cls.instruments[instid]
 
@@ -40,10 +41,6 @@ class Instrument:
         events = self._events.copy()
         self._events.clear()
         return events
-
-    @property
-    def state(self) -> Dict[str, bool]:
-        raise NotImplementedError
 
     @property
     def debug(self) -> str:
@@ -58,6 +55,9 @@ class Instrument:
 
     @classmethod
     def update(cls, tracktime, events):
+        if not events:
+            return
+
         instruments = {instid: [] for instid in cls.instruments.keys()}
 
         for e in events:
@@ -80,3 +80,6 @@ class InstrumentEvent:
     def __init__(self, ticks, name):
         self.ticks = ticks
         self.name = name
+
+    def __str__(self):
+        return self.name

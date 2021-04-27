@@ -87,3 +87,7 @@ def getone(items: Iterator[T]) -> Optional[T]:
         return next(items)
     except StopIteration:
         return None
+
+
+def onoff(state: bool):
+    return "ON" if state else "OFF"

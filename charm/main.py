@@ -29,6 +29,7 @@ def draw_pause():
 class Game(nygame.Game):
     def __init__(self):
         super().__init__(size = (1280, 720), fps = 120, showfps = True)
+        pygame.joystick.init()
         pygame.display.set_caption("Charm")
         charm_icon = pygame.image.load("./charm/data/images/charm-icon32t.png")
         charm_icon.convert_alpha()
@@ -39,11 +40,11 @@ class Game(nygame.Game):
         chart = self.song.charts[('Expert', 'Single')]
         self.guitar = None
         self.ir = None
-        if instruments.Guitar.get_count() > 0:
-            self.guitar = instruments.Guitar.connect(0)
-            print("Connection to Guitar 0")
+        if instruments.Instrument.get_count() > 0:
+            self.guitar = instruments.Wiitar.connect(0)
+            print("Connection to Wiitar 0")
         else:
-            self.guitar = instruments.Keyboard.connect()
+            self.guitar = instruments.Keyguitar.connect()
             print("Connection to Keyboard")
         self.ir = InputRecorder(self.guitar)
         self.sc = ScoreCalculator(chart, self.ir)
