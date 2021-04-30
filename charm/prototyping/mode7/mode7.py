@@ -23,10 +23,11 @@ def warp(surfarray, data):
     src_points = np.float32([data["a"], data["b"], data["c"], data["d"]])
     dst_points = np.float32([data["w"], data["x"], data["y"], data["z"]])
     pm = cv2.getPerspectiveTransform(src_points, dst_points)
-    print(f"[{pm[0][0]:.5}, {pm[0][1]:.5}, {pm[0][2]:.5}, {pm[1][0]:.5}, {pm[1][1]:.5}, {pm[1][2]:.5}, {pm[2][0]:.5}, {pm[2][1]:.5}]")
+    mdata = f"[{pm[0][0]:.5}, {pm[0][1]:.5}, {pm[0][2]:.5}, {pm[1][0]:.5}, {pm[1][1]:.5}, {pm[1][2]:.5}, {pm[2][0]:.5}, {pm[2][1]:.5}]"
+    print(mdata)
     img_output = cv2.warpPerspective(surfarray, pm, size)
 
-    return pygame.surfarray.make_surface(img_output)
+    return pygame.surfarray.make_surface(img_output), mdata
 
 
 class Game(nygame.Game):
@@ -74,23 +75,28 @@ class Game(nygame.Game):
         self.surface.blit(self.wimg, (0, 0))
         self.surface.blit(self.himg, (self.surface.get_width() - self.himg.get_width(), 0))
 
-    def render_coords(self):
+    def render_coords(self, mdata):
         data = self.data
         src = T(f"SRC: [{data['a']}, {data['b']}, {data['c']}, {data['d']}]", font="Lato Medium", size=24, color="green")
         dst = T(f"DST: [{data['w']}, {data['x']}, {data['y']}, {data['z']}]", font="Lato Medium", size=24, color="green")
+        mdt = T(mdata, font="Lato Medium", size=24, color="green")
 
         src_text = src.render()
         dst_text = dst.render()
+        mdt_text = mdt.render()
 
         screen = self.surface.get_rect()
         src_dest = src_text.get_rect()
         dst_dest = dst_text.get_rect()
+        mdt_dest = mdt_text.get_rect()
 
         src_dest.midtop = screen.midtop
         dst_dest.midtop = src_dest.midbottom
+        mdt_dest.midbottom = screen.midbottom
 
         self.surface.blit(src_text, src_dest)
         self.surface.blit(dst_text, dst_dest)
+        self.surface.blit(mdt_text, mdt_dest)
 
     def loop(self, events):
         keys = pygame.key.get_pressed()
@@ -149,12 +155,12 @@ class Game(nygame.Game):
         for k in "abcdwxyz":
             self.data[k] = [round(self.data[k][0], 2), round(self.data[k][1], 2)]
 
-        self._wimg = self.warp_highway(self.highway, self.data)
+        self._wimg, mdata = self.warp_highway(self.highway, self.data)
         # print(self.data)
 
         self.render_images()
         self.render_labels()
-        self.render_coords()
+        self.render_coords(mdata)
 
 
 Game().run()
