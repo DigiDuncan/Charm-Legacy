@@ -114,7 +114,7 @@ class Game(nygame.Game):
             if keys[K_s]: self.data["b"][0] = self.default_data["b"][0]  # noqa: E701
             if keys[K_d]: self.data["c"][0] = self.default_data["c"][0]  # noqa: E701
             if keys[K_f]: self.data["d"][0] = self.default_data["d"][0]  # noqa: E701
-            if keys[K_g]: self.data["w"][0] = self.default_data["q"][0]  # noqa: E701
+            if keys[K_g]: self.data["w"][0] = self.default_data["w"][0]  # noqa: E701
             if keys[K_h]: self.data["x"][0] = self.default_data["x"][0]  # noqa: E701
             if keys[K_j]: self.data["y"][0] = self.default_data["y"][0]  # noqa: E701
             if keys[K_k]: self.data["z"][0] = self.default_data["z"][0]  # noqa: E701
@@ -139,7 +139,7 @@ class Game(nygame.Game):
             if keys[K_s]: self.data["b"][1] = self.default_data["b"][1]  # noqa: E701
             if keys[K_d]: self.data["c"][1] = self.default_data["c"][1]  # noqa: E701
             if keys[K_f]: self.data["d"][1] = self.default_data["d"][1]  # noqa: E701
-            if keys[K_g]: self.data["w"][1] = self.default_data["q"][1]  # noqa: E701
+            if keys[K_g]: self.data["w"][1] = self.default_data["w"][1]  # noqa: E701
             if keys[K_h]: self.data["x"][1] = self.default_data["x"][1]  # noqa: E701
             if keys[K_j]: self.data["y"][1] = self.default_data["y"][1]  # noqa: E701
             if keys[K_k]: self.data["z"][1] = self.default_data["z"][1]  # noqa: E701
