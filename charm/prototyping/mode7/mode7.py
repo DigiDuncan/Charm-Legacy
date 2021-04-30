@@ -34,15 +34,15 @@ class Game(nygame.Game):
         self.highway = Path("./charm/data/images/highway.png")
         self._himg = pygame.image.load(self.highway)
         self.speed = 100
-        self.data = {
+        self.default_data = self.data = {
             "a": [0, 0],
-            "b": [0, 0],
-            "c": [0, 0],
-            "d": [0, 0],
+            "b": [150, 0],
+            "c": [0, 300],
+            "d": [150, 300],
             "w": [0, 0],
-            "x": [0, 0],
-            "y": [0, 0],
-            "z": [0, 0]
+            "x": [150, 0],
+            "y": [0, 300],
+            "z": [150, 300]
         }
         self._wimg = self.warp_highway(self.highway, self.data)
 
@@ -110,14 +110,14 @@ class Game(nygame.Game):
             if keys[K_y]: self.data["x"][0] -= self.pxpf(self.speed)  # noqa: E701
             if keys[K_u]: self.data["y"][0] -= self.pxpf(self.speed)  # noqa: E701
             if keys[K_i]: self.data["z"][0] -= self.pxpf(self.speed)  # noqa: E701
-            if keys[K_a]: self.data["a"][0] = 0  # noqa: E701
-            if keys[K_s]: self.data["b"][0] = 0  # noqa: E701
-            if keys[K_d]: self.data["c"][0] = 0  # noqa: E701
-            if keys[K_f]: self.data["d"][0] = 0  # noqa: E701
-            if keys[K_g]: self.data["w"][0] = 0  # noqa: E701
-            if keys[K_h]: self.data["x"][0] = 0  # noqa: E701
-            if keys[K_j]: self.data["y"][0] = 0  # noqa: E701
-            if keys[K_k]: self.data["z"][0] = 0  # noqa: E701
+            if keys[K_a]: self.data["a"][0] = self.default_data["a"][0]  # noqa: E701
+            if keys[K_s]: self.data["b"][0] = self.default_data["b"][0]  # noqa: E701
+            if keys[K_d]: self.data["c"][0] = self.default_data["c"][0]  # noqa: E701
+            if keys[K_f]: self.data["d"][0] = self.default_data["d"][0]  # noqa: E701
+            if keys[K_g]: self.data["w"][0] = self.default_data["q"][0]  # noqa: E701
+            if keys[K_h]: self.data["x"][0] = self.default_data["x"][0]  # noqa: E701
+            if keys[K_j]: self.data["y"][0] = self.default_data["y"][0]  # noqa: E701
+            if keys[K_k]: self.data["z"][0] = self.default_data["z"][0]  # noqa: E701
         else:
             if keys[K_1]: self.data["a"][1] += self.pxpf(self.speed)  # noqa: E701
             if keys[K_2]: self.data["b"][1] += self.pxpf(self.speed)  # noqa: E701
@@ -135,14 +135,14 @@ class Game(nygame.Game):
             if keys[K_y]: self.data["x"][1] -= self.pxpf(self.speed)  # noqa: E701
             if keys[K_u]: self.data["y"][1] -= self.pxpf(self.speed)  # noqa: E701
             if keys[K_i]: self.data["z"][1] -= self.pxpf(self.speed)  # noqa: E701
-            if keys[K_a]: self.data["a"][1] = 0  # noqa: E701
-            if keys[K_s]: self.data["b"][1] = 0  # noqa: E701
-            if keys[K_d]: self.data["c"][1] = 0  # noqa: E701
-            if keys[K_f]: self.data["d"][1] = 0  # noqa: E701
-            if keys[K_g]: self.data["w"][1] = 0  # noqa: E701
-            if keys[K_h]: self.data["x"][1] = 0  # noqa: E701
-            if keys[K_j]: self.data["y"][1] = 0  # noqa: E701
-            if keys[K_k]: self.data["z"][1] = 0  # noqa: E701
+            if keys[K_a]: self.data["a"][1] = self.default_data["a"][1]  # noqa: E701
+            if keys[K_s]: self.data["b"][1] = self.default_data["b"][1]  # noqa: E701
+            if keys[K_d]: self.data["c"][1] = self.default_data["c"][1]  # noqa: E701
+            if keys[K_f]: self.data["d"][1] = self.default_data["d"][1]  # noqa: E701
+            if keys[K_g]: self.data["w"][1] = self.default_data["q"][1]  # noqa: E701
+            if keys[K_h]: self.data["x"][1] = self.default_data["x"][1]  # noqa: E701
+            if keys[K_j]: self.data["y"][1] = self.default_data["y"][1]  # noqa: E701
+            if keys[K_k]: self.data["z"][1] = self.default_data["z"][1]  # noqa: E701
 
         for k in "abcdwxyz":
             self.data[k] = [round(self.data[k][0], 2), round(self.data[k][1], 2)]
