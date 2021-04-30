@@ -22,9 +22,9 @@ def warp(surfarray, data):
 
     src_points = np.float32([data["a"], data["b"], data["c"], data["d"]])
     dst_points = np.float32([data["w"], data["x"], data["y"], data["z"]])
-    projective_matrix = cv2.getPerspectiveTransform(src_points, dst_points)
-    print(projective_matrix)
-    img_output = cv2.warpPerspective(surfarray, projective_matrix, size)
+    pm = cv2.getPerspectiveTransform(src_points, dst_points)
+    print(f"[{pm[0][0]:.5}, {pm[0][1]:.5}, {pm[0][2]:.5}, {pm[1][0]:.5}, {pm[1][1]:.5}, {pm[1][2]:.5}, {pm[2][0]:.5}, {pm[2][1]:.5}]")
+    img_output = cv2.warpPerspective(surfarray, pm, size)
 
     return pygame.surfarray.make_surface(img_output)
 
