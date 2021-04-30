@@ -1,3 +1,4 @@
+from copy import copy
 from pathlib import Path
 
 import cv2
@@ -34,7 +35,7 @@ class Game(nygame.Game):
         self.highway = Path("./charm/data/images/highway.png")
         self._himg = pygame.image.load(self.highway)
         self.speed = 100
-        self.default_data = self.data = {
+        self.data = {
             "a": [0, 0],
             "b": [150, 0],
             "c": [0, 300],
@@ -44,6 +45,7 @@ class Game(nygame.Game):
             "y": [0, 300],
             "z": [150, 300]
         }
+        self.default_data = copy(self.data)
         self._wimg = self.warp_highway(self.highway, self.data)
 
     @property
