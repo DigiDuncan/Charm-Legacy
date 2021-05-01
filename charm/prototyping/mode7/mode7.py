@@ -32,6 +32,7 @@ def calcdist(point1, point2):
     dist = a.distance_to(b)
     return dist
 
+
 def addCoord(coord: Tuple[float, float], offset: Tuple[float, float]):
     return coord[0] + offset[0], coord[1] + offset[1]
 
@@ -102,7 +103,8 @@ class Quad:
 
     @property
     def coords(self):
-        return (tuple(self.tl), tuple(self.tr), tuple(self.bl), tuple(self.br))
+        # The transformation library uses YX coordinates, because why not?
+        return (tuple(self.tl[::-1]), tuple(self.tr[::-1]), tuple(self.bl[::-1]), tuple(self.br[::-1]))
 
     def copy(self):
         return Quad(self.tl, self.tr, self.bl, self.br)
@@ -171,28 +173,40 @@ class Game(nygame.Game):
 
     def render_coords(self):
         tf = getTF(self.src, self.dst)
-        tf_str = "\n".join(", ".join(f"{cell:.5}" for cell in row) for row in tf)
+        tf_str1 = ", ".join(f"{cell:.2f}" for cell in tf[0])
+        tf_str2 = ", ".join(f"{cell:.2f}" for cell in tf[1])
+        tf_str3 = ", ".join(f"{cell:.2f}" for cell in tf[2])
 
         src = T(f"SRC: {self.src}", font="Lato Medium", size=24, color="green")
         dst = T(f"DST: {self.dst}", font="Lato Medium", size=24, color="green")
-        mdt = T(tf_str, font="Lato Medium", size=24, color="green")
+        matrix1 = T(tf_str1, font="Lato Medium", size=24, color="green")
+        matrix2 = T(tf_str2, font="Lato Medium", size=24, color="green")
+        matrix3 = T(tf_str3, font="Lato Medium", size=24, color="green")
 
         src_text = src.render()
         dst_text = dst.render()
-        mdt_text = mdt.render()
+        mdt_text1 = matrix1.render()
+        mdt_text2 = matrix2.render()
+        mdt_text3 = matrix3.render()
 
         screen = self.surface.get_rect()
         src_dest = src_text.get_rect()
         dst_dest = dst_text.get_rect()
-        mdt_dest = mdt_text.get_rect()
+        mdt_dest1 = mdt_text1.get_rect()
+        mdt_dest2 = mdt_text2.get_rect()
+        mdt_dest3 = mdt_text3.get_rect()
 
         src_dest.midtop = screen.midtop
         dst_dest.midtop = src_dest.midbottom
-        mdt_dest.midbottom = screen.midbottom
+        mdt_dest3.midbottom = screen.midbottom
+        mdt_dest2.bottomleft = mdt_dest3.topleft
+        mdt_dest1.bottomleft = mdt_dest2.topleft
 
         self.surface.blit(src_text, src_dest)
         self.surface.blit(dst_text, dst_dest)
-        self.surface.blit(mdt_text, mdt_dest)
+        self.surface.blit(mdt_text1, mdt_dest3)
+        self.surface.blit(mdt_text2, mdt_dest2)
+        self.surface.blit(mdt_text3, mdt_dest1)
 
     def handle_keys(self):
         if self.grabbed is not None:
@@ -309,7 +323,6 @@ class Game(nygame.Game):
         quad, corner_idx = self.grabbed
         quad[corner_idx][0] = xy[0]
         quad[corner_idx][1] = xy[1]
-
 
     def loop(self, events):
         self.handle_mouse(events)
