@@ -46,11 +46,11 @@ def coordToStr(coord: Tuple[float, float]):
 
 
 class Quad:
-    def __init__(self, tl=None, tr=None, bl=None, br=None):
+    def __init__(self, tl=None, tr=None, br=None, bl=None):
         self.tl = list(tl or (0, 0))
         self.tr = list(tr or (0, 0))
-        self.bl = list(bl or (0, 0))
         self.br = list(br or (0, 0))
+        self.bl = list(bl or (0, 0))
 
     def render_to(self, surf: Surface, colors: Tuple[Color, Color, Color, Color]):
         pygame.draw.line(surf, colors[0], self.tl, self.tr)
@@ -59,58 +59,25 @@ class Quad:
         pygame.draw.line(surf, colors[3], self.bl, self.tl)
 
     def shift(self, offset: Tuple[float, float]) -> "Quad":
-        return Quad(
-            addCoord(self.tl, offset),
-            addCoord(self.tr, offset),
-            addCoord(self.bl, offset),
-            addCoord(self.br, offset)
-        )
+        return Quad(*(addCoord(p, offset) for p in self.points))
 
     def __getitem__(self, key):
-        return (self.tl, self.tr, self.bl, self.br)[key]
+        return self.points[key]
 
     @property
-    def topleft(self):
-        return self.tl
-
-    @topleft.setter
-    def topleft(self):
-        return self.tl
-
-    @property
-    def topright(self):
-        return self.tr
-
-    @topright.setter
-    def topright(self):
-        return self.tr
-
-    @property
-    def bottomleft(self):
-        return self.bl
-
-    @bottomleft.setter
-    def bottomleft(self):
-        return self.bl
-
-    @property
-    def bottomright(self):
-        return self.br
-
-    @bottomright.setter
-    def bottomright(self):
-        return self.br
+    def points(self):
+        return (self.tl, self.tr, self.br, self.bl)
 
     @property
     def coords(self):
         # The transformation library uses YX coordinates, because why not?
-        return (tuple(self.tl[::-1]), tuple(self.tr[::-1]), tuple(self.bl[::-1]), tuple(self.br[::-1]))
+        return tuple(tuple(p) for p in self.points)
 
     def copy(self):
-        return Quad(self.tl, self.tr, self.bl, self.br)
+        return Quad(*self.points)
 
     def __str__(self):
-        return f"[{coordToStr(self.tl)}, {coordToStr(self.tr)}, {coordToStr(self.bl)}, {coordToStr(self.br)}]"
+        return "[" + (", ".join(coordToStr(p) for p in self.points)) + "]"
 
 
 def getTF(src: Quad, dst: Quad) -> TFMatrix:
@@ -121,10 +88,11 @@ def getTF(src: Quad, dst: Quad) -> TFMatrix:
 
 
 def warp_surface(surf: Surface, src: Quad, dst: Quad) -> Surface:
-    surfarray = pygame.surfarray.array3d(surf)
+    surfarray = pygame.surfarray.array3d(surf).swapaxes(0, 1)
+    w, h = surf.get_size()
     pm = getTF(src, dst)
-    img_output: ndarray = cv2.warpPerspective(surfarray, pm, surf.get_size()[::-1])
-    return pygame.surfarray.make_surface(img_output)
+    img_output: ndarray = cv2.warpPerspective(surfarray, pm, (w, h))
+    return pygame.surfarray.make_surface(img_output.swapaxes(0, 1))
 
 
 class Game(nygame.Game):
@@ -133,7 +101,7 @@ class Game(nygame.Game):
         highway_path = Path("./charm/data/images/highway.png")
         self.highway_img = pygame.image.load(highway_path)
         self.speed = 100
-        self.default_quad = Quad((0, 0), (150, 0), (0, 300), (150, 300))
+        self.default_quad = Quad((0, 0), (150, 0), (150, 300), (0, 300))
         self.src = self.default_quad.copy()
         self.dst = self.default_quad.copy()
         self.original = self.highway_img.copy()
