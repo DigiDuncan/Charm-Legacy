@@ -89,17 +89,23 @@ def getTF(src: Quad, dst: Quad) -> TFMatrix:
 
 def warp_surface(surf: Surface, src: Quad, dst: Quad) -> Surface:
     surfarray = pygame.surfarray.array3d(surf).swapaxes(0, 1)
+    alphaarray = pygame.surfarray.array_alpha(surf).swapaxes(0, 1)
+    merged = np.dstack((surfarray, alphaarray))
     w, h = surf.get_size()
     pm = getTF(src, dst)
-    img_output: ndarray = cv2.warpPerspective(surfarray, pm, (w, h))
-    return pygame.surfarray.make_surface(img_output.swapaxes(0, 1))
+    img_output: ndarray = cv2.warpPerspective(merged, pm, (w, h))
+    flat = img_output.flatten()
+    surfout = pygame.image.frombuffer(flat, (w, h), "RGBA")
+
+    return surfout
 
 
 class Game(nygame.Game):
     def __init__(self):
-        super().__init__(size = (1280, 720), fps = 120, showfps = True)
+        super().__init__(size = (1280, 720), fps = 120, showfps = True, bgcolor="pink")
         highway_path = Path("./charm/data/images/highway.png")
-        self.highway_img = pygame.image.load(highway_path)
+        self.highway_img = pygame.image.load(highway_path).convert_alpha()
+        self.highway_img.set_alpha(100)
         self.speed = 100
         self.default_quad = Quad((0, 0), (150, 0), (150, 300), (0, 300))
         self.src = self.default_quad.copy()
@@ -107,7 +113,7 @@ class Game(nygame.Game):
         self.original = self.highway_img.copy()
         self.warped = self.highway_img.copy()
         self.grabbed = None
-        self.line_offset = (500, 100)
+        self.line_offset = (350, 75)
 
     def pxpf(self, pxps):
         return pxps / self.fps
@@ -139,6 +145,14 @@ class Game(nygame.Game):
         self.src.shift(self.line_offset).render_to(self.surface, (Color("#FF0000"), Color("#00FF00"), Color("#FFFF00"), Color("#0000FF")))
         self.dst.shift(self.line_offset).render_to(self.surface, (Color("#FF7788"), Color("#77FF77"), Color("#FFFF99"), Color("#0066FF")))
 
+    def render_highway(self):
+        surface_rect = self.surface.get_rect()
+        highway_rect = self.warped.get_rect()
+
+        highway_rect.midbottom = surface_rect.midbottom
+
+        self.surface.blit(self.warped, highway_rect)
+
     def render_coords(self):
         tf = getTF(self.src, self.dst)
         tf_str1 = ", ".join(f"{cell:.2f}" for cell in tf[0])
@@ -166,9 +180,9 @@ class Game(nygame.Game):
 
         src_dest.midtop = screen.midtop
         dst_dest.midtop = src_dest.midbottom
-        mdt_dest3.midbottom = screen.midbottom
-        mdt_dest2.bottomleft = mdt_dest3.topleft
-        mdt_dest1.bottomleft = mdt_dest2.topleft
+        mdt_dest1.midtop = dst_dest.midbottom
+        mdt_dest2.midtop = mdt_dest1.midbottom
+        mdt_dest3.midtop = mdt_dest2.midbottom
 
         self.surface.blit(src_text, src_dest)
         self.surface.blit(dst_text, dst_dest)
@@ -297,6 +311,8 @@ class Game(nygame.Game):
 
         self.handle_keys()
         self.warp_highway()
+
+        self.render_highway()
 
         self.render_outlines()
         self.render_images()
