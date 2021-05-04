@@ -100,25 +100,39 @@ def warp_surface(surf: Surface, src: Quad, dst: Quad) -> Surface:
     return surfout
 
 
+def render_no():
+    s = Surface((300, 300), pygame.SRCALPHA)
+    width = 25
+    halfw = int(width / 2)
+    pygame.draw.circle(s, "red", (150, 150), 150, width)
+    pygame.draw.line(s, "red", (150, 0 + halfw), (150, 300 - halfw), width * 2)
+    s = pygame.transform.rotozoom(s, -45, 1)
+    return s
+
+
 class Game(nygame.Game):
     def __init__(self):
         super().__init__(size = (1280, 720), fps = 120, showfps = True, bgcolor="pink")
         highway_path = Path("./charm/data/images/highway.png")
         self.highway_img = pygame.image.load(highway_path).convert_alpha()
-        self.highway_img.set_alpha(100)
         self.speed = 100
         self.default_quad = Quad((0, 0), (150, 0), (150, 300), (0, 300))
         self.src = self.default_quad.copy()
         self.dst = self.default_quad.copy()
+        self.last_src = self.default_quad.copy()
+        self.last_dst = self.default_quad.copy()
         self.original = self.highway_img.copy()
         self.warped = self.highway_img.copy()
         self.grabbed = None
         self.line_offset = (350, 75)
+        self.no = render_no()
 
     def pxpf(self, pxps):
         return pxps / self.fps
 
     def warp_highway(self):
+        if self.last_dst == self.dst and self.last_src == self.src:
+            return
         img = self.highway_img.copy()
         self.warped = warp_surface(img, self.src, self.dst)
 
@@ -147,11 +161,46 @@ class Game(nygame.Game):
 
     def render_highway(self):
         surface_rect = self.surface.get_rect()
-        highway_rect = self.warped.get_rect()
 
+        if self.dst[0][1] != self.dst[1][1]:
+            self.render_error("Top not a straight line.")
+            return
+
+        tl, tr, br, bl = self.dst[0], self.dst[1], self.dst[2], self.dst[3]
+        top_length = tr[0] - tl[0]
+        bottom_length = br[0] - bl[0]
+        try:
+            bt_ratio = top_length / bottom_length
+        except ZeroDivisionError:
+            self.render_error("Division by zero error.")
+            return
+
+        if top_length > bottom_length:
+            self.render_error("Top longer than bottom.")
+            return
+
+        highway_rect = self.warped.get_rect()
         highway_rect.midbottom = surface_rect.midbottom
 
+        highway2 = self.warped
+        highway2 = pygame.transform.rotozoom(self.warped, 0, bt_ratio)
+        highway2_rect = highway2.get_rect()
+        highway2_rect.bottomleft = highway_rect.topleft
+        highway2_rect.move_ip(tl)
+
         self.surface.blit(self.warped, highway_rect)
+        self.surface.blit(highway2, highway2_rect)
+
+    def render_error(self, error: str):
+        surface_rect = self.surface.get_rect()
+        no_rect = self.no.get_rect()
+        no_rect.midbottom = surface_rect.midbottom
+        self.surface.blit(self.no, no_rect)
+        error_text = T(error, font="Lato Medium", size=24, color="red").render()
+        error_rect = error_text.get_rect()
+        error_rect.midbottom = surface_rect.midbottom
+        error_rect.move(0, -5)
+        self.surface.blit(error_text, error_rect)
 
     def render_coords(self):
         tf = getTF(self.src, self.dst)
@@ -186,9 +235,9 @@ class Game(nygame.Game):
 
         self.surface.blit(src_text, src_dest)
         self.surface.blit(dst_text, dst_dest)
-        self.surface.blit(mdt_text1, mdt_dest3)
+        self.surface.blit(mdt_text1, mdt_dest1)
         self.surface.blit(mdt_text2, mdt_dest2)
-        self.surface.blit(mdt_text3, mdt_dest1)
+        self.surface.blit(mdt_text3, mdt_dest3)
 
     def handle_keys(self):
         if self.grabbed is not None:
@@ -254,14 +303,11 @@ class Game(nygame.Game):
         for e in events:
             if e.type == MOUSEBUTTONDOWN and e.button == 1:
                 self.grab(e.pos, keys[K_LSHIFT])
-                print("grab")
             elif e.type == MOUSEBUTTONUP and e.button == 1:
                 self.ungrab()
-                print("ungrab")
             elif e.type == MOUSEMOTION:
                 self.movegrab(e.pos)
             elif e.type == MOUSEBUTTONDOWN and e.button == 3:
-                print("resetgrab")
                 self.resetgrab(e.pos, keys[K_LSHIFT])
 
     def grab(self, xy, target_src):
@@ -305,6 +351,10 @@ class Game(nygame.Game):
         quad, corner_idx = self.grabbed
         quad[corner_idx][0] = xy[0]
         quad[corner_idx][1] = xy[1]
+
+    def save_cache(self):
+        self.last_src = self.src
+        self.last_dst = self.dst
 
     def loop(self, events):
         self.handle_mouse(events)
