@@ -1,8 +1,11 @@
 from functools import lru_cache
+from itertools import cycle
 from typing import List
 
 import nygame
+import pygame
 from nygame import DigiText as T
+from pygame.constants import K_DOWN, K_RETURN, K_UP
 from pygame.surface import Surface
 
 
@@ -44,15 +47,22 @@ class MenuItem:
 class Menu:
     def __init__(self, items: List[MenuItem] = []):
         self.items = items
-        self.selected = None
+        self.selected = 0
 
     @lru_cache
     def sort(self, key, reverse = False):
         self.items.sort(key = lambda x: getattr(x, key), reverse = reverse)
 
+    def update(self):
+        for n, i in enumerate(self.items):
+            if n == self.selected:
+                i.selected = True
+            else:
+                i.selected = False
+
     def render(self):
         surf: Surface = None
-        for n, i in enumerate(self.items):
+        for i in self.items:
             isurf = i.render()
             surf = stacksurfs(surf, isurf, 5)
         return surf
@@ -65,12 +75,29 @@ class Game(nygame.Game):
             {"title": "Never Gonna Give You Up", "artist": "Rick Astley"},
             {"title": "Ace of Spades", "artist": "Motorhead"},
             {"title": "Sonic Forces (Fist Bump)", "artist": "Crush 40"},
+            {"title": "Less Talk More Rokk", "artist": "Freezepop"}
         ]
         self.items = [MenuItem(i["title"], i["title"], i["artist"]) for i in self.data]
         self.menu = Menu(self.items)
-        self.menu.sort("title")
+        self.selected = 0
+        self.sorttypes = cycle(["title", "artist"])
+        self.sorttype = next(self.sorttypes)
 
     def loop(self, events):
+        for event in events:
+            if event.type == pygame.KEYDOWN:
+                if event.key == K_DOWN:
+                    self.selected += 1
+                elif event.key == K_UP:
+                    self.selected -= 1
+                elif event.key == K_RETURN:
+                    self.sorttype = next(self.sorttypes)
+
+        self.selected %= len(self.menu.items)
+        self.menu.selected = self.selected
+
+        self.menu.sort(self.sorttype)
+        self.menu.update()
         menusurf = self.menu.render()
         self.surface.blit(menusurf, (5, 5))
 
