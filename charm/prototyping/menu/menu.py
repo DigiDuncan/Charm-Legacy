@@ -25,3 +25,9 @@ class MenuItem:
 class Game(nygame.Game):
     def __init__(self):
         super().__init__(fps = 120, showfps = True)
+
+    def loop(self, events):
+        pass
+
+
+Game().run()
