@@ -49,9 +49,12 @@ class Menu:
         self.items = items
         self.selected = 0
 
-    @lru_cache
     def sort(self, key, reverse = False):
-        self.items.sort(key = lambda x: getattr(x, key), reverse = reverse)
+        self.items = self.sorted(key = key, reverse = reverse)
+
+    @lru_cache
+    def sorted(self, key, reverse = False):
+        return sorted(self.items, key = lambda x: getattr(x, key), reverse = reverse)
 
     def update(self):
         for n, i in enumerate(self.items):
@@ -92,11 +95,11 @@ class Game(nygame.Game):
                     self.selected -= 1
                 elif event.key == K_RETURN:
                     self.sorttype = next(self.sorttypes)
+                    self.menu.sort(self.sorttype)
 
         self.selected %= len(self.menu.items)
         self.menu.selected = self.selected
 
-        self.menu.sort(self.sorttype)
         self.menu.update()
         menusurf = self.menu.render()
         self.surface.blit(menusurf, (5, 5))
