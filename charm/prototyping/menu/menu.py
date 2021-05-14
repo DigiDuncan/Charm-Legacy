@@ -1,15 +1,26 @@
+from functools import lru_cache
+from typing import List
+
 import nygame
+from nygame import DigiText as T
 from pygame.surface import Surface
 
 
-def stacksurfs(surf1: Surface, surf2: Surface):
+def stacksurfs(surf1: Surface, surf2: Surface, gap = 0) -> Surface:
+    if surf2 is None:
+        return surf1
+    if surf1 is None:
+        return surf2
+
     width = max(surf1.get_width(), surf2.get_width())
-    height = surf1.get_height() + surf2.get_height()
-    yoffset = surf1.get_height()
+    height = surf1.get_height() + surf2.get_height() + gap
+    yoffset = surf1.get_height() + gap
 
     newsurf = Surface((width, height))
     newsurf.blit(surf1, (0, 0))
     newsurf.blit(surf2, (0, yoffset))
+
+    return newsurf
 
 
 class MenuItem:
@@ -18,16 +29,50 @@ class MenuItem:
         self.title = title
         self.artist = artist
 
+        self.selected = False
+
+    @property
+    def color(self):
+        return "red" if self.selected else "green"
+
     def render(self):
-        pass
+        titlesurf = T(self.title, font = "Lato Semibold", size = 32, color = self.color, underline = True).render()
+        artistsurf = T(self.artist, font = "Lato Medium", size = 24, color = self.color).render()
+        return stacksurfs(titlesurf, artistsurf)
+
+
+class Menu:
+    def __init__(self, items: List[MenuItem] = []):
+        self.items = items
+        self.selected = None
+
+    @lru_cache
+    def sort(self, key, reverse = False):
+        self.items.sort(key = lambda x: getattr(x, key), reverse = reverse)
+
+    def render(self):
+        surf: Surface = None
+        for n, i in enumerate(self.items):
+            isurf = i.render()
+            surf = stacksurfs(surf, isurf, 5)
+        return surf
 
 
 class Game(nygame.Game):
     def __init__(self):
         super().__init__(fps = 120, showfps = True)
+        self.data = [
+            {"title": "Never Gonna Give You Up", "artist": "Rick Astley"},
+            {"title": "Ace of Spades", "artist": "Motorhead"},
+            {"title": "Sonic Forces (Fist Bump)", "artist": "Crush 40"},
+        ]
+        self.items = [MenuItem(i["title"], i["title"], i["artist"]) for i in self.data]
+        self.menu = Menu(self.items)
+        self.menu.sort("title")
 
     def loop(self, events):
-        pass
+        menusurf = self.menu.render()
+        self.surface.blit(menusurf, (5, 5))
 
 
 Game().run()
