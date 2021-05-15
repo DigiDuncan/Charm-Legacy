@@ -248,7 +248,7 @@ class TempoCalculator:
         if ticks < 0:
             curr_tempo = self.tempos[0]
         else:
-            curr_tempo = self.tempo_by_ticks[ticks]
+            curr_tempo = self.tempo_by_ticks[ticks - 1]
 
         diff_ticks = ticks - curr_tempo.tick_start
         diff_seconds = diff_ticks / curr_tempo.ticks_per_sec

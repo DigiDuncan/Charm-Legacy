@@ -6,7 +6,7 @@ import nygame
 import pygame
 from nygame import DigiText as T
 from nygame import music
-from pygame.constants import K_HOME, K_KP7, K_KP_MINUS, K_KP_PLUS, K_KP4, K_KP6, K_PAUSE, K_7, K_l, K_s, MOUSEWHEEL
+from pygame.constants import K_HOME, K_KP7, K_KP_MINUS, K_KP_PLUS, K_KP4, K_KP6, K_PAUSE, K_7, K_RETURN, K_l, K_s, MOUSEWHEEL
 
 from charm.lib import instruments
 from charm.lib.args import InvalidArgException, tryint
@@ -23,6 +23,13 @@ def draw_pause():
     T.size = 42
     T.color = (0, 255, 255)
     pause_text = T("⏸", font="Segoe UI Emoji") + T(" PAUSED", font="Lato Medium")
+    return pause_text.render()
+
+
+def draw_loading():
+    T.size = 42
+    T.color = (0, 255, 255)
+    pause_text = T("🕒", font="Segoe UI Emoji") + T(" LOADING", font="Lato Medium")
     return pause_text.render()
 
 
@@ -50,10 +57,15 @@ class Game(nygame.Game):
         self.ir = InputRecorder(self.guitar)
 
         # Initialize class variables.
+        self.chart = None
         self.sc = None
         self.la = None
         self.nd = None
         self.highway = "./charm/data/images/highway.png"
+
+        # Static, generated images
+        self.pause_image = draw_pause()
+        self.loading_image = draw_loading()
 
         # Load default chart.
         self.load_chart()
@@ -63,9 +75,8 @@ class Game(nygame.Game):
 
         hyperloop_init()
 
-        self.pause_image = draw_pause()
-
     def load_chart(self, songfolder: str = None, filename = "notes.chart", difficulty = "Expert"):
+        self.render_loading()
         if songfolder is None:
             songpath = Path("./charm/data/charts/run_around_the_character_code/run_around_the_character_code.chart")
         else:
@@ -74,23 +85,15 @@ class Game(nygame.Game):
         with songpath.open("r", encoding="utf-8") as f:
             self.song = chchart.load(f)
 
-        chart = self.song.charts[(difficulty, 'Single')]
+        self.chart = self.song.charts[(difficulty, 'Single')]
 
-        self.sc = ScoreCalculator(chart, self.ir)
-        self.la = LyricAnimator(chart)   # TODO: Update to take Song object
-        self.nd = HyperloopDisplay(chart, self.guitar, size=(400, 620), hitwindow_vis = True, bg = self.highway)
-        music.load(songpath.parent / self.song.musicstream)
-
-        music.elapsed = 0
+        self.sc = ScoreCalculator(self.chart, self.ir)
+        self.la = LyricAnimator(self.chart)   # TODO: Update to take Song object
+        self.nd = HyperloopDisplay(self.chart, self.guitar, size=(400, 620), hitwindow_vis = True, bg = self.highway)
+        musicstream = self.song.musicstream or "song.ogg"
+        music.play(songpath.parent / musicstream)
 
     def loop(self, events):
-        if self.ir is not None:
-            if not self.paused:
-                self.ir.update(music.elapsed)
-                self.score = self.sc.get_score(music.elapsed)
-        self.la.update(music.elapsed)
-        self.nd.update(music.elapsed)
-
         # print(self.guitar.debug)
         instruments.Instrument.update(music.elapsed, events)
 
@@ -114,13 +117,25 @@ class Game(nygame.Game):
                     self.nd.sp = not self.nd.sp
                 elif event.key == K_l:
                     self.nd.lefty = not self.nd.lefty
+                elif event.key == K_RETURN:
+                    try:
+                        self.load_chart(R"F:\chs\01 Official GH Games\1 Guitar Hero I\A GH1SP\[GH1] Tier 1 - Opening Licks\1. Joan Jett - I Love Rock And Roll")
+                    except chchart.UnparsedMetadataException as e:
+                        print(e)
             elif event.type == MOUSEWHEEL:
                 music.elapsed -= event.y / 20
 
-        # note = Note(instruments.GUITAR, frets.ORANGE)
-        # self.surface.blit(note.image, (0, 0))
+        # Updates
+        if self.ir is not None:
+            if not self.paused:
+                self.ir.update(music.elapsed)
+                self.score = self.sc.get_score(music.elapsed)
+        self.la.update(music.elapsed)
+        self.nd.update(music.elapsed)
 
-        self.render_lyrics()
+        # Draws
+        if self.chart.song.lyrics:
+            self.render_lyrics()
         self.render_notes()
         self.render_clock()
         self.render_pause()
@@ -148,6 +163,11 @@ class Game(nygame.Game):
             rect.move_ip((-5, -5))
             self.surface.blit(self.pause_image, rect)
 
+    def render_loading(self):
+        rect = self.loading_image.get_rect()
+        rect.center = self.surface.get_rect().center
+        self.surface.blit(self.loading_image, rect)
+
     def render_clock(self):
         timestr = nice_time(music.elapsed, True)
         text = T(f"{timestr} [{self.la.track_ticks}]", font="Lato Medium", size=24, color="green")
@@ -163,7 +183,7 @@ class Game(nygame.Game):
         text.render_to(self.surface, (5, 70))
 
     def render_bpm(self):
-        bpm = self.song.tempo_calc.tempo_by_secs[music.elapsed]
+        # bpm = self.song.tempo_calc.tempo_by_secs[music.elapsed]
         ts = self.song.timesig_by_ticks[self.song.tempo_calc.secs_to_ticks(music.elapsed)]
         # TODO: This is TPS, not BPM
         # text = T(f"{bpm.ticks_per_sec:.3f}BPM | {ts.numerator}/{ts.denominator}", font="Lato Medium", size=24, color="green")

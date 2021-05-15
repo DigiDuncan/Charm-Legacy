@@ -165,10 +165,9 @@ def set_metadata(song, lines: List[RawMetadata]) -> Dict[str, Union[str, int]]:
     song.genre = metadata.pop("Genre", None)
     song.mediastream = metadata.pop("MediaStream", None)
     song.musicstream = metadata.pop("MusicStream", None)
-    # TODO: Do something with this unparsed metadata entries
-    metadata.pop("Player2", None)
-    metadata.pop("MediaType", None)
-    metadata.pop("GuitarStream", None)
+    # TODO: Do something with these unparsed metadata entries
+    for tag in ["Player2", "GuitarStream", "MediaType", "ArtistText", "CountOff", "GuitarVol", "BandVol", "HoPo", "OriginalArtist"]:
+        metadata.pop(tag, None)
     if len(metadata) > 0:
         raise UnparsedMetadataException(list(metadata.keys()))
 
@@ -213,6 +212,9 @@ def parse_events(song: Song, raw_events: List[Union[RawEvent, RawLyric, RawPhras
             events.append(event_from_raw(song, None, e))
         else:
             raise InvalidEventException(f"Invalid event {e}")
+
+    if not raw_phrase_events:
+        return events, []
 
     raw_phrase_events.sort()
 
