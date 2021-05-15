@@ -29,15 +29,16 @@ def draw_pause():
 class Game(nygame.Game):
     def __init__(self):
         super().__init__(size = (1280, 720), fps = 120, showfps = True)
+        # Set up controller.
         pygame.joystick.init()
+
+        # Set window title/icon.
         pygame.display.set_caption("Charm")
         charm_icon = pygame.image.load("./charm/data/images/charm-icon32t.png")
         charm_icon.convert_alpha()
         pygame.display.set_icon(charm_icon)
-        songpath = Path("./charm/data/charts/run_around_the_character_code/run_around_the_character_code.chart")
-        with songpath.open("r", encoding="utf-8") as f:
-            self.song = chchart.load(f)
-        chart = self.song.charts[('Expert', 'Single')]
+
+        # Set up guitar and InputRecorder.
         self.guitar = None
         self.ir = None
         if instruments.Instrument.get_count() > 0:
@@ -47,14 +48,40 @@ class Game(nygame.Game):
             self.guitar = instruments.Keyguitar.connect()
             print("Connection to Keyboard")
         self.ir = InputRecorder(self.guitar)
-        self.sc = ScoreCalculator(chart, self.ir)
+
+        # Initialize class variables.
+        self.sc = None
+        self.la = None
+        self.nd = None
+        self.highway = "./charm/data/images/highway.png"
+
+        # Load default chart.
+        self.load_chart()
+
         self.paused = False
         self.volume = 6
-        self.la = LyricAnimator(chart)   # TODO: Update to take Song object
+
         hyperloop_init()
-        self.nd = HyperloopDisplay(chart, self.guitar, size=(400, 620), hitwindow_vis = True, bg = "./charm/data/images/highway.png")
-        music.load(songpath.parent / self.song.musicstream)
+
         self.pause_image = draw_pause()
+
+    def load_chart(self, songfolder: str = None, filename = "notes.chart", difficulty = "Expert"):
+        if songfolder is None:
+            songpath = Path("./charm/data/charts/run_around_the_character_code/run_around_the_character_code.chart")
+        else:
+            songpath = Path(songfolder) / filename
+
+        with songpath.open("r", encoding="utf-8") as f:
+            self.song = chchart.load(f)
+
+        chart = self.song.charts[(difficulty, 'Single')]
+
+        self.sc = ScoreCalculator(chart, self.ir)
+        self.la = LyricAnimator(chart)   # TODO: Update to take Song object
+        self.nd = HyperloopDisplay(chart, self.guitar, size=(400, 620), hitwindow_vis = True, bg = self.highway)
+        music.load(songpath.parent / self.song.musicstream)
+
+        music.elapsed = 0
 
     def loop(self, events):
         if self.ir is not None:
