@@ -230,7 +230,7 @@ class Game(nygame.Game):
             if event.data.startswith('section'):
                 current_section = event.data.removeprefix('section ')
 
-        text = T(current_section, font="Segoe UI Emoji", size=24, color="yellow")
+        text = T(emojize(current_section), font="Segoe UI Emoji", size=24, color="yellow")
         rect = text.get_rect()
         rect.bottomleft = self.surface.get_rect().bottomleft
         rect.move_ip(5, -5)
