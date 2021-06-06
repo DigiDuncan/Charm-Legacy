@@ -1,4 +1,5 @@
 from enum import Enum
+from itertools import cycle
 from pathlib import Path
 
 import nygame
@@ -46,6 +47,12 @@ class Game(nygame.Game):
         charm_icon.convert_alpha()
         pygame.display.set_icon(charm_icon)
 
+        # Cycle of charts.
+        self.charts = cycle([
+            Path("./charm/data/charts/run_around_the_character_code"),
+            Path("./charm/data/charts/soulless5")
+        ])
+
         # Set up guitar and InputRecorder.
         self.guitar = None
         self.ir = None
@@ -88,9 +95,9 @@ class Game(nygame.Game):
 
     def load_chart(self, songfolder: str = None, filename = "notes.chart", difficulty = "Expert"):
         if songfolder is None:
-            songpath = Path("./charm/data/charts/run_around_the_character_code/run_around_the_character_code.chart")
-        else:
-            songpath = Path(songfolder) / filename
+            songfolder = next(self.charts)
+
+        songpath = Path(songfolder) / filename
 
         with songpath.open("r", encoding="utf-8") as f:
             self.song = chchart.load(f)
@@ -100,8 +107,20 @@ class Game(nygame.Game):
         self.sc = ScoreCalculator(self.chart, self.ir)
         self.la = LyricAnimator(self.chart)   # TODO: Update to take Song object
         self.nd = HyperloopDisplay(self.chart, self.guitar, size=(400, 620), hitwindow_vis = True, bg = self.highway)
-        musicstream = self.song.musicstream or "song.ogg"
-        music.play(songpath.parent / musicstream)
+        musicstream = None
+
+        possiblesongs = [self.song.musicstream, "song.ogg", "song.mp3", "guitar.ogg", "guitar.mp3"]
+        for possiblesong in possiblesongs:
+            if musicstream is not None:
+                break
+            musicfile = songfolder / possiblesong
+            if musicfile.exists():
+                musicstream = musicfile
+
+        if musicstream is None:
+            raise ValueError("No valid music file found!")
+
+        music.play(musicstream)
 
     def loop(self, events):
         # print(self.guitar.debug)
@@ -129,7 +148,7 @@ class Game(nygame.Game):
                     self.nd.lefty = not self.nd.lefty
                 elif event.key == K_RETURN:
                     try:
-                        self.queue_chart(R"F:\chs\01 Official GH Games\1 Guitar Hero I\A GH1SP\[GH1] Tier 1 - Opening Licks\1. Joan Jett - I Love Rock And Roll")
+                        self.queue_chart()
                     except chchart.UnparsedMetadataException as e:
                         print(e)
             elif event.type == MOUSEWHEEL:
@@ -227,6 +246,7 @@ class Game(nygame.Game):
         for event in self.song.events:
             if event.tick_start > current_tick:
                 break
+            # TODO: Should we have Section objects?
             if event.data.startswith('section'):
                 current_section = event.data.removeprefix('section ')
 
