@@ -6,6 +6,7 @@ import nygame
 import pygame
 from nygame import DigiText as T
 from nygame import music
+from nygame.emoji import emojize
 from pygame.constants import K_HOME, K_KP7, K_KP_MINUS, K_KP_PLUS, K_KP4, K_KP6, K_PAUSE, K_7, K_RETURN, K_l, K_s, MOUSEWHEEL
 
 from charm.lib import instruments
@@ -143,6 +144,7 @@ class Game(nygame.Game):
         self.render_phrase()
         self.render_bpm()
         self.render_score()
+        self.render_section()
 
     def render_lyrics(self):
         dest = self.la.image.get_rect()
@@ -198,6 +200,21 @@ class Game(nygame.Game):
         extra_text = T(f"{self.sc.multiplier}x", font="Lato Medium", size=24, color="cyan" if self.nd.sp else multmap[self.sc.multiplier]) + T(f" | {self.sc.streak} streak", font="Lato Medium", size=24, color="green")
         text.render_to(self.surface, (5, 145))
         extra_text.render_to(self.surface, (5, 170))
+
+    def render_section(self):
+        current_tick = self.la.track_ticks
+        current_section = ""
+        for event in self.song.events:
+            if event.tick_start > current_tick:
+                break
+            if event.data.startswith('section'):
+                current_section = event.data.removeprefix('section ')
+
+        text = T(current_section, font="Segoe UI Emoji", size=24, color="yellow")
+        rect = text.get_rect()
+        rect.bottomleft = self.surface.get_rect().bottomleft
+        rect.move_ip(5, -5)
+        text.render_to(self.surface, rect)
 
     @property
     def volume(self):
