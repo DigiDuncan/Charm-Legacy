@@ -1,4 +1,3 @@
-from charm.prototyping.hitdetection.scorecalculator import ScoreCalculator
 from enum import Enum
 from pathlib import Path
 
@@ -16,6 +15,7 @@ from charm.lib.utils import clamp, nice_time
 from charm.loaders import chchart
 from charm.prototyping import loader_test
 from charm.prototyping.hitdetection.inputrecorder import InputRecorder
+from charm.prototyping.hitdetection.scorecalculator import ScoreCalculator
 from charm.prototyping.notedisplay.hyperloop import HyperloopDisplay, init as hyperloop_init
 from charm.prototyping.lyricanimator.lyricanimator import LyricAnimator
 
@@ -28,7 +28,7 @@ def draw_pause():
 
 
 def draw_loading():
-    T.size = 42
+    T.size = 72
     T.color = (0, 255, 255)
     pause_text = T("🕒", font="Segoe UI Emoji") + T(" LOADING", font="Lato Medium")
     return pause_text.render()
@@ -73,11 +73,20 @@ class Game(nygame.Game):
 
         self.paused = False
         self.volume = 6
+        self.loading_timer = 0
+        self.loading_queued = None
 
         hyperloop_init()
 
+    def queue_chart(self, songfolder: str = None, filename = "notes.chart", difficulty = "Expert"):
+        self.loading_queued = {
+            "songfolder": songfolder,
+            "filename": filename,
+            "difficulty": difficulty
+        }
+        self.loading_timer = 2
+
     def load_chart(self, songfolder: str = None, filename = "notes.chart", difficulty = "Expert"):
-        self.render_loading()
         if songfolder is None:
             songpath = Path("./charm/data/charts/run_around_the_character_code/run_around_the_character_code.chart")
         else:
@@ -120,16 +129,17 @@ class Game(nygame.Game):
                     self.nd.lefty = not self.nd.lefty
                 elif event.key == K_RETURN:
                     try:
-                        self.load_chart(R"F:\chs\01 Official GH Games\1 Guitar Hero I\A GH1SP\[GH1] Tier 1 - Opening Licks\1. Joan Jett - I Love Rock And Roll")
+                        self.queue_chart(R"F:\chs\01 Official GH Games\1 Guitar Hero I\A GH1SP\[GH1] Tier 1 - Opening Licks\1. Joan Jett - I Love Rock And Roll")
                     except chchart.UnparsedMetadataException as e:
                         print(e)
             elif event.type == MOUSEWHEEL:
                 music.elapsed -= event.y / 20
 
         # Updates
-        if self.ir is not None:
-            if not self.paused:
+        if not self.paused:
+            if self.ir is not None:
                 self.ir.update(music.elapsed)
+            if self.sc is not None:
                 self.score = self.sc.get_score(music.elapsed)
         self.la.update(music.elapsed)
         self.nd.update(music.elapsed)
@@ -145,6 +155,15 @@ class Game(nygame.Game):
         self.render_bpm()
         self.render_score()
         self.render_section()
+        self.render_loading()
+
+        # Chart loading
+        if self.loading_queued:
+            if self.loading_timer > 0:
+                self.loading_timer -= 1
+            else:
+                self.load_chart(**self.loading_queued)
+                self.loading_queued = None
 
     def render_lyrics(self):
         dest = self.la.image.get_rect()
@@ -166,9 +185,10 @@ class Game(nygame.Game):
             self.surface.blit(self.pause_image, rect)
 
     def render_loading(self):
-        rect = self.loading_image.get_rect()
-        rect.center = self.surface.get_rect().center
-        self.surface.blit(self.loading_image, rect)
+        if self. loading_queued:
+            rect = self.loading_image.get_rect()
+            rect.center = self.surface.get_rect().center
+            self.surface.blit(self.loading_image, rect)
 
     def render_clock(self):
         timestr = nice_time(music.elapsed, True)
