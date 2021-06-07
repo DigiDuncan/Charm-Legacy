@@ -190,6 +190,8 @@ class HyperloopDisplay:
             # 0 - 1
             fade = max(0, self.strike_fadetime - timediff) / self.strike_fadetime
             for fret in chord.frets:
+                if fret == 7:  # TODO: Gross and harcoded fix for opens.
+                    continue
                 fret_strikes[fret] = max(fret_strikes[fret], fade)
 
         for fret, fade in enumerate(fret_strikes):
@@ -263,6 +265,8 @@ class HyperloopDisplay:
         return y - 32
 
     def get_fretx(self, fret: int):
+        if fret == 7:
+            fret == 3  # TODO: Gross and hardcoded fix for opens
         w = self.size[0]
         fret_count = 5
         fret_space = w / fret_count
