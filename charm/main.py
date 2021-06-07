@@ -92,7 +92,7 @@ class Game(nygame.Game):
             "difficulty": difficulty
         }
         self.loading_timer = 2
-        music.stop()
+        # music.stop()
 
     def load_chart(self, songfolder: str = None, filename = "notes.chart", difficulty = "Expert"):
         if songfolder is None:
