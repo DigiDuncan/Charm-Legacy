@@ -6,8 +6,8 @@ from typing import Dict, List, Tuple, Union
 
 from nygame.emoji import emojize
 
-from charm.loaders.raw_chchart import RawEvent, RawLyric, RawNote, RawPhraseEnd, RawPhraseStart, RawStarPower, RawTempo, RawAnchor, RawTS, RawMetadata, load_raw
-from charm.song import Chart, Chord, Event, LyricPhrase, LyricWord, Note, Song, SPEvent, TSEvent, TempoCalculator, TempoEvent
+from charm.loaders.raw_chchart import RawEvent, RawLyric, RawNote, RawPhraseEnd, RawPhraseStart, RawSection, RawStarPower, RawTempo, RawAnchor, RawTS, RawMetadata, load_raw
+from charm.song import Chart, Chord, Event, LyricPhrase, LyricWord, Note, Section, Song, SPEvent, TSEvent, TempoCalculator, TempoEvent
 
 
 class LoadException(Exception):
@@ -199,22 +199,30 @@ def parse_synctrack(song, lines: List[RawTempo, RawTS]) -> Tuple[TempoCalculator
     return tempo_calc, timesigs
 
 
-def parse_events(song: Song, raw_events: List[Union[RawEvent, RawLyric, RawPhraseStart, RawPhraseEnd]]) -> Tuple[List[Event], List[LyricPhrase]]:
+def parse_events(song: Song, raw_events: List[Union[RawEvent, RawLyric, RawPhraseStart, RawPhraseEnd, RawSection]]) -> Tuple[List[Event], List[LyricPhrase], List[Section]]:
     raw_lyrics = []
     raw_phrase_events = []
+    raw_sections = []
     events = []
     for e in raw_events:
         if isinstance(e, RawLyric):
             raw_lyrics.append(e)
         elif isinstance(e, RawPhraseStart) or isinstance(e, RawPhraseEnd):
             raw_phrase_events.append(e)
+        elif isinstance(e, RawSection):
+            raw_sections.append(e)
         elif isinstance(e, RawEvent):
             events.append(event_from_raw(song, None, e))
         else:
             raise InvalidEventException(f"Invalid event {e}")
 
+    raw_sections.sort()
+    sections = [Section(song, sect.tick_start) for sect in raw_sections]
+    for sect in sections:
+        sect.finalize()
+
     if not raw_phrase_events:
-        return events, []
+        return events, [], sections
 
     raw_phrase_events.sort()
 
@@ -251,7 +259,7 @@ def parse_events(song: Song, raw_events: List[Union[RawEvent, RawLyric, RawPhras
     for p in phrases:
         p.finalize()
 
-    return events, phrases
+    return events, phrases, sections
 
 
 def clean_word(word: str):
@@ -285,7 +293,7 @@ def song_from_raw(datablocks: Dict[str, List[RawNote, RawEvent, RawTempo, RawAnc
     song = Song()
     set_metadata(song, datablocks.pop("Song"))
     song.tempo_calc, song.timesigs = parse_synctrack(song, datablocks.pop("SyncTrack"))
-    song.events, song.lyrics = parse_events(song, datablocks.pop("Events"))
+    song.events, song.lyrics, song.sections = parse_events(song, datablocks.pop("Events"))
     part_vocals = datablocks.pop("PART VOCALS", None)    # TODO Handle vocals section
 
     charts = {}

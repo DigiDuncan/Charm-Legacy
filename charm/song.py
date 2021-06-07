@@ -66,6 +66,7 @@ class SPEvent(ChartEvent):
     def __init__(self, song, chart, tick_start, kind, tick_length):
         super().__init__(song, chart, tick_start, tick_length)
         self.kind = kind  # Unused? Seems to always be 2...
+                          # UPDATE: Nope! Sometimes 0 in RB Overdrive phrases.
 
     def __eq__(self, other):
         return (self.tick_start, self.kind, self.tick_length) == (other.tick_start, other.kind, other.tick_length)
@@ -84,6 +85,19 @@ class Event(ChartEvent):
 
     def __repr__(self):
         return f"<{self.__class__.__name__}(start = {self.start}, data = {self.data})>"
+
+
+class Section(SongEvent):
+    def __init__(self, song: Song, tick_start: int):
+        super().__init__(song, tick_start)
+        self.name: str = ""
+        self.section_by_ticks: Index[int, str] = None
+
+    def finalize(self):
+        self.section_by_ticks = Index(self.name, "tick_start")
+
+    def __lt__(self, other: Section):
+        return self.tick_start < other.tick_start
 
 
 class LyricPhrase(SongEvent):
@@ -179,6 +193,8 @@ class Song:
         self.timesig_by_ticks: Index[int, TSEvent] = None
         self.lyrics: List[LyricPhrase] = []
         self.lyric_by_ticks: Index[int, LyricPhrase] = None
+        self.sections: List[Section] = []
+        self.section_by_ticks: Index[int, Section] = None
         self.tempo_calc: TempoCalculator = None
         self.full_name: str = None
         self.title: str = None
@@ -203,6 +219,7 @@ class Song:
         self.tempo_calc.finalize()
         self.timesig_by_ticks = Index(self.timesigs, "tick_start")
         self.lyric_by_ticks = Index(self.lyrics, "tick_start")
+        self.section_by_ticks = Index(self.sections, "tick_start")
 
     def __hash__(self):
         return hash((

@@ -245,12 +245,8 @@ class Game(nygame.Game):
     def render_section(self):
         current_tick = self.la.track_ticks
         current_section = ""
-        for event in self.song.events:
-            if event.tick_start > current_tick:
-                break
-            # TODO: Should we have Section objects?
-            if event.data.startswith('section'):
-                current_section = event.data.removeprefix('section ')
+        if cs := self.song.section_by_ticks[current_tick]:
+            current_section = cs.name
 
         text = T(emojize(current_section), font="Segoe UI Emoji", size=24, color="yellow")
         rect = text.get_rect()

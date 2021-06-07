@@ -24,7 +24,7 @@ class LineParseException(RawLoadException):
     pass
 
 
-def load_raw(f) -> Dict[str, List[RawNote, RawEvent, RawTempo, RawAnchor, RawTS, RawStarPower, RawMetadata]]:
+def load_raw(f) -> Dict[str, List[RawNote, RawEvent, RawTempo, RawAnchor, RawTS, RawStarPower, RawMetadata, RawSection]]:
     blocks = {}
     curr_block = None
     for line in f:
@@ -43,10 +43,10 @@ def load_raw(f) -> Dict[str, List[RawNote, RawEvent, RawTempo, RawAnchor, RawTS,
     return blocks
 
 
-def parse_line(line) -> Union[RawNote, RawLyric, RawPhraseStart, RawPhraseEnd, RawEvent, RawTempo, RawAnchor, RawTS, RawStarPower, RawMetadata, None]:
+def parse_line(line) -> Union[RawNote, RawLyric, RawPhraseStart, RawPhraseEnd, RawEvent, RawTempo, RawAnchor, RawTS, RawStarPower, RawMetadata, RawSection, None]:
     # parse RawMetadata last, because it's ambigious
     # parse RawLyric, RawPhraseStart and RawPhraseEnd before RawEvent, because they're subtypes of RawEvent
-    rawclasses = [RawNote, RawLyric, RawPhraseStart, RawPhraseEnd, RawEvent, RawTempo, RawAnchor, RawTS, RawStarPower, RawMetadata]
+    rawclasses = [RawNote, RawLyric, RawPhraseStart, RawPhraseEnd, RawSection, RawEvent, RawTempo, RawAnchor, RawTS, RawStarPower, RawMetadata]
     parsed = (c.parse(line) for c in rawclasses)
     succesfully_parsed = (obj for obj in parsed if obj is not None)
     try:
@@ -105,6 +105,13 @@ class RawEvent(RawTimedLine):
 @dataclass
 class RawLyric(RawTimedLine):
     RE_LINE = re.compile(RE_ITEM_TPL.format(r"E", r"\"lyric ([^\"]+)\""))
+    tick_start: int
+    text: str
+
+
+@dataclass
+class RawSection(RawTimedLine):
+    RE_LINE = re.compile(RE_ITEM_TPL.format(r"E", r"\"section ([^\"]+)\""))
     tick_start: int
     text: str
 
