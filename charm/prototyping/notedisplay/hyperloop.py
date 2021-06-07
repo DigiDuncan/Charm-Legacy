@@ -27,7 +27,7 @@ sprite_sheet = None
 
 def init():
     global sprite_sheet
-    with pkg_resources.path(image_folder, "gh.png") as p:
+    with pkg_resources.path(image_folder, "gh.png") as p:  # TODO: HARDCODE
         sprite_sheet = SpriteSheet.load(p)
 
 
@@ -41,8 +41,8 @@ class HyperloopDisplay:
         self.lefty = lefty
         self.bg: Optional[Path] = None if bg is None else Path(bg)
         self.track_ticks: int = 0
-        self.length: float = 0.75
-        self.lanes = 5  # TODO: Hardcoded.
+        self.length: float = 0.75  # TODO: HARDCODE
+        self.lanes = 5  # TODO: HARDCODE
         self.px_per_sec = size[1] / self.length  # This will mess up with BPM scaling, eventually.
         self.strike_fadetime = 0.5
         self.visible_chords: List[Chord] = []
@@ -166,6 +166,7 @@ class HyperloopDisplay:
             self.project()
 
     def project(self):
+        # TODO: Replace with mode7.py
         def surfaceToPillow(surf: Surface) -> PIL.Image.Image:
             strFormat = 'RGBA'
             raw_str = pygame.image.tostring(surf, strFormat, False)
@@ -197,13 +198,13 @@ class HyperloopDisplay:
             pygame.draw.line(self._image, (128, 128, 128), (0, y), (self.size[0], y), width = 5)
 
     def draw_strikes(self):
-        fret_strikes = [0.0, 0.0, 0.0, 0.0, 0.0]
+        fret_strikes = [0.0, 0.0, 0.0, 0.0, 0.0]  # TODO: HARDCODE
         for chord in self.old_chords:
             timediff = self.tracktime - chord.start
             # 0 - 1
             fade = max(0, self.strike_fadetime - timediff) / self.strike_fadetime
             for fret in chord.frets:
-                if fret == 7:  # TODO: Gross and harcoded fix for opens.
+                if fret == 7:  # TODO: HARDCODE
                     continue
                 fret_strikes[fret] = max(fret_strikes[fret], fade)
 
