@@ -113,7 +113,7 @@ def render_no():
 class Game(nygame.Game):
     def __init__(self):
         super().__init__(size = (1280, 720), fps = 120, showfps = True, bgcolor="pink")
-        highway_path = Path("./charm/data/images/highway.png")
+        highway_path = Path("./charm/data/images/oldhighway.png")
         self.highway_img = pygame.image.load(highway_path).convert_alpha()
         self.speed = 100
         self.default_quad = Quad((0, 0), (150, 0), (150, 300), (0, 300))
