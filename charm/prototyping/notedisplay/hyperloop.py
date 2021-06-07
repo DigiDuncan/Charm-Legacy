@@ -280,7 +280,7 @@ class HyperloopDisplay:
 
     def get_fretx(self, fret: int):
         if fret == 7:
-            fret == 3  # TODO: Gross and hardcoded fix for opens
+            fret = 2  # TODO: Gross and hardcoded fix for opens
         w = self.size[0]
         fret_count = 5
         fret_space = w / fret_count
