@@ -91,3 +91,12 @@ def getone(items: Iterator[T]) -> Optional[T]:
 
 def onoff(state: bool):
     return "ON" if state else "OFF"
+
+
+def linear_one_to_zero(start, duration, current):
+    end = start + duration
+    if current < start:
+        return 1
+    if current > end:
+        return 0
+    return -(1 / duration) * current + (end / duration)

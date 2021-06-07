@@ -12,7 +12,7 @@ from pygame.constants import K_HOME, K_KP7, K_KP_MINUS, K_KP_PLUS, K_KP4, K_KP6,
 from charm.lib import instruments
 from charm.lib.args import InvalidArgException, tryint
 from charm.lib.nargs import nargs
-from charm.lib.utils import clamp, nice_time
+from charm.lib.utils import clamp, linear_one_to_zero, nice_time
 from charm.loaders import chchart
 from charm.prototyping import loader_test
 from charm.prototyping.hitdetection.inputrecorder import InputRecorder
@@ -174,6 +174,7 @@ class Game(nygame.Game):
         self.render_bpm()
         self.render_score()
         self.render_section()
+        self.render_title()
         self.render_loading()
 
         # Chart loading
@@ -255,6 +256,17 @@ class Game(nygame.Game):
         rect.bottomleft = self.surface.get_rect().bottomleft
         rect.move_ip(5, -5)
         text.render_to(self.surface, rect)
+
+    def render_title(self):
+        time = music.elapsed
+        # https://www.desmos.com/calculator/h0tyxihzzq
+        opacity = linear_one_to_zero(3, 1, time)
+        titletext = T(self.song.title, font = "Lato Medium", size = 72)
+        rect = titletext.get_rect()
+        rect.center = self.surface.get_rect().center
+        titlesurf = titletext.render()
+        titlesurf.set_alpha(255 * opacity)
+        self.surface.blit(titlesurf, rect)
 
     @property
     def volume(self):
