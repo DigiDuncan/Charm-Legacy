@@ -121,7 +121,7 @@ class HyperloopDisplay:
         aspect = bg_tile.get_rect().height / bg_tile.get_rect().width
         tile_height = int(w * aspect)
         bg_tile = pygame.transform.smoothscale(bg_tile, (w, tile_height))
-        bg_tile_sp = pygame.transform.smoothscale(bg_tile, (w, tile_height))
+        bg_tile_sp = pygame.transform.smoothscale(bg_tile_sp, (w, tile_height))
 
         tile_count = (math.ceil(h / tile_height) + 1)
         full_height = tile_height * tile_count
