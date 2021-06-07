@@ -49,6 +49,7 @@ class HyperloopDisplay:
         self._image = Surface(size, SRCALPHA)
         self.bg_tile_height = 0
         self.bg_image: Optional[Surface] = None
+        self.bg_image_sp: Optional[Surface] = None
         self.last_drawn = None
         self.tilt: bool = False
         self.sp: bool = False
@@ -108,13 +109,19 @@ class HyperloopDisplay:
     def create_bg(self):
         if self.bg is None:
             return
-        bg_tile = pygame.image.load(str(self.bg))
+        img = str(self.bg)
+        imgsplit = img.rsplit(".", 1)
+        spimg = imgsplit[0] + "_sp." + imgsplit[1]
+        bg_tile = pygame.image.load(img)
         bg_tile.convert_alpha()
+        bg_tile_sp = pygame.image.load(spimg)
+        bg_tile_sp.convert_alpha()
         w, h = self.size
         # Scale height to fit hyperloop width but maintain aspect ratio.
         aspect = bg_tile.get_rect().height / bg_tile.get_rect().width
         tile_height = int(w * aspect)
         bg_tile = pygame.transform.smoothscale(bg_tile, (w, tile_height))
+        bg_tile_sp = pygame.transform.smoothscale(bg_tile, (w, tile_height))
 
         tile_count = (math.ceil(h / tile_height) + 1)
         full_height = tile_height * tile_count
@@ -122,10 +129,12 @@ class HyperloopDisplay:
         rect = bg_tile.get_rect()
         self.bg_tile_height = tile_height
         self.bg_image = Surface((w, full_height))
+        self.bg_image_sp = Surface((w, full_height))
 
         for i in range(tile_count):
             rect.y = i * tile_height
             self.bg_image.blit(bg_tile, rect)
+            self.bg_image_sp.blit(bg_tile_sp, rect)
 
     def update(self, tracktime: float):
         self.track_ticks = self.secs_to_ticks(tracktime)
@@ -138,8 +147,12 @@ class HyperloopDisplay:
     def draw(self):
         self._image.fill("clear")
 
-        if self.bg_image:
-            self.draw_bg(self.bg_image)
+        if self.sp:
+            if self.bg_image_sp:
+                self.draw_bg(self.bg_image_sp)
+        else:
+            if self.bg_image:
+                self.draw_bg(self.bg_image)
         self.draw_beatlines()
         if self.id:
             self.draw_input()
