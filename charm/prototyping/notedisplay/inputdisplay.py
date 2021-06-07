@@ -1,14 +1,13 @@
 from charm.lib.instruments.instrument import Instrument
 import importlib.resources as pkg_resources
-from typing import Union
 
 import pygame
-from pygame import Rect, Surface, image
+from pygame import Rect, Surface
 from pygame.constants import SRCALPHA
 
 import charm.data.images.spritesheets as image_folder
-from charm.lib.instruments.guitar import Guitar
 from charm.lib.pgutils import gradientRect
+from .spriteloader import SpriteSheet
 
 HIT_WINDOW = 0.140  # 140ms
 
@@ -45,48 +44,15 @@ flagmap = {
     "strike": 6
 }
 
-gh_sheet: Surface = None
+gh_sheet: SpriteSheet = None
 
 fret_images = {}
 
 
-def get_sprite(flag: str, fret: Union[str, int]) -> Surface:
-    return fret_images[flag][fret]
-
-
-def set_sprite(flag: str, fretname: str, sprite: Surface):
-    fret_images[flag][fretname] = sprite
-    if fretname in fretnums:
-        fretnum = fretnums[fretname]
-        fret_images[flag][fretnum] = sprite
-
-
 def init():
     global gh_sheet
-
-    SPRITE_SIZE = 64
-
-    with pkg_resources.path(image_folder, "gh.png") as p:
-        gh_sheet = image.load(p)
-        gh_sheet.convert_alpha()
-
-    if gh_sheet.get_size()[1] == 1280:
-        gh_sheet = pygame.transform.scale(gh_sheet, (1280, 640))  # TODO: This is hacky and needs to be flexible.
-
-    for flag, sy in flagmap.items():
-        fret_images[flag] = {}
-        for fret, sxw in fretmap.items():
-            sw = 1
-            try:
-                sx, sw = sxw
-            except TypeError:
-                sx = sxw
-            x = sx * SPRITE_SIZE
-            y = sy * SPRITE_SIZE
-            w = sw * SPRITE_SIZE
-            h = SPRITE_SIZE
-            img = gh_sheet.subsurface(Rect(x, y, w, h))
-            set_sprite(flag, fret, img)
+    with pkg_resources.path(image_folder, "gh.png") as p:  # TODO: HARDCODE
+        gh_sheet = SpriteSheet.load(p)
 
 
 class InputDisplay:
@@ -138,7 +104,7 @@ class InputDisplay:
 
         for n, f in enumerate(self.guitar.shape):
             if f:
-                self._image.blit(get_sprite("note", n), self.get_fret_pos(n))
+                self._image.blit(gh_sheet.get(fretnum = n), self.get_fret_pos(n))
 
         self._image.set_alpha(self.opacity)
 
