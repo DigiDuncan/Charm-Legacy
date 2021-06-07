@@ -246,7 +246,7 @@ class Game(nygame.Game):
         current_tick = self.la.track_ticks
         current_section = ""
         if cs := self.song.section_by_ticks[current_tick]:
-            current_section = cs.name
+            current_section = cs.text
 
         text = T(emojize(current_section), font="Segoe UI Emoji", size=24, color="yellow")
         rect = text.get_rect()

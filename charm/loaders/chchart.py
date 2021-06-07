@@ -217,9 +217,7 @@ def parse_events(song: Song, raw_events: List[Union[RawEvent, RawLyric, RawPhras
             raise InvalidEventException(f"Invalid event {e}")
 
     raw_sections.sort()
-    sections = [Section(song, sect.tick_start) for sect in raw_sections]
-    for sect in sections:
-        sect.finalize()
+    sections = [Section(song, sect.tick_start, sect.text) for sect in raw_sections]
 
     if not raw_phrase_events:
         return events, [], sections

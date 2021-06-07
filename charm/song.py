@@ -88,13 +88,9 @@ class Event(ChartEvent):
 
 
 class Section(SongEvent):
-    def __init__(self, song: Song, tick_start: int):
+    def __init__(self, song: Song, tick_start: int, text: str):
         super().__init__(song, tick_start)
-        self.name: str = ""
-        self.section_by_ticks: Index[int, str] = None
-
-    def finalize(self):
-        self.section_by_ticks = Index(self.name, "tick_start")
+        self.text: str = text
 
     def __lt__(self, other: Section):
         return self.tick_start < other.tick_start
