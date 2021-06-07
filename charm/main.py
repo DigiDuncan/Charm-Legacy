@@ -243,7 +243,7 @@ class Game(nygame.Game):
         extra_text.render_to(self.surface, (5, 170))
 
     def render_section(self):
-        current_tick = self.la.track_ticks
+        current_tick = self.song.tempo_calc.secs_to_ticks(music.elapsed)
         current_section = ""
         if cs := self.song.section_by_ticks[current_tick]:
             current_section = cs.text
