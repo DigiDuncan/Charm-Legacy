@@ -234,11 +234,15 @@ class Game(nygame.Game):
         text.render_to(self.surface, (5, 70))
 
     def render_bpm(self):
-        # bpm = self.song.tempo_calc.tempo_by_secs[music.elapsed]
+        tempo = self.song.tempo_calc.tempo_by_secs[music.elapsed]
         ts = self.song.timesig_by_ticks[self.song.tempo_calc.secs_to_ticks(music.elapsed)]
-        # TODO: This is TPS, not BPM
-        # text = T(f"{bpm.ticks_per_sec:.3f}BPM | {ts.numerator}/{ts.denominator}", font="Lato Medium", size=24, color="green")
-        text = T(f"???BPM | {ts.numerator}/{ts.denominator}", font="Lato Medium", size=24, color="green")
+        ticks_per_quarternote = self.song.resolution
+        ticks_per_wholenote = ticks_per_quarternote * 4
+        beats_per_wholenote = ts.denominator
+        ticks_per_beat = ticks_per_wholenote / beats_per_wholenote
+        bpm = tempo.ticks_per_sec / ticks_per_beat * 60
+
+        text = T(f"{bpm:.03f}BPM | {ts.numerator}/{ts.denominator}", font="Lato Medium", size=24, color="green")
         text.render_to(self.surface, (5, 95))
 
     def render_score(self):
