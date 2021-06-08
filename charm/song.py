@@ -168,6 +168,35 @@ class Chart:
         self.events.sort()
         self.chords.sort()
         self.calculate_countdowns()
+
+    def hopo_calc(self, song: Song):
+        for chord, prev_chord in zip(self.chords[1:], self.chords[:-1]):
+            tempo = song.tempo_calc.tempo_by_ticks[prev_chord.tick_start]
+            tempo.ticks_per_sec
+            timesig = song.timesig_by_ticks[prev_chord.tick_start]
+            if timesig is None:
+                pass
+
+            ticks_per_quarternote = song.resolution
+            ticks_per_wholenote = ticks_per_quarternote * 4
+            beats_per_measure = timesig.numerator
+            beats_per_wholenote = timesig.denominator
+            ticks_per_beat = ticks_per_wholenote / beats_per_wholenote
+            ticks_per_measure = ticks_per_beat * beats_per_measure
+
+            chord_distance = chord.tick_start - prev_chord.tick_start
+
+            hopo_cutoff = ticks_per_measure / 12
+
+            if chord_distance <= hopo_cutoff:
+                if chord.flag == "forced":
+                    chord.flag = "note"
+                elif chord.flag == "note":
+                    chord.flag = "hopo"
+            else:
+                if chord.flag == "forced":
+                    chord.flag = "hopo"
+
         self.chord_by_ticks = Index(self.chords, "tick_start")
 
     def __hash__(self):
@@ -213,9 +242,13 @@ class Song:
         self.events.sort()
         self.timesigs.sort()
         self.tempo_calc.finalize()
+
         self.timesig_by_ticks = Index(self.timesigs, "tick_start")
         self.lyric_by_ticks = Index(self.lyrics, "tick_start")
         self.section_by_ticks = Index(self.sections, "tick_start")
+
+        for chart in self.charts.values():
+            chart.hopo_calc(self)
 
     def __hash__(self):
         return hash((

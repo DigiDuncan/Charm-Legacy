@@ -122,7 +122,7 @@ def notes_to_chord(song, chart, notes):
     if 6 in frets:
         flag = "tap"
     elif 5 in frets:
-        flag = "hopo"
+        flag = "forced"
     else:
         flag = "note"
     notes = [n for n in notes if n.fret not in (5, 6)]
