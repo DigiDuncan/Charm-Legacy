@@ -66,7 +66,7 @@ class SPEvent(ChartEvent):
     def __init__(self, song, chart, tick_start, kind, tick_length):
         super().__init__(song, chart, tick_start, tick_length)
         self.kind = kind  # Unused? Seems to always be 2...
-                          # UPDATE: Nope! Sometimes 0 in RB Overdrive phrases.
+                          # UPDATE: Nope! Sometimes 0/1 for co-op battles, 64 for drum fills.
 
     def __eq__(self, other):
         return (self.tick_start, self.kind, self.tick_length) == (other.tick_start, other.kind, other.tick_length)
