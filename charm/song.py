@@ -188,7 +188,11 @@ class Chart:
 
             hopo_cutoff = ticks_per_measure / 12
 
-            if chord_distance <= hopo_cutoff:
+            if chord.frets == prev_chord.frets:
+                # You can't have two HOPO chords of the same fretting.
+                if chord.flag == "forced":
+                    chord.flag = "note"
+            elif chord_distance <= hopo_cutoff:
                 if chord.flag == "forced":
                     chord.flag = "note"
                 elif chord.flag == "note":
