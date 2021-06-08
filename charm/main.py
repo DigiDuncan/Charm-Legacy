@@ -56,6 +56,7 @@ class Game(nygame.Game):
         self.charts = cycle([
             Path("./charm/data/charts/run_around_the_character_code"),
             Path("./charm/data/charts/soulless5"),
+            Path("./charm/data/charts/soflan"),
             Path("./charm/data/charts/hopotest")
         ])
 
