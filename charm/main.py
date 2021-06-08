@@ -8,6 +8,7 @@ from nygame import DigiText as T
 from nygame import music
 from nygame.emoji import emojize
 from pygame.constants import K_HOME, K_KP7, K_KP_MINUS, K_KP_PLUS, K_KP4, K_KP6, K_PAUSE, K_7, K_RETURN, K_l, K_s, MOUSEWHEEL
+from pygame.surface import Surface
 
 from charm.lib import instruments
 from charm.lib.args import InvalidArgException, tryint
@@ -32,7 +33,11 @@ def draw_loading():
     T.size = 72
     T.color = (0, 255, 255)
     pause_text = T("🕒", font="Segoe UI Emoji") + T(" LOADING", font="Lato Medium")
-    return pause_text.render()
+    rect = pause_text.get_rect()
+    surf = Surface((rect.width, rect.height))
+    surf.fill("black")
+    pause_text.render_to(surf, rect)
+    return surf
 
 
 class Game(nygame.Game):
