@@ -55,7 +55,8 @@ class Game(nygame.Game):
         # Cycle of charts.
         self.charts = cycle([
             Path("./charm/data/charts/run_around_the_character_code"),
-            Path("./charm/data/charts/soulless5")
+            Path("./charm/data/charts/soulless5"),
+            Path("./charm/data/charts/hopotest")
         ])
 
         # Set up guitar and InputRecorder.
@@ -119,6 +120,8 @@ class Game(nygame.Game):
         for possiblesong in possiblesongs:
             if musicstream is not None:
                 break
+            if possiblesong is None:
+                continue
             musicfile = songfolder / possiblesong
             if musicfile.exists():
                 musicstream = musicfile

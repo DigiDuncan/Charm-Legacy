@@ -1,5 +1,7 @@
 [Song]
 {
+  Name = "HOPO Test"
+  Artist = "DigiDuncan"
   Offset = 0
   Resolution = 480
   Player2 = bass
