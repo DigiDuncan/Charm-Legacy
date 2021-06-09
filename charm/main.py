@@ -7,7 +7,7 @@ import pygame
 from nygame import DigiText as T
 from nygame import music
 from nygame.emoji import emojize
-from pygame.constants import K_HOME, K_KP7, K_KP_MINUS, K_KP_PLUS, K_KP4, K_KP6, K_PAUSE, K_7, K_RETURN, K_l, K_s, MOUSEWHEEL
+from pygame.constants import K_EQUALS, K_HOME, K_KP7, K_KP_MINUS, K_KP_PLUS, K_KP4, K_KP6, K_MINUS, K_PAUSE, K_7, K_RETURN, K_l, K_s, MOUSEWHEEL, SRCALPHA
 from pygame.surface import Surface
 
 from charm.lib import instruments
@@ -38,6 +38,63 @@ def draw_loading():
     surf.fill("black")
     pause_text.render_to(surf, rect)
     return surf
+
+
+class SongDataDisplay:
+    def __init__(self, game: "Game"):  # Maybe *don't* pass in the Game?
+        self.game = game
+
+        self.image = Surface(self.game.surface.get_size(), flags = SRCALPHA)
+
+    def render_clock(self):
+        timestr = nice_time(music.elapsed, True)
+        text = T(f"{timestr} [{self.game.la.track_ticks}]", font="Lato Medium", size=24, color="green")
+        text.render_to(self.image, (5, 45))
+
+    def render_volume(self):
+        text = T(f"VOL {'|' * int(music.volume)}", font="Lato Medium", size=24, color="green")
+        text.render_to(self.image, (5, 120))
+
+    def render_phrase(self):
+        phrase_count = len(self.game.song.lyrics)
+        text = T(f"Phrase: {self.game.la.phrase_number}/{phrase_count}", font="Lato Medium", size=24, color="green")
+        text.render_to(self.image, (5, 70))
+
+    def render_bpm(self):
+        tempo = self.game.song.tempo_calc.tempo_by_secs[music.elapsed]
+        ts = self.game.song.timesig_by_ticks[self.game.song.tempo_calc.secs_to_ticks(music.elapsed)]
+        ticks_per_quarternote = self.game.song.resolution
+        ticks_per_wholenote = ticks_per_quarternote * 4
+        beats_per_wholenote = ts.denominator
+        ticks_per_beat = ticks_per_wholenote / beats_per_wholenote
+        bpm = tempo.ticks_per_sec / ticks_per_beat * 60
+
+        text = T(f"{bpm:.03f}BPM | {ts.numerator}/{ts.denominator}", font="Lato Medium", size=24, color="green")
+        text.render_to(self.image, (5, 95))
+
+    def render_score(self):
+        multmap = {1: "green", 2: "yellow", 3: "blue", 4: "purple"}
+        text = T(f"Score: {self.game.sc.get_score(music.elapsed)}", font="Lato Medium", size=24, color="green")
+        extra_text = T(f"{self.game.sc.multiplier}x", font="Lato Medium", size=24, color="cyan" if self.game.nd.sp else multmap[self.game.sc.multiplier]) + T(f" | {self.game.sc.streak} streak", font="Lato Medium", size=24, color="green")
+        text.render_to(self.image, (5, 145))
+        extra_text.render_to(self.image, (5, 170))
+
+    def render_notespeed(self):
+        text = T(f"Note Speed: {self.game.nd.length} sec/screen", font="Lato Medium", size=24, color="green")
+        text.render_to(self.image, (5, 195))
+
+    def update(self):
+        self.image.fill((0, 0, 0, 0))
+        if self.game.song:
+            self.render_volume()
+            self.render_bpm()
+        if self.game.la:
+            self.render_phrase()
+            self.render_clock()
+        if self.game.sc:
+            self.render_score()
+        if self.game.nd:
+            self.render_notespeed()
 
 
 class Game(nygame.Game):
@@ -73,9 +130,11 @@ class Game(nygame.Game):
 
         # Initialize class variables.
         self.chart = None
+        self.song = None
         self.sc = None
         self.la = None
         self.nd = None
+        self.sd = SongDataDisplay(self)
         self.highway = "./charm/data/images/highway.png"
 
         # Static, generated images
@@ -156,11 +215,17 @@ class Game(nygame.Game):
                     self.nd.sp = not self.nd.sp
                 elif event.key == K_l:
                     self.nd.lefty = not self.nd.lefty
+                elif event.key == K_MINUS:
+                    self.nd.length -= 0.05
+                elif event.key == K_EQUALS:
+                    self.nd.length += 0.05
                 elif event.key == K_RETURN:
                     try:
                         self.queue_chart()
                     except chchart.UnparsedMetadataException as e:
                         print(e)
+                self.nd.length = max(0.05, self.nd.length)
+                self.nd.length = round(self.nd.length, 2)
             elif event.type == MOUSEWHEEL:
                 music.elapsed -= event.y / 20
 
@@ -172,17 +237,14 @@ class Game(nygame.Game):
                 self.score = self.sc.get_score(music.elapsed)
         self.la.update(music.elapsed)
         self.nd.update(music.elapsed)
+        self.sd.update()
 
         # Draws
+        self.render_notes()
         if self.chart.song.lyrics:
             self.render_lyrics()
-        self.render_notes()
-        self.render_clock()
+        self.render_songdata()
         self.render_pause()
-        self.render_volume()
-        self.render_phrase()
-        self.render_bpm()
-        self.render_score()
         self.render_section()
         self.render_title()
         self.render_loading()
@@ -207,6 +269,11 @@ class Game(nygame.Game):
         dest.bottom = self.surface.get_rect().bottom
         self.surface.blit(self.nd.image, dest)
 
+    def render_songdata(self):
+        dest = self.sd.image.get_rect()
+        dest.topleft = self.surface.get_rect().topleft
+        self.surface.blit(self.sd.image, dest)
+
     def render_pause(self):
         if music.paused:
             rect = self.pause_image.get_rect()
@@ -215,45 +282,10 @@ class Game(nygame.Game):
             self.surface.blit(self.pause_image, rect)
 
     def render_loading(self):
-        if self. loading_queued:
+        if self.loading_queued:
             rect = self.loading_image.get_rect()
             rect.center = self.surface.get_rect().center
             self.surface.blit(self.loading_image, rect)
-
-    def render_clock(self):
-        timestr = nice_time(music.elapsed, True)
-        text = T(f"{timestr} [{self.la.track_ticks}]", font="Lato Medium", size=24, color="green")
-        text.render_to(self.surface, (5, 45))
-
-    def render_volume(self):
-        text = T(f"VOL {'|' * int(music.volume)}", font="Lato Medium", size=24, color="green")
-        text.render_to(self.surface, (5, 120))
-
-    def render_phrase(self):
-        phrase_count = len(self.song.lyrics)
-        text = T(f"Phrase: {self.la.phrase_number}/{phrase_count}", font="Lato Medium", size=24, color="green")
-        text.render_to(self.surface, (5, 70))
-
-    def render_bpm(self):
-        tempo = self.song.tempo_calc.tempo_by_secs[music.elapsed]
-        ts = self.song.timesig_by_ticks[self.song.tempo_calc.secs_to_ticks(music.elapsed)]
-        ticks_per_quarternote = self.song.resolution
-        ticks_per_wholenote = ticks_per_quarternote * 4
-        beats_per_wholenote = ts.denominator
-        ticks_per_beat = ticks_per_wholenote / beats_per_wholenote
-        bpm = tempo.ticks_per_sec / ticks_per_beat * 60
-
-        text = T(f"{bpm:.03f}BPM | {ts.numerator}/{ts.denominator}", font="Lato Medium", size=24, color="green")
-        text.render_to(self.surface, (5, 95))
-
-    def render_score(self):
-        if not self.sc:
-            return
-        multmap = {1: "green", 2: "yellow", 3: "blue", 4: "purple"}
-        text = T(f"SCORE: {self.score}", font="Lato Medium", size=24, color="green")
-        extra_text = T(f"{self.sc.multiplier}x", font="Lato Medium", size=24, color="cyan" if self.nd.sp else multmap[self.sc.multiplier]) + T(f" | {self.sc.streak} streak", font="Lato Medium", size=24, color="green")
-        text.render_to(self.surface, (5, 145))
-        extra_text.render_to(self.surface, (5, 170))
 
     def render_section(self):
         current_tick = self.song.tempo_calc.secs_to_ticks(music.elapsed)
