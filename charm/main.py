@@ -13,6 +13,7 @@ from pygame.surface import Surface
 from charm.lib import instruments
 from charm.lib.args import InvalidArgException, tryint
 from charm.lib.nargs import nargs
+from charm.lib.pgutils import stacksurfs
 from charm.lib.utils import clamp, linear_one_to_zero, nice_time
 from charm.loaders import chchart
 from charm.prototyping import loader_test
@@ -48,17 +49,17 @@ class SongDataDisplay:
 
     def render_clock(self):
         timestr = nice_time(music.elapsed, True)
-        text = T(f"{timestr} [{self.game.la.track_ticks}]", font="Lato Medium", size=24, color="green")
-        text.render_to(self.image, (5, 45))
+        text = T(f"{timestr} [{self.game.song.tempo_calc.secs_to_ticks(music.elapsed)}]", font="Lato Medium", size=24, color="green")
+        return text.render()
 
     def render_volume(self):
         text = T(f"VOL {'|' * int(music.volume)}", font="Lato Medium", size=24, color="green")
-        text.render_to(self.image, (5, 120))
+        return text.render()
 
     def render_phrase(self):
         phrase_count = len(self.game.song.lyrics)
-        text = T(f"Phrase: {self.game.la.phrase_number}/{phrase_count}", font="Lato Medium", size=24, color="green")
-        text.render_to(self.image, (5, 70))
+        text = T(f"Lyric Phrase: {self.game.la.phrase_number}/{phrase_count}", font="Lato Medium", size=24, color="green")
+        return text.render()
 
     def render_bpm(self):
         tempo = self.game.song.tempo_calc.tempo_by_secs[music.elapsed]
@@ -70,31 +71,36 @@ class SongDataDisplay:
         bpm = tempo.ticks_per_sec / ticks_per_beat * 60
 
         text = T(f"{bpm:.03f}BPM | {ts.numerator}/{ts.denominator}", font="Lato Medium", size=24, color="green")
-        text.render_to(self.image, (5, 95))
+        return text.render()
 
     def render_score(self):
         multmap = {1: "green", 2: "yellow", 3: "blue", 4: "purple"}
         text = T(f"Score: {self.game.sc.get_score(music.elapsed)}", font="Lato Medium", size=24, color="green")
         extra_text = T(f"{self.game.sc.multiplier}x", font="Lato Medium", size=24, color="cyan" if self.game.nd.sp else multmap[self.game.sc.multiplier]) + T(f" | {self.game.sc.streak} streak", font="Lato Medium", size=24, color="green")
-        text.render_to(self.image, (5, 145))
-        extra_text.render_to(self.image, (5, 170))
+        renderedtext = text.render()
+        renderedextratext = extra_text.render()
+        return stacksurfs((renderedtext, renderedextratext), 5)
 
     def render_notespeed(self):
         text = T(f"Note Speed: {self.game.nd.length} sec/screen", font="Lato Medium", size=24, color="green")
-        text.render_to(self.image, (5, 195))
+        return text.render()
 
     def update(self):
         self.image.fill((0, 0, 0, 0))
+        data = []
+        data.append(self.render_clock())
         if self.game.song:
-            self.render_volume()
-            self.render_bpm()
-        if self.game.la:
-            self.render_phrase()
-            self.render_clock()
-        if self.game.sc:
-            self.render_score()
+            data.append(self.render_volume())
+            data.append(self.render_bpm())
         if self.game.nd:
-            self.render_notespeed()
+            data.append(self.render_notespeed())
+        if self.game.la:
+            if self.game.la.phrase_number is not None:
+                data.append(self.render_phrase())
+        if self.game.sc:
+            data.append(self.render_score())
+        datasurf = stacksurfs(data, 5)
+        self.image.blit(datasurf, (0, 22))
 
 
 class Game(nygame.Game):
@@ -171,7 +177,7 @@ class Game(nygame.Game):
 
         self.chart = self.song.charts[(difficulty, 'Single')]
 
-        self.sc = ScoreCalculator(self.chart, self.ir)
+        # self.sc = ScoreCalculator(self.chart, self.ir)
         self.la = LyricAnimator(self.chart)   # TODO: Update to take Song object
         self.nd = HyperloopDisplay(self.chart, self.guitar, size=(400, 620), hitwindow_vis = False, bg = self.highway)
         musicstream = None
