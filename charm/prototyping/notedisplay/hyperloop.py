@@ -1,3 +1,4 @@
+from charm.lib.pgutils import Quad, warp_surface
 from importlib import resources as pkg_resources
 from charm.lib.instruments.instrument import Instrument
 import math
@@ -9,7 +10,6 @@ import pygame
 import pygame.transform
 import pygame.image
 import pygame.draw
-import PIL.Image
 from pygame import Rect, transform
 from pygame.surface import Surface
 from pygame.constants import SRCALPHA
@@ -153,6 +153,9 @@ class HyperloopDisplay:
         if self.sp:
             if self.bg_image_sp:
                 self.draw_bg(self.bg_image_sp)
+            else:
+                if self.bg_image:
+                    self.draw_bg(self.bg_image)
         else:
             if self.bg_image:
                 self.draw_bg(self.bg_image)
@@ -169,24 +172,10 @@ class HyperloopDisplay:
             self.project()
 
     def project(self):
-        # TODO: Replace with mode7.py
-        def surfaceToPillow(surf: Surface) -> PIL.Image.Image:
-            strFormat = 'RGBA'
-            raw_str = pygame.image.tostring(surf, strFormat, False)
-            pill = PIL.Image.frombytes(strFormat, surf.get_size(), raw_str)
-            return pill
-
-        def pillowToSurface(pill: PIL.Image.Image) -> pygame.surface.Surface:
-            strFormat = 'RGBA'
-            raw_str = pill.tobytes("raw", strFormat)
-            surf = pygame.image.fromstring(raw_str, pill.size, strFormat)
-            return surf
-        pill = surfaceToPillow(self._image)
-        # TODO: This doesn't work anymore because I changed the resolution of the screen...
-        # *･゜ﾟ･*:.｡. .｡.:*･゜ﾟ･* MAGIC NUMBERS *･゜ﾟ･*:.｡. .｡.:*･゜ﾟ･*
-        data = [3, 0.7, -400, 0, 2.76, 0, 0, 0.0035]
-        pill = pill.transform(pill.size, PIL.Image.PERSPECTIVE, data=data)
-        self._image = pillowToSurface(pill)
+        w, h = self.size
+        self._image = warp_surface(self._image,
+                                   Quad((0, 0), (w, 0), (w, h), (0, h)),
+                                   Quad((w * 0.25, h / 2.5), (w * 0.75, h / 2.5), (w, h), (0, h)))
 
     def draw_beatlines(self):
         measures, beats, quarterbeats = self.get_visible_beats()
