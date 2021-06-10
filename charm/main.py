@@ -202,6 +202,7 @@ class Game(nygame.Game):
         instruments.Instrument.update(music.elapsed, events)
 
         for event in events:
+            mods = pygame.key.get_mods()
             if event.type == pygame.KEYDOWN:
                 if event.key == K_PAUSE:
                     music.playpause()
@@ -233,7 +234,10 @@ class Game(nygame.Game):
                 self.nd.length = max(0.05, self.nd.length)
                 self.nd.length = round(self.nd.length, 2)
             elif event.type == MOUSEWHEEL:
-                music.elapsed -= event.y / 20
+                if mods & pygame.KMOD_LSHIFT:
+                    music.elapsed -= event.y
+                else:
+                    music.elapsed -= event.y / 10
 
         # Updates
         if not self.paused:
