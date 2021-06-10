@@ -156,10 +156,11 @@ class Chart:
         self.countdowns = {}  # {tickstart: ticklength}
 
     def calculate_countdowns(self):
-        for chord, nextchord in zip(self.chords, self.chords[1:] + [self.chords[-1]]):
+        fakechord = Chord(self.song, self, "note", [Note(self.song, self, 0, 0, 0)])
+        for chord, nextchord in zip([fakechord] + self.chords, self.chords + [self.chords[-1]]):
             chord_end = chord.tick_start + chord.tick_length
             gap = nextchord.tick_start - chord_end
-            if gap >= 5:  # god this is hardcoded
+            if gap >= self.song.tempo_calc.secs_to_ticks(5):  # god this is hardcoded
                 self.countdowns[chord_end] = gap
 
     def finalize(self):
@@ -167,7 +168,6 @@ class Chart:
         self.star_powers.sort()
         self.events.sort()
         self.chords.sort()
-        self.calculate_countdowns()
 
     def hopo_calc(self, song: Song):
         for chord, prev_chord in zip(self.chords[1:], self.chords[:-1]):
@@ -253,6 +253,7 @@ class Song:
 
         for chart in self.charts.values():
             chart.hopo_calc(self)
+            chart.calculate_countdowns()
 
     def __hash__(self):
         return hash((

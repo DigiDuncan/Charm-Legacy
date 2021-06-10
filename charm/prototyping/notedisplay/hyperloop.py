@@ -1,11 +1,10 @@
-from charm.lib.pgutils import Quad, warp_surface
 from importlib import resources as pkg_resources
-from charm.lib.instruments.instrument import Instrument
-import math
 from itertools import count, takewhile
+import math
 from pathlib import Path
 from typing import Callable, List, Optional, Tuple
 
+from nygame import DigiText as T
 import pygame
 import pygame.transform
 import pygame.image
@@ -14,6 +13,8 @@ from pygame import Rect, transform
 from pygame.surface import Surface
 from pygame.constants import SRCALPHA
 
+from charm.lib.instruments.instrument import Instrument
+from charm.lib.pgutils import Quad, warp_surface
 from charm.song import Chart, Chord
 from charm.prototyping.notedisplay.inputdisplay import InputDisplay, init as input_init
 
@@ -165,6 +166,7 @@ class HyperloopDisplay:
         self.draw_strikes()
         self.draw_chords()
         self.draw_zero()
+        self.draw_countdown()
 
         if self.lefty:
             self._image = transform.flip(self._image, True, False)
@@ -262,6 +264,20 @@ class HyperloopDisplay:
             # y = self.size[1] - sprite_sheet.get(fretnum=i, mode="note", spact=False).get_height()
             y = self.size[1]
             pygame.draw.line(self._image, (64, 64, 64), (x, y), (x, 0), width = 1)
+
+    def draw_countdown(self):
+        for start, length in self.chart.countdowns.items():
+            end = start + length
+            if start < self.track_ticks < end:
+                timenum = int(self.ticks_to_secs(end - self.track_ticks))
+                size = 96
+                if timenum == 0:
+                    timenum = "Go!"
+                    size = 72
+                timetext = T(f"{timenum}", font="Lato Medium", size=size, color="white")
+                rect = timetext.get_rect()
+                rect.center = self._image.get_rect().center
+                timetext.render_to(self._image, rect)
 
     def gety(self, secs: float) -> float:
         secs_until = secs - self.tracktime
