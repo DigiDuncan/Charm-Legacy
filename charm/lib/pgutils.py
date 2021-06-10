@@ -1,3 +1,4 @@
+from typing import Iterable, Union
 import pygame
 from pygame.surface import Surface
 
@@ -11,18 +12,15 @@ def gradientRect(left_color, right_color, target_rect):
     return color_rect
 
 
-def stacksurfs(surf1: Surface, surf2: Surface, gap = 0) -> Surface:
-    if surf2 is None:
-        return surf1
-    if surf1 is None:
-        return surf2
+def stacksurfs(surfs: Iterable[Union[Surface, None]], gap = 0) -> Surface:
+    surfs = list(filter(None, surfs))
+    width = max(s.get_width() for s in surfs)
+    height = sum(s.get_height() for s in surfs) + (gap * (len(surfs) - 1))
+    newsurf = Surface((width, height))
+    current_gap = 0
 
-    width = max(surf1.get_width(), surf2.get_width())
-    height = surf1.get_height() + surf2.get_height() + gap
-    yoffset = surf1.get_height() + gap
-
-    newsurf = pygame.Surface((width, height))
-    newsurf.blit(surf1, (0, 0))
-    newsurf.blit(surf2, (0, yoffset))
+    for surf in surfs:
+        newsurf.blit(surf, (0, current_gap))
+        current_gap += surf.get_height() + gap
 
     return newsurf
