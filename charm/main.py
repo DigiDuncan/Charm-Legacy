@@ -18,7 +18,7 @@ from charm.lib.utils import clamp, linear_one_to_zero, nice_time
 from charm.loaders import chchart
 from charm.prototyping import loader_test
 from charm.prototyping.hitdetection.inputrecorder import InputRecorder
-from charm.prototyping.hitdetection.scorecalculator import ScoreCalculator
+# from charm.prototyping.hitdetection.scorecalculator import ScoreCalculator
 from charm.prototyping.notedisplay.hyperloop import HyperloopDisplay, init as hyperloop_init
 from charm.prototyping.lyricanimator.lyricanimator import LyricAnimator
 
