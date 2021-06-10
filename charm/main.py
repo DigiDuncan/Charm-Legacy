@@ -173,7 +173,7 @@ class Game(nygame.Game):
 
         self.sc = ScoreCalculator(self.chart, self.ir)
         self.la = LyricAnimator(self.chart)   # TODO: Update to take Song object
-        self.nd = HyperloopDisplay(self.chart, self.guitar, size=(400, 620), hitwindow_vis = True, bg = self.highway)
+        self.nd = HyperloopDisplay(self.chart, self.guitar, size=(400, 620), hitwindow_vis = False, bg = self.highway)
         musicstream = None
 
         possiblesongs = [self.song.musicstream, "song.ogg", "song.mp3", "guitar.ogg", "guitar.mp3"]
@@ -304,11 +304,18 @@ class Game(nygame.Game):
         # https://www.desmos.com/calculator/h0tyxihzzq
         opacity = linear_one_to_zero(3, 1, time)
         titletext = T(self.song.title, font = "Lato Medium", size = 72)
+        artisttext = T(self.song.artists, font = "Lato Medium", size = 48)
         rect = titletext.get_rect()
         rect.center = self.surface.get_rect().center
+        rect2 = artisttext.get_rect()
+        rect2.midtop = rect.midbottom
+        rect2.move_ip(0, 5)
         titlesurf = titletext.render()
         titlesurf.set_alpha(255 * opacity)
+        artistsurf = artisttext.render()
+        artistsurf.set_alpha(255 * opacity)
         self.surface.blit(titlesurf, rect)
+        self.surface.blit(artistsurf, rect2)
 
     @property
     def volume(self):
