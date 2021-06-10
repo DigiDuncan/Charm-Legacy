@@ -143,6 +143,8 @@ class HyperloopDisplay:
     def update(self, tracktime: float):
         self.track_ticks = self.secs_to_ticks(tracktime)
         self.visible_chords = self.chart.chord_by_ticks[self.track_ticks:self.end]
+        visible_sustains = self.chart.chord_by_ticks[min(c.tick_start for c in self.chart.chords if c.tick_end >= self.track_ticks):self.track_ticks]
+        self.visible_chords = visible_sustains + self.visible_chords
         last_fade = self.secs_to_ticks(self.tracktime - self.strike_fadetime)
         self.old_chords: List[Chord] = self.chart.chord_by_ticks[last_fade:self.track_ticks]
         if self.id:
@@ -249,7 +251,8 @@ class HyperloopDisplay:
             sustaincap_dest.midbottom = sustain_dest.midtop
             self._image.blit(sustain_img, sustain_dest)
             self._image.blit(sustaincap_img, sustaincap_dest)
-        self._image.blit(sprite, (x, y))
+        if secs >= self.tracktime:
+            self._image.blit(sprite, (x, y))
 
     def draw_bg(self, bg_image: Surface):
         bg_rect = bg_image.get_rect()
