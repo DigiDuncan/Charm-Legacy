@@ -43,7 +43,6 @@ class HyperloopDisplay:
         self.track_ticks: int = 0
         self.length: float = 0.75  # TODO: HARDCODE
         self.lanes = 5  # TODO: HARDCODE
-        self.px_per_sec = size[1] / self.length  # This will mess up with BPM scaling, eventually.
         self.strike_fadetime = 0.5
         self.visible_chords: List[Chord] = []
         self._image = Surface(size, SRCALPHA)
@@ -60,6 +59,10 @@ class HyperloopDisplay:
         self.id: Optional[InputDisplay] = None
         if self.instrument:
             self.id = InputDisplay(self.instrument, size=(400, 100))
+
+    @property
+    def px_per_sec(self):
+        return self.size[1] / self.length
 
     @property
     def tracktime(self):
