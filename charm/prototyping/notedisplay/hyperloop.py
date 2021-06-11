@@ -142,9 +142,9 @@ class HyperloopDisplay:
 
     def update(self, tracktime: float):
         self.track_ticks = self.secs_to_ticks(tracktime)
-        self.visible_chords = self.chart.chord_by_ticks[self.track_ticks:self.end]
-        visible_sustains = self.chart.chord_by_ticks[min(c.tick_start for c in self.chart.chords if c.tick_end >= self.track_ticks):self.track_ticks]
-        self.visible_chords = visible_sustains + self.visible_chords
+        chords_til_now = self.chart.chord_by_ticks[0:self.end]
+        earliest_visible_tick = min(c.tick_start for c in chords_til_now if c.tick_end >= self.track_ticks) if chords_til_now else 0
+        self.visible_chords = self.chart.chord_by_ticks[earliest_visible_tick:self.end]
         last_fade = self.secs_to_ticks(self.tracktime - self.strike_fadetime)
         self.old_chords: List[Chord] = self.chart.chord_by_ticks[last_fade:self.track_ticks]
         if self.id:
