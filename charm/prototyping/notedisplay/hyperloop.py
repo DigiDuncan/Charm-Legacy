@@ -168,10 +168,10 @@ class HyperloopDisplay:
         self.draw_strikes()
         self.draw_chords()
         self.draw_zero()
-        self.draw_countdown()
 
         if self.lefty:
             self._image = transform.flip(self._image, True, False)
+        self.draw_countdown()
         if self.tilt:
             self.project()
 
