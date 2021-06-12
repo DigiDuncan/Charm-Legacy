@@ -209,8 +209,8 @@ class HyperloopDisplay:
 
     def draw_chords(self):
         for chord in self.visible_chords[::-1]:
-            for fret in chord.frets:
-                self.draw_fret(fret, chord.flag, chord.start, spact=self.sp, length=chord.length)
+            for note in chord.notes:
+                self.draw_fret(note.fret, chord.flag, chord.start, spact=self.sp, length=note.length)
 
     def draw_zero(self):
         y = self.gety(self.tracktime)
@@ -269,18 +269,33 @@ class HyperloopDisplay:
             pygame.draw.line(self._image, (64, 64, 64), (x, y), (x, 0), width = 1)
 
     def draw_countdown(self):
+        size = 96
+        go_size = int(size / 1.333)
+        barwidth = T("0 0", font="Lato Medium", size=size, color="white").get_rect().width
+        linethick = 9
+        half_linethick = linethick / 2
         for start, length in self.chart.countdowns.items():
             end = start + length
             if start < self.track_ticks < end:
-                timenum = int(self.ticks_to_secs(end - self.track_ticks))
-                size = 96
+                remaining = self.ticks_to_secs(end - self.track_ticks)
+                timenum = int(remaining)
                 if timenum == 0:
                     timenum = "Go!"
-                    size = 72
+                    size = go_size
                 timetext = T(f"{timenum}", font="Lato Medium", size=size, color="white")
-                rect = timetext.get_rect()
-                rect.center = self._image.get_rect().center
-                timetext.render_to(self._image, rect)
+                timerect = timetext.get_rect()
+                timerect.center = self._image.get_rect().center
+                timetext.render_to(self._image, timerect)
+                barsurface = Surface((barwidth, 20), SRCALPHA)
+                partial_bar_percentage = (remaining / self.ticks_to_secs(end))
+                endpoint = barwidth * partial_bar_percentage
+                y = barsurface.get_rect().height - linethick
+                pygame.draw.line(barsurface, "white", (0, y), (endpoint, y), linethick)
+                barrect = barsurface.get_rect()
+                barrect.midtop = timerect.midbottom
+                barrect.move_ip(0, -timerect.height)
+                self._image.blit(barsurface, barrect)
+                break
 
     def gety(self, secs: float) -> float:
         secs_until = secs - self.tracktime
