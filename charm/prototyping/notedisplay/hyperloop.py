@@ -1,3 +1,4 @@
+from charm.lib.instruments.guitar import Guitar
 from importlib import resources as pkg_resources
 from itertools import count, takewhile
 import math
@@ -12,6 +13,7 @@ import pygame.draw
 from pygame import Rect, transform
 from pygame.surface import Surface
 from pygame.constants import SRCALPHA
+from charm.lib.instruments import instrument
 
 from charm.lib.instruments.instrument import Instrument
 from charm.lib.pgutils import Quad, warp_surface
@@ -240,6 +242,10 @@ class HyperloopDisplay:
         if length != 0:
             sustain_img = sprite_sheet.get(fretnum=fretnum, mode="sustainbody", spact=spact)
             sustaincap_img = sprite_sheet.get(fretnum=fretnum, mode="sustaintop", spact=spact)
+            if self.instrument and isinstance(self.instrument, Guitar):
+                whammy_amount = self.instrument.whammy_pos + 1
+                sustain_img = pygame.transform.smoothscale(sustain_img, (int(sustain_img.get_width() * whammy_amount), sustain_img.get_height()))
+                sustaincap_img = pygame.transform.smoothscale(sustaincap_img, (int(sustaincap_img.get_width() * whammy_amount), sustaincap_img.get_height()))
             width = sustain_img.get_width()
             height = math.ceil(length * self.px_per_sec) - sustaincap_img.get_height()
             sustain_img = pygame.transform.scale(sustain_img, (width, height))
