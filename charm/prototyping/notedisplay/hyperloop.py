@@ -13,7 +13,6 @@ import pygame.draw
 from pygame import Rect, transform
 from pygame.surface import Surface
 from pygame.constants import SRCALPHA
-from charm.lib.instruments import instrument
 
 from charm.lib.instruments.instrument import Instrument
 from charm.lib.pgutils import Quad, warp_surface
@@ -279,7 +278,6 @@ class HyperloopDisplay:
         go_size = int(size / 1.333)
         barwidth = T("0 0", font="Lato Medium", size=size, color="white").get_rect().width
         linethick = 9
-        half_linethick = linethick / 2
         for start, length in self.chart.countdowns.items():
             end = start + length
             if start < self.track_ticks < end:
