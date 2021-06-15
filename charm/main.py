@@ -41,6 +41,14 @@ def draw_loading():
     return surf
 
 
+def draw_logo():
+    surf = pygame.image.load("./docs/images/logo.png")
+    surf.convert_alpha()
+    surf.set_alpha(128)
+    surf = pygame.transform.scale(surf, (137, 50))
+    return surf
+
+
 class SongDataDisplay:
     def __init__(self, game: "Game"):  # Maybe *don't* pass in the Game?
         self.game = game
@@ -146,6 +154,7 @@ class Game(nygame.Game):
         # Static, generated images
         self.pause_image = draw_pause()
         self.loading_image = draw_loading()
+        self.logo = draw_logo()
 
         # Load default chart.
         self.load_chart()
@@ -250,6 +259,7 @@ class Game(nygame.Game):
         self.sd.update()
 
         # Draws
+        self.render_logo()
         self.render_notes()
         if self.chart.song.lyrics:
             self.render_lyrics()
@@ -296,6 +306,12 @@ class Game(nygame.Game):
             rect = self.loading_image.get_rect()
             rect.center = self.surface.get_rect().center
             self.surface.blit(self.loading_image, rect)
+
+    def render_logo(self):
+        logo = self.logo
+        logo_rect = logo.get_rect()
+        logo_rect.bottomright = self.surface.get_rect().bottomright
+        self.surface.blit(logo, logo_rect)
 
     def render_section(self):
         current_tick = self.song.tempo_calc.secs_to_ticks(music.elapsed)
