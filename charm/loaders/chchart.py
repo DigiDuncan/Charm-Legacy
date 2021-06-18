@@ -261,12 +261,15 @@ def parse_events(song: Song, raw_events: List[Union[RawEvent, RawLyric, RawPhras
 
 
 def clean_word(word: str):
-    if word.endswith("-"):
+    if word.endswith("=-"):
+        word = word.removesuffix("-").replace("=", "-")
+    elif word.endswith("="):
+        word = word.replace("=", "-")
+    elif word.endswith("-"):
         word = word.removesuffix("-")
     else:
         word = word + " "
     replacements = {
-        "=": "-",
         "''": "\"",
         "`": "\"",
         "+": "",
