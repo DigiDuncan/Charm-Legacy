@@ -28,6 +28,9 @@ def load_raw(f) -> Dict[str, List[RawNote, RawEvent, RawTempo, RawAnchor, RawTS,
     blocks = {}
     curr_block = None
     for line in f:
+        # TODO: Hacky patch but I'm running into this a lot
+        if line.startswith("\ufeff"):
+            line = line.removeprefix("\ufeff")
         if m := RE_BLOCK_PADDING.match(line):
             continue
         elif m := RE_BLOCK_HEADER.match(line):
