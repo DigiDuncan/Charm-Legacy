@@ -19,6 +19,7 @@ from charm.loaders import chchart
 from charm.prototyping import loader_test
 from charm.prototyping.hitdetection.inputrecorder import InputRecorder
 # from charm.prototyping.hitdetection.scorecalculator import ScoreCalculator
+from charm.prototyping.menu import menu2
 from charm.prototyping.notedisplay.hyperloop import HyperloopDisplay, init as hyperloop_init
 from charm.prototyping.lyricanimator.lyricanimator import LyricAnimator
 
@@ -124,11 +125,17 @@ class Game(nygame.Game):
         pygame.display.set_icon(charm_icon)
 
         # Cycle of charts.
+        # self.charts = cycle([
+        #     Path("./charm/data/charts/run_around_the_character_code"),
+        #     Path("./charm/data/charts/soulless5"),
+        #     Path("./charm/data/charts/soflan"),
+        #     Path("./charm/data/charts/hopotest")
+        # ])
+
         self.charts = cycle([
-            Path("./charm/data/charts/run_around_the_character_code"),
-            Path("./charm/data/charts/soulless5"),
-            Path("./charm/data/charts/soflan"),
-            Path("./charm/data/charts/hopotest")
+            Path("F:/chs/03 Fan Games/CHARTS 2/[CHARTS 2] Tier 04 - Poppin' Bottles/O-Zone - Dragostea Din Tei"),
+            Path("F:/chs/10 Other Sources/Classic Charts/Lift Yourself"),
+            Path("F:/chs/10 Other Sources/Random Links/MC Mental @ His Best")
         ])
 
         # Set up guitar and InputRecorder.
@@ -378,6 +385,7 @@ class Mode(Enum):
     BulkTest = "bulk"
     SingleTest = "single"
     ListCharts = "charts"
+    MenuTest = "menu"
 
 
 def play_chart(n=1):
@@ -417,6 +425,8 @@ def run(mode=Mode.Default.value, *args, **kwargs):
         play_chart(*args)
     elif mode == Mode.ListCharts:
         print_charts()
+    elif mode == Mode.MenuTest:
+        menu2.Game(R"./charm/data/charts").run()
     else:
         valid_modes = " / ".join(m.value for m in Mode)
         print(

@@ -21,11 +21,18 @@
             "args": ["one", "--two", "--three=four", "-5", "-67"]
         },
         {
-            "name": "Charm: Lyrics",
+            "name": "Charm: Main Game",
             "type": "python",
             "request": "launch",
             "module": "charm",
             "args": ["lyrics"]
+        },
+        {
+            "name": "Charm: Menu Test",
+            "type": "python",
+            "request": "launch",
+            "module": "charm",
+            "args": ["menu"]
         },
         {
             "name": "Charm: Bulk Test Charts",
