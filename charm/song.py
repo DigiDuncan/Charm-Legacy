@@ -157,6 +157,8 @@ class Chart:
 
     def calculate_countdowns(self):
         fakechord = Chord(self.song, self, "note", [Note(self.song, self, 0, 0, 0)])
+        if self.chords == []:
+            return
         for chord, nextchord in zip([fakechord] + self.chords, self.chords + [self.chords[-1]]):
             chord_end = chord.tick_start + chord.tick_length
             gap = nextchord.tick_start - chord_end
