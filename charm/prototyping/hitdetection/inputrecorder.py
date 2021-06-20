@@ -73,8 +73,8 @@ class InputRecorder:
         self._whammy_threshold = 0.05
         self._whammy_delay = 0.5
 
-        self._whammy_data = deque([0] * 5, 5) # TODO: This is average last 5 frames. Should be average [?] ms.
-        self._whammy_last_messed_with = 0 # TODO: This should probably default to None
+        self._whammy_data = deque([0] * 5, 5)  # TODO: This is average last 5 frames. Should be average [?] ms.
+        self._whammy_last_messed_with = 0  # TODO: This should probably default to None
 
         # People probably shouldn't touch this.
         self._inputs: List[Input] = []
