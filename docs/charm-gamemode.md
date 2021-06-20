@@ -22,6 +22,8 @@ Up-Notes and Down-Notes (`N 272` and `N 273` flags, respectively) are notes that
 
 These can not be mixed with the "Tap" or "HOPO" flags, as in some or all cases, those notes are not strummed at all. Though in theory a HOPO directional note *could* make sense (in that when it's required to strum the note, you'd have to do so in the indicated direction,) it'd be terrible to play and confusing, so support isn't planned.
 
+They visually appear as similar to their standard note counterparts, but in the shape of an arrow pointing up or down.
+
 ## New Kinds Of Event
 Other than modchart events (pending), *Charm* adds a couple new events that modify gameplay.
 
