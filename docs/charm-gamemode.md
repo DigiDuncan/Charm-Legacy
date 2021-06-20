@@ -4,7 +4,9 @@ This document aims to describe the *Charm* gamemode, a gamemode derived from [*G
 ## First, Some Technical Notes
 *Charm* plans to use `.chart` files, and as of such utilizes events. Some of these events, `N` events, use integers as flags to denote things like fret type and note flags. As per the [`.chart` specification](https://docs.google.com/document/d/1v2v0U-9HQ5qHeccpExDOLJ5CMPZZ3QytPmAG5WF0Kzs/edit), *Charm* plans to reserve block `N 255` through `N 287`, using `N 255` - `N 271` for new frets as they arise, and `N 272` - `N 287` for new note flags.
 
-Also, it should be noted that Charm uses the term "Charm Power" over "Star Power", though they are functionally the same thing.
+*Charm* gamemode charts should probably mark that they are such using `Charm = true` in the `[Song]` header, or similar, so that we don't try to load GH/CH charts as *Charm* mode charts, or vice versa. (*Clone Hero* will likely have no clue what to do with our notes but might be able to load the chart in a broken state which would suck for everyone.)
+
+Also, it should be noted that *Charm* uses the term "Charm Power" over "Star Power", though they are functionally the same thing.
 
 ## New Kinds Of Notes
 
