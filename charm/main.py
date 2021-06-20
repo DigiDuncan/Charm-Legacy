@@ -125,17 +125,11 @@ class Game(nygame.Game):
         pygame.display.set_icon(charm_icon)
 
         # Cycle of charts.
-        # self.charts = cycle([
-        #     Path("./charm/data/charts/run_around_the_character_code"),
-        #     Path("./charm/data/charts/soulless5"),
-        #     Path("./charm/data/charts/soflan"),
-        #     Path("./charm/data/charts/hopotest")
-        # ])
-
         self.charts = cycle([
-            Path("F:/chs/03 Fan Games/CHARTS 2/[CHARTS 2] Tier 04 - Poppin' Bottles/O-Zone - Dragostea Din Tei"),
-            Path("F:/chs/10 Other Sources/Classic Charts/Lift Yourself"),
-            Path("F:/chs/10 Other Sources/Random Links/MC Mental @ His Best")
+            Path("./charm/data/charts/run_around_the_character_code"),
+            Path("./charm/data/charts/soulless5"),
+            Path("./charm/data/charts/soflan"),
+            Path("./charm/data/charts/hopotest")
         ])
 
         # Set up guitar and InputRecorder.
