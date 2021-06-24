@@ -278,6 +278,7 @@ class HyperloopDisplay:
         go_size = int(size / 1.333)
         barwidth = T("0 0", font="Lato Medium", size=size, color="white").get_rect().width
         linethick = 9
+        draw_bar = True
         for start, length in self.chart.countdowns.items():
             end = start + length
             if start < self.track_ticks < end:
@@ -286,18 +287,20 @@ class HyperloopDisplay:
                 if timenum == 0:
                     timenum = "Go!"
                     size = go_size
+                    draw_bar = False
                 timetext = T(f"{timenum}", font="Lato Medium", size=size, color="white")
                 timerect = timetext.get_rect()
                 timerect.center = self._image.get_rect().center
                 timetext.render_to(self._image, timerect)
-                barsurface = Surface((barwidth, 20), SRCALPHA)
-                partial_bar_percentage = (remaining / self.ticks_to_secs(end))
-                endpoint = barwidth * partial_bar_percentage
-                y = barsurface.get_rect().height - linethick
-                pygame.draw.line(barsurface, "white", (0, y), (endpoint, y), linethick)
-                barrect = barsurface.get_rect()
-                barrect.midtop = timerect.midbottom
-                barrect.move_ip(0, -timerect.height)
+                if draw_bar:
+                    barsurface = Surface((barwidth, 20), SRCALPHA)
+                    partial_bar_percentage = (remaining / self.ticks_to_secs(length))
+                    endpoint = barwidth * partial_bar_percentage
+                    y = barsurface.get_rect().height - linethick
+                    pygame.draw.line(barsurface, "white", (0, y), (endpoint, y), linethick)
+                    barrect = barsurface.get_rect()
+                    barrect.midtop = timerect.midbottom
+                    barrect.move_ip(0, -timerect.height)
                 self._image.blit(barsurface, barrect)
                 break
 
