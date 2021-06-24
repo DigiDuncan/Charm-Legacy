@@ -43,7 +43,7 @@ class HyperloopDisplay:
         self.lefty = lefty
         self.bg: Optional[Path] = None if bg is None else Path(bg)
         self.track_ticks: int = 0
-        self.length: float = 0.75  # TODO: HARDCODE
+        self.length: float = 0.75
         self.lanes = 5  # TODO: HARDCODE
         self.strike_fadetime = 0.5
         self.visible_chords: List[Chord] = []
@@ -195,13 +195,13 @@ class HyperloopDisplay:
             pygame.draw.line(self._image, (128, 128, 128), (0, y), (self.size[0], y), width = 5)
 
     def draw_strikes(self):
-        fret_strikes = [0.0, 0.0, 0.0, 0.0, 0.0]  # TODO: HARDCODE
+        fret_strikes = [0.0] * self.lanes
         for chord in self.old_chords:
             timediff = self.tracktime - chord.start
-            # 0 - 1
+            # 0 through 1
             fade = max(0, self.strike_fadetime - timediff) / self.strike_fadetime
             for fret in chord.frets:
-                if fret not in [0, 1, 2, 3, 4]:  # TODO: HARDCODE
+                if fret not in range(0, self.lanes):
                     continue
                 fret_strikes[fret] = max(fret_strikes[fret], fade)
 
