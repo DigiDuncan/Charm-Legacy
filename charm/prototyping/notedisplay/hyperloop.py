@@ -241,7 +241,7 @@ class HyperloopDisplay:
         if length != 0:
             sustain_img = sprite_sheet.get(fretnum=fretnum, mode="sustainbody", spact=spact)
             sustaincap_img = sprite_sheet.get(fretnum=fretnum, mode="sustaintop", spact=spact)
-            if self.instrument and isinstance(self.instrument, Guitar):
+            if self.instrument and isinstance(self.instrument, Guitar) and y >= (self.size[1] - sprite.get_height()):
                 whammy_amount = self.instrument.whammy_pos + 1
                 sustain_img = pygame.transform.smoothscale(sustain_img, (int(sustain_img.get_width() * whammy_amount), sustain_img.get_height()))
                 sustaincap_img = pygame.transform.smoothscale(sustaincap_img, (int(sustaincap_img.get_width() * whammy_amount), sustaincap_img.get_height()))
@@ -301,7 +301,7 @@ class HyperloopDisplay:
                     barrect = barsurface.get_rect()
                     barrect.midtop = timerect.midbottom
                     barrect.move_ip(0, -timerect.height)
-                self._image.blit(barsurface, barrect)
+                    self._image.blit(barsurface, barrect)
                 break
 
     def gety(self, secs: float) -> float:
