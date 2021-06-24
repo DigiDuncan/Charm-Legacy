@@ -201,7 +201,7 @@ class HyperloopDisplay:
             # 0 - 1
             fade = max(0, self.strike_fadetime - timediff) / self.strike_fadetime
             for fret in chord.frets:
-                if fret == 7:  # TODO: HARDCODE
+                if fret not in [0, 1, 2, 3, 4]:  # TODO: HARDCODE
                     continue
                 fret_strikes[fret] = max(fret_strikes[fret], fade)
 
