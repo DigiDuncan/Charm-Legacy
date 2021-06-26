@@ -186,7 +186,7 @@ class Chart:
 
             chord_distance = chord.tick_start - prev_chord.tick_start
 
-            hopo_cutoff = ticks_per_beat / (66 / 192)
+            hopo_cutoff = ticks_per_beat / (192 / 66)
 
             if chord.frets == prev_chord.frets:
                 # You can't have two HOPO chords of the same fretting.
