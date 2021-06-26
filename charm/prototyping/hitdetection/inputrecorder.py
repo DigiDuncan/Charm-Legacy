@@ -70,6 +70,7 @@ class InputRecorder:
     def __init__(self, instrument: Instrument):
         self.instrument = instrument
         self._tilt_threshold = 0.5
+        self._slap_threshold = 0.75
         self._whammy_threshold = 0.05
         self._whammy_delay = 0.5
 
@@ -102,7 +103,10 @@ class InputRecorder:
             "select": raw_state["select"],
             "strum": raw_state["strumup"] or raw_state["strumdown"],
             "tilt": raw_state["tilt"] >= self._tilt_threshold,
-            "whammy": tracktime <= self._whammy_last_messed_with + self._whammy_delay
+            "whammy": tracktime <= self._whammy_last_messed_with + self._whammy_delay,
+            "strumup": raw_state["strumup"],
+            "strumdown": raw_state["strumdown"],
+            "slap": raw_state["whammy"] >= self._slap_threshold
         }
         last_state = self._last_state
 
@@ -123,8 +127,8 @@ class InputRecorder:
 
         self._inputs.append(Input(tracktime, curr_events, state))
 
-        # if curr_events:
-        #    print(f"{round(tracktime, 3):>9} {curr_events}")
+        if curr_events:
+            print(f"{round(tracktime, 3):>9} {curr_events}")
 
     @property
     def inputs(self):
