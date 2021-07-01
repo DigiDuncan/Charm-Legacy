@@ -8,15 +8,18 @@ A chart with these events need to be marked as modcharts in some way, due to the
 ### Flip (`highway_flip`)
 Flip the highway from the current status, either righty to lefty or vice versa.
 
+### Mod (`mod <modname>`)
+Applies the mod with name `modname`. Accepted values are currently unknown. `none` disables all mods, and `default` applies whatever the user's chosen mods are.
+
 ### Note Speed (`notespeed <value>`)
 Changes the current note speed to `value`.
 
 ### Spritesheet Change (`spritesheet <sheetname>`)
 Changes the spritesheet (for the notes) to `{chart folder}/{spritesheets}/{sheetname}`.
+`default` defaults to the player's chosen skin.
 
 ### Highway Change `(highway <imagename>)`
 Changes the highway background to `{chart folder}/{highways}/{imagename}`.
 
 ### Chart Change `(chart <chartname>)`
 Changes the current chart to `{chartname}.chart`.
-
