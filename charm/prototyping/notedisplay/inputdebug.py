@@ -89,13 +89,13 @@ class InputDebug:
                 pygame.draw.line(self._image, color, (edge, linestart), (edge, lineend))
 
         if self.guitar.strumup:
-            pygame.draw.line(self._image, PURPLE, (edge, 0), (edge, 10))
+            pygame.draw.line(self._image, PURPLE, (edge, 0), (edge, 9))
 
         if self.guitar.strumdown:
-            pygame.draw.line(self._image, PURPLE, (edge, 110), (edge, 120))
+            pygame.draw.line(self._image, PURPLE, (edge, 110), (edge, 119))
 
         if self.guitar.star:
-            pygame.draw.line(self._image, CYAN, (edge, 0), (edge, 5))
+            pygame.draw.line(self._image, CYAN, (edge, 0), (edge, 4))
 
         lwpos = 100 - int(self.last_whammy * 100) + 10
         wpos = 100 - int(self.whammy * 100) + 10
