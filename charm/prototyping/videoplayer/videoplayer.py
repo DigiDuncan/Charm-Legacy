@@ -1,5 +1,7 @@
 import cv2
 
+import arrow
+
 import nygame
 import pygame
 
@@ -14,6 +16,7 @@ class VideoPlayer:
     def __init__(self, videopath):
         self.cap = cv2.VideoCapture(videopath)
         self.frame = None
+        self.start_time = arrow.now()
 
     def get_frame(self, time):
         while self.cap.get(cv2.CAP_PROP_POS_MSEC) < time * 1000:
@@ -30,7 +33,8 @@ class Game(nygame.Game):
         pygame.surfarray.blit_array(self.surface, self.videoplayer.get_frame(time))
 
     def loop(self, events):
-        time = 3
+        now = arrow.now()
+        time = (now - self.videoplayer.start_time).total_seconds()
         self.render_video(time)
 
 
