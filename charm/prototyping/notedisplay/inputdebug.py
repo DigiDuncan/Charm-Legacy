@@ -48,6 +48,7 @@ class InputDebug:
             for i in range(100):
                 n.set_at((0, i), pixels[i])
         self.last_noise = 0
+        self.noisecount = 0
 
     def update(self, secs):
         self.last_secs = self.secs
@@ -74,9 +75,13 @@ class InputDebug:
             self._image.blit(st, dest)
 
         if self.last_secs >= self.secs:
-            self._image.blit(self.noises[self.last_noise % 10], (edge, 0))
-            self.last_noise += randint(0, 9)
-            return
+            self.noisecount += 1
+            if self.noisecount > 1:
+                self._image.blit(self.noises[self.last_noise % 10], (edge, 0))
+                self.last_noise += randint(0, 9)
+                return
+        else:
+            self.noisecount = 0
 
         if self.state is None:
             return
