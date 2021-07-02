@@ -21,6 +21,7 @@ from charm.prototyping.hitdetection.inputrecorder import InputRecorder
 # from charm.prototyping.hitdetection.scorecalculator import ScoreCalculator
 from charm.prototyping.menu import menu2
 from charm.prototyping.notedisplay.hyperloop import HyperloopDisplay, init as hyperloop_init
+from charm.prototyping.notedisplay.inputdebug import InputDebug
 from charm.prototyping.lyricanimator.lyricanimator import LyricAnimator
 
 
@@ -135,6 +136,7 @@ class Game(nygame.Game):
         # Set up guitar and InputRecorder.
         self.guitar = None
         self.ir = None
+        self.id = None
         if instruments.Instrument.get_count() > 0:
             self.guitar = instruments.Wiitar.connect(0)
             print("Connection to Wiitar 0")
@@ -142,6 +144,7 @@ class Game(nygame.Game):
             self.guitar = instruments.Keyguitar.connect()
             print("Connection to Keyboard")
         self.ir = InputRecorder(self.guitar)
+        self.id = InputDebug(self.guitar)
 
         # Initialize class variables.
         self.chart = None
@@ -253,6 +256,8 @@ class Game(nygame.Game):
         if not self.paused:
             if self.ir is not None:
                 self.ir.update(music.elapsed)
+            if self.id is not None:
+                self.id.update(music.elapsed)
             if self.sc is not None:
                 self.score = self.sc.get_score(music.elapsed)
         self.la.update(music.elapsed)
@@ -262,6 +267,7 @@ class Game(nygame.Game):
         # Draws
         self.render_logo()
         self.render_notes()
+        self.render_debug()
         if self.chart.song.lyrics:
             self.render_lyrics()
         self.render_songdata()
@@ -289,6 +295,12 @@ class Game(nygame.Game):
         dest.centerx = self.surface.get_rect().centerx
         dest.bottom = self.surface.get_rect().bottom
         self.surface.blit(self.nd.image, dest)
+
+    def render_debug(self):
+        dest = self.id.image.get_rect()
+        dest.centery = self.surface.get_rect().centery
+        dest.right = self.surface.get_rect().right
+        self.surface.blit(self.id.image, dest)
 
     def render_songdata(self):
         dest = self.sd.image.get_rect()
