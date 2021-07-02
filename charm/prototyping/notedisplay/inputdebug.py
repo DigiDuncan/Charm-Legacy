@@ -38,6 +38,8 @@ class InputDebug:
         self.last_drawn = None
         self._image = Surface(size, SRCALPHA)
         self._image.fill(BLACK)
+
+        # Set up glitches ahead of time, because this is kinda slow.
         self.noises = [Surface((1, 100)), Surface((1, 100)), Surface((1, 100)),
                        Surface((1, 100)), Surface((1, 100)), Surface((1, 100)),
                        Surface((1, 100)), Surface((1, 100)), Surface((1, 100)),
@@ -63,8 +65,10 @@ class InputDebug:
         height = self.size[1]
         self._image.scroll(-1, 0)
 
+        # Clear the rightmost edge's pixels
         pygame.draw.line(self._image, BLACK, (edge, 0), (edge, height))
 
+        # Draw seconds lines
         if int(self.last_secs) < int(self.secs):
             pygame.draw.line(self._image, WHITE, (edge, 0), (edge, height))
             seconds = str(int(self.secs))
@@ -74,6 +78,7 @@ class InputDebug:
             dest.left -= 2
             self._image.blit(st, dest)
 
+        # Output glitch if time stopped working normally. (for more than one frame)
         if self.last_secs >= self.secs:
             self.noisecount += 1
             if self.noisecount > 1:
@@ -86,6 +91,7 @@ class InputDebug:
         if self.state is None:
             return
 
+        # Fret colors
         for n, f in enumerate(self.guitar.shape):
             if f:
                 linestart = (n * 20) + 10
@@ -93,15 +99,18 @@ class InputDebug:
                 color = frets[n]
                 pygame.draw.line(self._image, color, (edge, linestart), (edge, lineend))
 
+        # Strums
         if self.guitar.strumup:
             pygame.draw.line(self._image, PURPLE, (edge, 0), (edge, 9))
 
         if self.guitar.strumdown:
             pygame.draw.line(self._image, PURPLE, (edge, 110), (edge, 119))
 
+        # Select button
         if self.guitar.star:
             pygame.draw.line(self._image, CYAN, (edge, 0), (edge, 4))
 
+        # Whammy
         lwpos = 100 - int(self.last_whammy * 100) + 10
         wpos = 100 - int(self.whammy * 100) + 10
         pygame.draw.line(self._image, CHARM, (edge - 1, lwpos), (edge, wpos))
