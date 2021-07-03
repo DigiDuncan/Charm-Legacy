@@ -1,13 +1,16 @@
+from datetime import timedelta
 from enum import Enum
 from itertools import cycle
 from pathlib import Path
+
+import arrow
 
 import nygame
 import pygame
 from nygame import DigiText as T
 from nygame import music
 from nygame.emoji import emojize
-from pygame.constants import K_EQUALS, K_HOME, K_KP7, K_KP_MINUS, K_KP_PLUS, K_KP4, K_KP6, K_MINUS, K_PAUSE, K_7, K_RETURN, K_l, K_s, MOUSEWHEEL, SRCALPHA
+from pygame.constants import K_EQUALS, K_HOME, K_KP7, K_KP_MINUS, K_KP_PLUS, K_KP4, K_KP6, K_MINUS, K_PAUSE, K_7, K_RETURN, K_l, K_s, K_KP_MULTIPLY, MOUSEWHEEL, SRCALPHA
 from pygame.surface import Surface
 
 from charm.lib import instruments
@@ -109,8 +112,41 @@ class SongDataDisplay:
                 data.append(self.render_phrase())
         if self.game.sc:
             data.append(self.render_score())
+        if self.game.show_latency:
+            data.append(self.game.ld.image)
         datasurf = stacksurfs(data, 5)
         self.image.blit(datasurf, (0, 22))
+
+
+class LatencyDisplay:
+    def __init__(self):
+        self.data = {}
+        self.image = Surface((1, 1))
+        self.last_time = arrow.now()
+
+    @property
+    def total(self):
+        return sum(self.data.values())
+
+    def add_data(self, name):
+        time = arrow.now() - self.last_time
+        self.data[name] = time / timedelta(milliseconds=1)
+        self.last_time = arrow.now()
+
+    def reset(self):
+        self.data = {}
+        self.last_time = arrow.now()
+
+    def update(self):
+        surfaces = []
+        for k, v in self.data.items():
+            surfaces.append(
+                T(f"{k:<18}: {round(v):>4}ms", font = "Consolas", color = "red", size = 12).render()
+            )
+        surfaces.append(
+            T(f"TOTAL: {round(self.total):>4}ms", font = "Consolas", color = "red", size = 14).render()
+        )
+        self.image = stacksurfs(surfaces, 5)
 
 
 class Game(nygame.Game):
@@ -154,6 +190,7 @@ class Game(nygame.Game):
         self.la = None
         self.nd = None
         self.sd = SongDataDisplay(self)
+        self.ld = LatencyDisplay()
         self.highway = "./charm/data/images/highway.png"
 
         # Static, generated images
@@ -166,6 +203,7 @@ class Game(nygame.Game):
 
         self.paused = False
         self.volume = 6
+        self.show_latency = False
         self.loading_timer = 0
         self.loading_queued = None
 
@@ -236,6 +274,8 @@ class Game(nygame.Game):
                     self.nd.sp = not self.nd.sp
                 elif event.key == K_l:
                     self.nd.lefty = not self.nd.lefty
+                elif event.key == K_KP_MULTIPLY:
+                    self.show_latency = not self.show_latency
                 elif event.key == K_MINUS:
                     self.nd.length -= 0.05
                 elif event.key == K_EQUALS:
@@ -253,29 +293,70 @@ class Game(nygame.Game):
                 else:
                     music.elapsed -= event.y / 10
 
-        # Updates
-        if not self.paused:
-            if self.ir is not None:
-                self.ir.update(music.elapsed)
-            if self.id is not None:
-                self.id.update(music.elapsed)
-            if self.sc is not None:
-                self.score = self.sc.get_score(music.elapsed)
-        self.la.update(music.elapsed)
-        self.nd.update(music.elapsed)
-        self.sd.update()
+        if not self.show_latency:
 
-        # Draws
-        self.render_logo()
-        self.render_notes()
-        self.render_debug()
-        if self.chart.song.lyrics:
-            self.render_lyrics()
-        self.render_songdata()
-        self.render_pause()
-        self.render_section()
-        self.render_title()
-        self.render_loading()
+            # Updates
+            if not self.paused:
+                if self.ir is not None:
+                    self.ir.update(music.elapsed)
+                if self.id is not None:
+                    self.id.update(music.elapsed)
+                if self.sc is not None:
+                    self.score = self.sc.get_score(music.elapsed)
+            self.la.update(music.elapsed)
+            self.nd.update(music.elapsed)
+            self.sd.update()
+
+            # Draws
+            self.render_logo()
+            self.render_notes()
+            self.render_debug()
+            if self.chart.song.lyrics:
+                self.render_lyrics()
+            self.render_songdata()
+            self.render_pause()
+            self.render_section()
+            self.render_title()
+            self.render_loading()
+
+        else:
+
+            self.ld.reset()
+            # Updates
+            if not self.paused:
+                if self.ir is not None:
+                    self.ir.update(music.elapsed)
+                    self.ld.add_data("Input Recorder")
+                if self.id is not None:
+                    self.id.update(music.elapsed)
+                    self.ld.add_data("Input Debug")
+                if self.sc is not None:
+                    self.score = self.sc.get_score(music.elapsed)
+                    self.ld.add_data("Input Recorder")
+            self.la.update(music.elapsed)
+            self.ld.add_data("Lyric Animator")
+            self.nd.update(music.elapsed)
+            self.ld.add_data("Hyperloop")
+            self.sd.update()
+            self.ld.add_data("Song Data")
+
+            # Draws
+            self.render_logo()
+            self.ld.add_data("Render Logo")
+            self.render_notes()
+            self.ld.add_data("Render Hyperloop")
+            self.render_debug()
+            self.ld.add_data("Render Debug")
+            if self.chart.song.lyrics:
+                self.render_lyrics()
+                self.ld.add_data("Render Lyrics")
+            self.render_pause()
+            self.render_section()
+            self.ld.add_data("Render Section")
+            self.render_title()
+            self.render_loading()
+            self.ld.update()
+            self.render_songdata()
 
         # Chart loading
         if self.loading_queued:
