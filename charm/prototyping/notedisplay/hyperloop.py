@@ -211,7 +211,7 @@ class HyperloopDisplay:
     def draw_chords(self):
         for chord in self.visible_chords[::-1]:
             for note in chord.notes:
-                self.draw_fret(note.fret, chord.flag, chord.start, spact=self.sp, length=note.length)
+                self.draw_fret(note.fret, chord.flag, chord.start, spnote=chord.sp_phrase, spact=self.sp, length=note.length)
 
     def draw_zero(self):
         y = self.gety(self.tracktime)
@@ -230,10 +230,11 @@ class HyperloopDisplay:
         dest.bottom = self._image.get_rect().bottom
         self._image.blit(self.id.image, dest)
 
-    def draw_fret(self, fretnum: int, mode: str, secs: float, fade: float = 1, spact: bool = True, length = 0):
+    def draw_fret(self, fretnum: int, mode: str, secs: float, fade: float = 1, spnote: Optional[int] = None, spact: bool = False, length = 0):
         x = self.get_fretx(fretnum)
         y = self.gety(secs)
-        sprite = sprite_sheet.get(fretnum=fretnum, mode=mode, spact=spact)
+        spnote = False if spnote is None else True
+        sprite = sprite_sheet.get(fretnum=fretnum, mode=mode, spact=spact, spnote=spnote)
         # Center fret sprites
         x -= sprite.get_width() / 2
         y -= sprite.get_height() / 2

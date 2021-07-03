@@ -127,6 +127,7 @@ class Game(nygame.Game):
 
         # Cycle of charts.
         self.charts = cycle([
+            Path("./charm/data/charts/notes"),
             Path("./charm/data/charts/run_around_the_character_code"),
             Path("./charm/data/charts/soulless5"),
             Path("./charm/data/charts/soflan"),

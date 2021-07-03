@@ -138,6 +138,7 @@ class Chord(ChartEvent):
         self.flag = flag
         self.notes = notes
         self.frets = tuple(n.fret for n in notes)
+        self.sp_phrase = None
 
     def __repr__(self):
         return f"<{self.__class__.__name__}(start = {self.start}, frets = {self.frets}, length = {self.length})>"
@@ -203,6 +204,11 @@ class Chart:
 
         self.chord_by_ticks = Index(self.chords, "tick_start")
 
+    def sp_phrase_calc(self):
+        for i, sp_phrase in enumerate(self.star_powers):
+            for chord in self.chord_by_ticks[sp_phrase.tick_start:sp_phrase.tick_end]:
+                chord.sp_phrase = i
+
     def __hash__(self):
         return hash((
             tuple(self.notes),
@@ -254,6 +260,7 @@ class Song:
         for chart in self.charts.values():
             chart.hopo_calc(self)
             chart.calculate_countdowns()
+            chart.sp_phrase_calc()
 
     def __hash__(self):
         return hash((
