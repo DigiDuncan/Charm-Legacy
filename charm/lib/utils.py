@@ -100,3 +100,9 @@ def linear_one_to_zero(start, duration, current):
     if current > end:
         return 0
     return -(1 / duration) * current + (end / duration)
+
+
+def truncate(s, amount) -> str:
+    if len(s) > amount:
+        return s[:amount - 3] + "..."
+    return s

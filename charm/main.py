@@ -14,7 +14,7 @@ from charm.lib import instruments
 from charm.lib.args import InvalidArgException, tryint
 from charm.lib.nargs import nargs
 from charm.lib.pgutils import stacksurfs
-from charm.lib.utils import clamp, linear_one_to_zero, nice_time
+from charm.lib.utils import clamp, linear_one_to_zero, nice_time, truncate
 from charm.loaders import chchart
 from charm.prototyping import loader_test
 from charm.prototyping.hitdetection.inputrecorder import InputRecorder
@@ -333,7 +333,7 @@ class Game(nygame.Game):
         if cs := self.song.section_by_ticks[current_tick]:
             current_section = cs.text
 
-        text = T(emojize(current_section), font="Segoe UI Emoji", size=24, color="yellow")
+        text = T(truncate(emojize(current_section.replace("=", "-")), 32), font="Segoe UI Emoji", size=24, color="yellow")
         rect = text.get_rect()
         rect.bottomleft = self.surface.get_rect().bottomleft
         rect.move_ip(5, -5)
