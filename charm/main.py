@@ -71,7 +71,7 @@ class SongDataDisplay:
 
     def render_phrase(self):
         phrase_count = len(self.game.song.lyrics)
-        text = T(f"Lyric Phrase: {self.game.la.phrase_number}/{phrase_count}", font="Lato Medium", size=24, color="green")
+        text = T(f"Lyric Phrase: {self.game.lyricanimator.phrase_number}/{phrase_count}", font="Lato Medium", size=24, color="green")
         return text.render()
 
     def render_bpm(self):
@@ -88,14 +88,14 @@ class SongDataDisplay:
 
     def render_score(self):
         multmap = {1: "green", 2: "yellow", 3: "blue", 4: "purple"}
-        text = T(f"Score: {self.game.sc.get_score(music.elapsed)}", font="Lato Medium", size=24, color="green")
-        extra_text = T(f"{self.game.sc.multiplier}x", font="Lato Medium", size=24, color="cyan" if self.game.nd.sp else multmap[self.game.sc.multiplier]) + T(f" | {self.game.sc.streak} streak", font="Lato Medium", size=24, color="green")
+        text = T(f"Score: {self.game.scorecalculator.get_score(music.elapsed)}", font="Lato Medium", size=24, color="green")
+        extra_text = T(f"{self.game.scorecalculator.multiplier}x", font="Lato Medium", size=24, color="cyan" if self.game.hyperloop.sp else multmap[self.game.scorecalculator.multiplier]) + T(f" | {self.game.scorecalculator.streak} streak", font="Lato Medium", size=24, color="green")
         renderedtext = text.render()
         renderedextratext = extra_text.render()
         return stacksurfs((renderedtext, renderedextratext), 5)
 
     def render_notespeed(self):
-        text = T(f"Note Speed: {self.game.nd.length} sec/screen", font="Lato Medium", size=24, color="green")
+        text = T(f"Note Speed: {self.game.hyperloop.length} sec/screen", font="Lato Medium", size=24, color="green")
         return text.render()
 
     def update(self):
@@ -105,15 +105,15 @@ class SongDataDisplay:
         if self.game.song:
             data.append(self.render_volume())
             data.append(self.render_bpm())
-        if self.game.nd:
+        if self.game.hyperloop:
             data.append(self.render_notespeed())
-        if self.game.la:
-            if self.game.la.phrase_number is not None:
+        if self.game.lyricanimator:
+            if self.game.lyricanimator.phrase_number is not None:
                 data.append(self.render_phrase())
-        if self.game.sc:
+        if self.game.scorecalculator:
             data.append(self.render_score())
         if self.game.show_latency:
-            data.append(self.game.ld.image)
+            data.append(self.game.latencydisplay.image)
         datasurf = stacksurfs(data, 5)
         self.image.blit(datasurf, (0, 22))
 
@@ -172,25 +172,25 @@ class Game(nygame.Game):
 
         # Set up guitar and InputRecorder.
         self.guitar = None
-        self.ir = None
-        self.id = None
+        self.inputrecorder = None
+        self.inputdebug = None
         if instruments.Instrument.get_count() > 0:
             self.guitar = instruments.Wiitar.connect(0)
             print("Connection to Wiitar 0")
         else:
             self.guitar = instruments.Keyguitar.connect()
             print("Connection to Keyboard")
-        self.ir = InputRecorder(self.guitar)
-        self.id = InputDebug(self.guitar)
+        self.inputrecorder = InputRecorder(self.guitar)
+        self.inputdebug = InputDebug(self.guitar)
 
         # Initialize class variables.
         self.chart = None
         self.song = None
-        self.sc = None
-        self.la = None
-        self.nd = None
-        self.sd = SongDataDisplay(self)
-        self.ld = LatencyDisplay()
+        self.scorecalculator = None
+        self.lyricanimator = None
+        self.hyperloop = None
+        self.songdata = SongDataDisplay(self)
+        self.latencydisplay = LatencyDisplay()
         self.highway = "./charm/data/images/highway.png"
 
         # Static, generated images
@@ -230,8 +230,8 @@ class Game(nygame.Game):
         self.chart = self.song.charts[(difficulty, 'Single')]
 
         # self.sc = ScoreCalculator(self.chart, self.ir)
-        self.la = LyricAnimator(self.chart)   # TODO: Update to take Song object
-        self.nd = HyperloopDisplay(self.chart, self.guitar, size=(400, 620), hitwindow_vis = False, bg = self.highway)
+        self.lyricanimator = LyricAnimator(self.chart)   # TODO: Update to take Song object
+        self.hyperloop = HyperloopDisplay(self.chart, self.guitar, size=(400, 620), hitwindow_vis = False, bg = self.highway)
         musicstream = None
 
         possiblesongs = [self.song.musicstream, "song.ogg", "song.mp3", "guitar.ogg", "guitar.mp3"]
@@ -258,10 +258,10 @@ class Game(nygame.Game):
             if event.type == pygame.KEYDOWN:
                 if event.key == K_PAUSE:
                     music.playpause()
-                elif event.key == K_KP4 and self.la.prev_phrase is not None:
-                    music.elapsed = self.la.prev_phrase.start + 0.0001
-                elif event.key == K_KP6 and self.la.next_phrase is not None:
-                    music.elapsed = self.la.next_phrase.start + 0.0001
+                elif event.key == K_KP4 and self.lyricanimator.prev_phrase is not None:
+                    music.elapsed = self.lyricanimator.prev_phrase.start + 0.0001
+                elif event.key == K_KP6 and self.lyricanimator.next_phrase is not None:
+                    music.elapsed = self.lyricanimator.next_phrase.start + 0.0001
                 elif event.key == K_HOME:
                     music.elapsed = 0
                 elif event.key == K_KP_PLUS:
@@ -269,24 +269,24 @@ class Game(nygame.Game):
                 elif event.key == K_KP_MINUS:
                     self.volume -= 1
                 elif event.key in (K_7, K_KP7):
-                    self.nd.tilt = not self.nd.tilt
+                    self.hyperloop.tilt = not self.hyperloop.tilt
                 elif event.key == K_s:
-                    self.nd.sp = not self.nd.sp
+                    self.hyperloop.sp = not self.hyperloop.sp
                 elif event.key == K_l:
-                    self.nd.lefty = not self.nd.lefty
+                    self.hyperloop.lefty = not self.hyperloop.lefty
                 elif event.key == K_KP_MULTIPLY:
                     self.show_latency = not self.show_latency
                 elif event.key == K_MINUS:
-                    self.nd.length -= 0.05
+                    self.hyperloop.length -= 0.05
                 elif event.key == K_EQUALS:
-                    self.nd.length += 0.05
+                    self.hyperloop.length += 0.05
                 elif event.key == K_RETURN:
                     try:
                         self.queue_chart()
                     except chchart.UnparsedMetadataException as e:
                         print(e)
-                self.nd.length = max(0.05, self.nd.length)
-                self.nd.length = round(self.nd.length, 2)
+                self.hyperloop.length = max(0.05, self.hyperloop.length)
+                self.hyperloop.length = round(self.hyperloop.length, 2)
             elif event.type == MOUSEWHEEL:
                 if mods & pygame.KMOD_LSHIFT:
                     music.elapsed -= event.y
@@ -297,15 +297,15 @@ class Game(nygame.Game):
 
             # Updates
             if not self.paused:
-                if self.ir is not None:
-                    self.ir.update(music.elapsed)
-                if self.id is not None:
-                    self.id.update(music.elapsed)
-                if self.sc is not None:
-                    self.score = self.sc.get_score(music.elapsed)
-            self.la.update(music.elapsed)
-            self.nd.update(music.elapsed)
-            self.sd.update()
+                if self.inputrecorder is not None:
+                    self.inputrecorder.update(music.elapsed)
+                if self.inputdebug is not None:
+                    self.inputdebug.update(music.elapsed)
+                if self.scorecalculator is not None:
+                    self.score = self.scorecalculator.get_score(music.elapsed)
+            self.lyricanimator.update(music.elapsed)
+            self.hyperloop.update(music.elapsed)
+            self.songdata.update()
 
             # Draws
             self.render_logo()
@@ -321,41 +321,41 @@ class Game(nygame.Game):
 
         else:
 
-            self.ld.reset()
+            self.latencydisplay.reset()
             # Updates
             if not self.paused:
-                if self.ir is not None:
-                    self.ir.update(music.elapsed)
-                    self.ld.add_data("Input Recorder")
-                if self.id is not None:
-                    self.id.update(music.elapsed)
-                    self.ld.add_data("Input Debug")
-                if self.sc is not None:
-                    self.score = self.sc.get_score(music.elapsed)
-                    self.ld.add_data("Input Recorder")
-            self.la.update(music.elapsed)
-            self.ld.add_data("Lyric Animator")
-            self.nd.update(music.elapsed)
-            self.ld.add_data("Hyperloop")
-            self.sd.update()
-            self.ld.add_data("Song Data")
+                if self.inputrecorder is not None:
+                    self.inputrecorder.update(music.elapsed)
+                    self.latencydisplay.add_data("Input Recorder")
+                if self.inputdebug is not None:
+                    self.inputdebug.update(music.elapsed)
+                    self.latencydisplay.add_data("Input Debug")
+                if self.scorecalculator is not None:
+                    self.score = self.scorecalculator.get_score(music.elapsed)
+                    self.latencydisplay.add_data("Input Recorder")
+            self.lyricanimator.update(music.elapsed)
+            self.latencydisplay.add_data("Lyric Animator")
+            self.hyperloop.update(music.elapsed)
+            self.latencydisplay.add_data("Hyperloop")
+            self.songdata.update()
+            self.latencydisplay.add_data("Song Data")
 
             # Draws
             self.render_logo()
-            self.ld.add_data("Render Logo")
+            self.latencydisplay.add_data("Render Logo")
             self.render_notes()
-            self.ld.add_data("Render Hyperloop")
+            self.latencydisplay.add_data("Render Hyperloop")
             self.render_debug()
-            self.ld.add_data("Render Debug")
+            self.latencydisplay.add_data("Render Debug")
             if self.chart.song.lyrics:
                 self.render_lyrics()
-                self.ld.add_data("Render Lyrics")
+                self.latencydisplay.add_data("Render Lyrics")
             self.render_pause()
             self.render_section()
-            self.ld.add_data("Render Section")
+            self.latencydisplay.add_data("Render Section")
             self.render_title()
             self.render_loading()
-            self.ld.update()
+            self.latencydisplay.update()
             self.render_songdata()
 
         # Chart loading
@@ -367,27 +367,27 @@ class Game(nygame.Game):
                 self.loading_queued = None
 
     def render_lyrics(self):
-        dest = self.la.image.get_rect()
+        dest = self.lyricanimator.image.get_rect()
         dest.centerx = self.surface.get_rect().centerx
         dest.top = self.surface.get_rect().top
-        self.surface.blit(self.la.image, dest)
+        self.surface.blit(self.lyricanimator.image, dest)
 
     def render_notes(self):
-        dest = self.nd.image.get_rect()
+        dest = self.hyperloop.image.get_rect()
         dest.centerx = self.surface.get_rect().centerx
         dest.bottom = self.surface.get_rect().bottom
-        self.surface.blit(self.nd.image, dest)
+        self.surface.blit(self.hyperloop.image, dest)
 
     def render_debug(self):
-        dest = self.id.image.get_rect()
+        dest = self.inputdebug.image.get_rect()
         dest.centery = self.surface.get_rect().centery
         dest.right = self.surface.get_rect().right
-        self.surface.blit(self.id.image, dest)
+        self.surface.blit(self.inputdebug.image, dest)
 
     def render_songdata(self):
-        dest = self.sd.image.get_rect()
+        dest = self.songdata.image.get_rect()
         dest.topleft = self.surface.get_rect().topleft
-        self.surface.blit(self.sd.image, dest)
+        self.surface.blit(self.songdata.image, dest)
 
     def render_pause(self):
         if music.paused:
