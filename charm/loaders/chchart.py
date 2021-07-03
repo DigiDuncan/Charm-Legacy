@@ -261,24 +261,28 @@ def parse_events(song: Song, raw_events: List[Union[RawEvent, RawLyric, RawPhras
 
 
 def clean_word(word: str):
+    removals = ["+", "#", "^"]
+    for bad in removals:
+        word = word.replace(bad, "")
+
     if word.endswith("=-"):
-        word = word.removesuffix("-").replace("=", "-")
+        word = word.removesuffix("=-") + "-"
     elif word.endswith("="):
-        word = word.replace("=", "-")
+        word = word.removesuffix("=") + "-"
     elif word.endswith("-"):
         word = word.removesuffix("-")
     else:
         word = word + " "
+
     replacements = {
         "''": "\"",
         "`": "\"",
-        "+": "",
-        "#": "",
-        "^": "",
-        "_": " "
+        "_": " ",
+        "=": "-"
     }
     for old, new in replacements.items():
         word = word.replace(old, new)
+
     word = emojize(word)
     return word
 
