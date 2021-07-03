@@ -20,21 +20,7 @@
 [Events]
 {
   480 = E "section Normal Notes"
-  960 = E "phrase_start"
-  965 = E "lyric Doo#"
-  1080 = E "lyric doo#"
-  1320 = E "lyric doo#"
-  1680 = E "lyric doo=-#"
-  1800 = E "lyric duh#"
-  2040 = E "lyric doo!#"
-  2640 = E "lyric Doot.#"
-  2760 = E "phrase_end"
-  3360 = E "phrase_start"
   3360 = E "section Forced HOPO"
-  3365 = E "lyric Boop#"
-  3840 = E "lyric boop#"
-  4320 = E "lyric boop...#"
-  4440 = E "phrase_end"
   6240 = E "section Tap Notes"
   9120 = E "section Star Power"
   12000 = E "section Long Notes"
@@ -171,4 +157,29 @@
   1200 = N 2 0
   1320 = N 1 0
   1440 = N 0 0
+}
+[PART VOCALS]
+{
+  960 = N 105 1800
+  965 = N 50 0
+  965 = E Doo#
+  1080 = N 50 0
+  1080 = E doo#
+  1320 = N 50 357
+  1320 = E doo#
+  1680 = N 50 0
+  1680 = E doo=-#
+  1800 = N 50 237
+  1800 = E duh#
+  2040 = N 50 597
+  2040 = E doo!#
+  2640 = N 50 0
+  2640 = E Doot.#
+  3360 = N 105 1080
+  3365 = N 50 472
+  3365 = E Boop#
+  3840 = N 50 477
+  3840 = E boop#
+  4320 = N 50 0
+  4320 = E boop...#
 }
