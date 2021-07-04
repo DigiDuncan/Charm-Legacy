@@ -206,6 +206,7 @@ class Game(nygame.Game):
         self.show_latency = False
         self.loading_timer = 0
         self.loading_queued = None
+        self.frame = 0
 
         hyperloop_init()
 
@@ -253,6 +254,8 @@ class Game(nygame.Game):
         # print(self.guitar.debug)
         instruments.Instrument.update(music.elapsed, events)
 
+        self.frame += 1
+
         for event in events:
             mods = pygame.key.get_mods()
             if event.type == pygame.KEYDOWN:
@@ -293,33 +296,7 @@ class Game(nygame.Game):
                 else:
                     music.elapsed -= event.y / 10
 
-        if not self.show_latency:
-
-            # Updates
-            if not self.paused:
-                if self.inputrecorder is not None:
-                    self.inputrecorder.update(music.elapsed)
-                if self.inputdebug is not None:
-                    self.inputdebug.update(music.elapsed)
-                if self.scorecalculator is not None:
-                    self.score = self.scorecalculator.get_score(music.elapsed)
-            self.lyricanimator.update(music.elapsed)
-            self.hyperloop.update(music.elapsed)
-            self.songdata.update()
-
-            # Draws
-            self.render_logo()
-            self.render_notes()
-            self.render_debug()
-            if self.chart.song.lyrics:
-                self.render_lyrics()
-            self.render_songdata()
-            self.render_pause()
-            self.render_section()
-            self.render_title()
-            self.render_loading()
-
-        else:
+        if self.show_latency and self.frame % 60 == 0:
 
             self.latencydisplay.reset()
             # Updates
@@ -357,6 +334,32 @@ class Game(nygame.Game):
             self.render_loading()
             self.latencydisplay.update()
             self.render_songdata()
+
+        else:
+
+            # Updates
+            if not self.paused:
+                if self.inputrecorder is not None:
+                    self.inputrecorder.update(music.elapsed)
+                if self.inputdebug is not None:
+                    self.inputdebug.update(music.elapsed)
+                if self.scorecalculator is not None:
+                    self.score = self.scorecalculator.get_score(music.elapsed)
+            self.lyricanimator.update(music.elapsed)
+            self.hyperloop.update(music.elapsed)
+            self.songdata.update()
+
+            # Draws
+            self.render_logo()
+            self.render_notes()
+            self.render_debug()
+            if self.chart.song.lyrics:
+                self.render_lyrics()
+            self.render_songdata()
+            self.render_pause()
+            self.render_section()
+            self.render_title()
+            self.render_loading()
 
         # Chart loading
         if self.loading_queued:
