@@ -5,6 +5,7 @@ import numpy
 
 import nygame
 import pygame
+from pygame.surface import Surface
 
 
 def cv2pg(frame_yx_bgr: numpy.ndarray) -> numpy.ndarray:
@@ -13,17 +14,41 @@ def cv2pg(frame_yx_bgr: numpy.ndarray) -> numpy.ndarray:
     return frame_xy_rgb
 
 
+def rescale_frame(frame, scale):
+    width = int(frame.shape[1] * scale)
+    height = int(frame.shape[0] * scale)
+    dim = (width, height)
+    return cv2.resize(frame, dim, interpolation =cv2.INTER_AREA)
+
+
 class VideoPlayer:
-    def __init__(self, videopath: str):
+    def __init__(self, videopath: str, *, width: int = None):
         self.cap = cv2.VideoCapture(videopath)
         self.frame = None
         self.start_time = arrow.now()
 
+        self.orig_width = self.cap.get(3)
+        self.orig_height = self.cap.get(4)
+
+        if width is None:
+            width = self.orig_width
+
+        self.scale = width / self.orig_width
+
+        self.size = int(width), int(self.orig_height * self.scale)
+
+        self.image = Surface(self.size)
+
     def get_frame(self, time: float) -> numpy.ndarray:
         while self.cap.get(cv2.CAP_PROP_POS_MSEC) < time * 1000:
             frame = self.cap.read()[1]
+            if self.scale != 1:
+                frame = rescale_frame(frame, self.scale)
             self.frame = cv2pg(frame)
         return self.frame
+
+    def update(self, time):
+        pygame.surfarray.blit_array(self.image, self.get_frame(time))
 
 
 class Game(nygame.Game):
@@ -40,4 +65,4 @@ class Game(nygame.Game):
         self.render_video(time)
 
 
-Game().run()
+# Game().run()

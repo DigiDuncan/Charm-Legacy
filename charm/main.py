@@ -1,3 +1,4 @@
+import time
 from datetime import timedelta
 from enum import Enum
 from itertools import cycle
@@ -26,6 +27,7 @@ from charm.prototyping.menu import menu2
 from charm.prototyping.notedisplay.hyperloop import HyperloopDisplay, init as hyperloop_init
 from charm.prototyping.notedisplay.inputdebug import InputDebug
 from charm.prototyping.lyricanimator.lyricanimator import LyricAnimator
+from charm.prototyping.videoplayer.videoplayer import VideoPlayer
 
 
 def draw_pause():
@@ -74,9 +76,9 @@ class SongDataDisplay:
         text = T(f"Lyric Phrase: {self.game.lyricanimator.phrase_number}/{phrase_count}", font="Lato Medium", size=24, color="green")
         return text.render()
 
-    def render_bpm(self):
-        tempo = self.game.song.tempo_calc.tempo_by_secs[music.elapsed]
-        ts = self.game.song.timesig_by_ticks[self.game.song.tempo_calc.secs_to_ticks(music.elapsed)]
+    def render_bpm(self, time):
+        tempo = self.game.song.tempo_calc.tempo_by_secs[time]
+        ts = self.game.song.timesig_by_ticks[self.game.song.tempo_calc.secs_to_ticks(time)]
         ticks_per_quarternote = self.game.song.resolution
         ticks_per_wholenote = ticks_per_quarternote * 4
         beats_per_wholenote = ts.denominator
@@ -86,9 +88,9 @@ class SongDataDisplay:
         text = T(f"{bpm:.03f}BPM | {ts.numerator}/{ts.denominator}", font="Lato Medium", size=24, color="green")
         return text.render()
 
-    def render_score(self):
+    def render_score(self, time):
         multmap = {1: "green", 2: "yellow", 3: "blue", 4: "purple"}
-        text = T(f"Score: {self.game.scorecalculator.get_score(music.elapsed)}", font="Lato Medium", size=24, color="green")
+        text = T(f"Score: {self.game.scorecalculator.get_score(time)}", font="Lato Medium", size=24, color="green")
         extra_text = T(f"{self.game.scorecalculator.multiplier}x", font="Lato Medium", size=24, color="cyan" if self.game.hyperloop.sp else multmap[self.game.scorecalculator.multiplier]) + T(f" | {self.game.scorecalculator.streak} streak", font="Lato Medium", size=24, color="green")
         renderedtext = text.render()
         renderedextratext = extra_text.render()
@@ -98,20 +100,20 @@ class SongDataDisplay:
         text = T(f"Note Speed: {self.game.hyperloop.length} sec/screen", font="Lato Medium", size=24, color="green")
         return text.render()
 
-    def update(self):
+    def update(self, time):
         self.image.fill((0, 0, 0, 0))
         data = []
         data.append(self.render_clock())
         if self.game.song:
             data.append(self.render_volume())
-            data.append(self.render_bpm())
+            data.append(self.render_bpm(time))
         if self.game.hyperloop:
             data.append(self.render_notespeed())
         if self.game.lyricanimator:
             if self.game.lyricanimator.phrase_number is not None:
                 data.append(self.render_phrase())
         if self.game.scorecalculator:
-            data.append(self.render_score())
+            data.append(self.render_score(time))
         if self.game.show_latency:
             data.append(self.game.latencydisplay.image)
         datasurf = stacksurfs(data, 5)
@@ -163,6 +165,7 @@ class Game(nygame.Game):
 
         # Cycle of charts.
         self.charts = cycle([
+            Path("./charm/data/charts/chopsuey"),
             Path("./charm/data/charts/notes"),
             Path("./charm/data/charts/run_around_the_character_code"),
             Path("./charm/data/charts/soulless5"),
@@ -191,6 +194,7 @@ class Game(nygame.Game):
         self.hyperloop = None
         self.songdata = SongDataDisplay(self)
         self.latencydisplay = LatencyDisplay()
+        self.videoplayer = None
         self.highway = "./charm/data/images/highway.png"
 
         # Static, generated images
@@ -245,14 +249,19 @@ class Game(nygame.Game):
             if musicfile.exists():
                 musicstream = musicfile
 
+        videofile = songfolder / "video.mp4"
+        if videofile.exists():
+            self.videoplayer = VideoPlayer(str(videofile.absolute()), width = 400)
+        else:
+            self.videoplayer = None
+
         if musicstream is None:
             raise ValueError("No valid music file found!")
 
         music.play(musicstream)
 
     def loop(self, events):
-        # print(self.guitar.debug)
-        instruments.Instrument.update(music.elapsed, events)
+        now = None
 
         self.frame += 1
 
@@ -260,7 +269,9 @@ class Game(nygame.Game):
             mods = pygame.key.get_mods()
             if event.type == pygame.KEYDOWN:
                 if event.key == K_PAUSE:
+                    now = music.elapsed
                     music.playpause()
+                    time.sleep(0.01)
                 elif event.key == K_KP4 and self.lyricanimator.prev_phrase is not None:
                     music.elapsed = self.lyricanimator.prev_phrase.start + 0.0001
                 elif event.key == K_KP6 and self.lyricanimator.next_phrase is not None:
@@ -296,25 +307,32 @@ class Game(nygame.Game):
                 else:
                     music.elapsed -= event.y / 10
 
+        if now is None:
+            now = music.elapsed
+        instruments.Instrument.update(now, events)
+
         if self.show_latency and self.frame % 60 == 0:
 
             self.latencydisplay.reset()
             # Updates
             if not self.paused:
                 if self.inputrecorder is not None:
-                    self.inputrecorder.update(music.elapsed)
+                    self.inputrecorder.update(now)
                     self.latencydisplay.add_data("Input Recorder")
                 if self.inputdebug is not None:
-                    self.inputdebug.update(music.elapsed)
+                    self.inputdebug.update(now)
                     self.latencydisplay.add_data("Input Debug")
                 if self.scorecalculator is not None:
-                    self.score = self.scorecalculator.get_score(music.elapsed)
+                    self.score = self.scorecalculator.get_score(now)
                     self.latencydisplay.add_data("Input Recorder")
-            self.lyricanimator.update(music.elapsed)
+                if self.videoplayer is not None:
+                    self.videoplayer.update(now)
+                    self.latencydisplay.add_data("Video Player")
+            self.lyricanimator.update(now)
             self.latencydisplay.add_data("Lyric Animator")
-            self.hyperloop.update(music.elapsed)
+            self.hyperloop.update(now)
             self.latencydisplay.add_data("Hyperloop")
-            self.songdata.update()
+            self.songdata.update(now)
             self.latencydisplay.add_data("Song Data")
 
             # Draws
@@ -327,10 +345,13 @@ class Game(nygame.Game):
             if self.chart.song.lyrics:
                 self.render_lyrics()
                 self.latencydisplay.add_data("Render Lyrics")
+            if self.videoplayer:
+                self.render_video()
+                self.latencydisplay.add_data("Render Video")
             self.render_pause()
-            self.render_section()
+            self.render_section(now)
             self.latencydisplay.add_data("Render Section")
-            self.render_title()
+            self.render_title(now)
             self.render_loading()
             self.latencydisplay.update()
             self.render_songdata()
@@ -340,14 +361,16 @@ class Game(nygame.Game):
             # Updates
             if not self.paused:
                 if self.inputrecorder is not None:
-                    self.inputrecorder.update(music.elapsed)
+                    self.inputrecorder.update(now)
                 if self.inputdebug is not None:
-                    self.inputdebug.update(music.elapsed)
+                    self.inputdebug.update(now)
                 if self.scorecalculator is not None:
-                    self.score = self.scorecalculator.get_score(music.elapsed)
-            self.lyricanimator.update(music.elapsed)
-            self.hyperloop.update(music.elapsed)
-            self.songdata.update()
+                    self.score = self.scorecalculator.get_score(now)
+                if self.videoplayer is not None:
+                    self.videoplayer.update(now)
+            self.lyricanimator.update(now)
+            self.hyperloop.update(now)
+            self.songdata.update(now)
 
             # Draws
             self.render_logo()
@@ -355,10 +378,12 @@ class Game(nygame.Game):
             self.render_debug()
             if self.chart.song.lyrics:
                 self.render_lyrics()
+            if self.videoplayer:
+                self.render_video()
             self.render_songdata()
             self.render_pause()
-            self.render_section()
-            self.render_title()
+            self.render_section(now)
+            self.render_title(now)
             self.render_loading()
 
         # Chart loading
@@ -383,7 +408,7 @@ class Game(nygame.Game):
 
     def render_debug(self):
         dest = self.inputdebug.image.get_rect()
-        dest.centery = self.surface.get_rect().centery
+        dest.top = self.surface.get_rect().top
         dest.right = self.surface.get_rect().right
         self.surface.blit(self.inputdebug.image, dest)
 
@@ -411,8 +436,8 @@ class Game(nygame.Game):
         logo_rect.bottomright = self.surface.get_rect().bottomright
         self.surface.blit(logo, logo_rect)
 
-    def render_section(self):
-        current_tick = self.song.tempo_calc.secs_to_ticks(music.elapsed)
+    def render_section(self, time):
+        current_tick = self.song.tempo_calc.secs_to_ticks(time)
         current_section = ""
         if cs := self.song.section_by_ticks[current_tick]:
             current_section = cs.text
@@ -423,8 +448,7 @@ class Game(nygame.Game):
         rect.move_ip(5, -5)
         text.render_to(self.surface, rect)
 
-    def render_title(self):
-        time = music.elapsed
+    def render_title(self, time):
         # https://www.desmos.com/calculator/h0tyxihzzq
         opacity = linear_one_to_zero(3, 1, time)
         titletext = T(self.song.title, font = "Lato Medium", size = 72)
@@ -440,6 +464,12 @@ class Game(nygame.Game):
         artistsurf.set_alpha(255 * opacity)
         self.surface.blit(titlesurf, rect)
         self.surface.blit(artistsurf, rect2)
+
+    def render_video(self):
+        dest = self.videoplayer.image.get_rect()
+        dest.centery = self.surface.get_rect().centery
+        dest.right = self.surface.get_rect().right
+        self.surface.blit(self.videoplayer.image, dest)
 
     @property
     def volume(self):
