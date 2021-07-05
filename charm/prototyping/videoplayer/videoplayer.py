@@ -42,6 +42,8 @@ class VideoPlayer:
     def get_frame(self, time: float) -> numpy.ndarray:
         while self.cap.get(cv2.CAP_PROP_POS_MSEC) < time * 1000:
             frame = self.cap.read()[1]
+            if frame is None:
+                return
             if self.scale != 1:
                 frame = rescale_frame(frame, self.scale)
             self.frame = cv2pg(frame)
