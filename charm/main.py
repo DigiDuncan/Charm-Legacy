@@ -11,7 +11,7 @@ import pygame
 from nygame import DigiText as T
 from nygame import music
 from nygame.emoji import emojize
-from pygame.constants import K_EQUALS, K_HOME, K_KP7, K_KP_MINUS, K_KP_PLUS, K_KP4, K_KP6, K_MINUS, K_PAUSE, K_7, K_RETURN, K_l, K_s, K_KP_MULTIPLY, MOUSEWHEEL, SRCALPHA
+from pygame.constants import K_EQUALS, K_HOME, K_KP7, K_KP_MINUS, K_KP_PLUS, K_KP4, K_KP6, K_MINUS, K_PAUSE, K_7, K_RETURN, K_l, K_s, MOUSEWHEEL, SRCALPHA
 from pygame.surface import Surface
 
 from charm.lib import instruments
@@ -120,37 +120,6 @@ class SongDataDisplay:
         self.image.blit(datasurf, (0, 22))
 
 
-class LatencyDisplay:
-    def __init__(self):
-        self.data = {}
-        self.image = Surface((1, 1))
-        self.last_time = arrow.now()
-
-    @property
-    def total(self):
-        return sum(self.data.values())
-
-    def add_data(self, name):
-        time = arrow.now() - self.last_time
-        self.data[name] = time / timedelta(milliseconds=1)
-        self.last_time = arrow.now()
-
-    def reset(self):
-        self.data = {}
-        self.last_time = arrow.now()
-
-    def update(self):
-        surfaces = []
-        for k, v in self.data.items():
-            surfaces.append(
-                T(f"{k:<18}: {round(v):>4}ms", font = "Consolas", color = "red", size = 12).render()
-            )
-        surfaces.append(
-            T(f"TOTAL: {round(self.total):>4}ms", font = "Consolas", color = "red", size = 14).render()
-        )
-        self.image = stacksurfs(surfaces, 5)
-
-
 class Game(nygame.Game):
     def __init__(self):
         super().__init__(size = (1280, 720), fps = 120, showfps = True)
@@ -193,7 +162,6 @@ class Game(nygame.Game):
         self.lyricanimator = None
         self.hyperloop = None
         self.songdata = SongDataDisplay(self)
-        self.latencydisplay = LatencyDisplay()
         self.videoplayer = None
         self.highway = "./charm/data/images/highway.png"
 
@@ -288,8 +256,6 @@ class Game(nygame.Game):
                     self.hyperloop.sp = not self.hyperloop.sp
                 elif event.key == K_l:
                     self.hyperloop.lefty = not self.hyperloop.lefty
-                elif event.key == K_KP_MULTIPLY:
-                    self.show_latency = not self.show_latency
                 elif event.key == K_MINUS:
                     self.hyperloop.length -= 0.05
                 elif event.key == K_EQUALS:
@@ -311,80 +277,33 @@ class Game(nygame.Game):
             now = music.elapsed
         instruments.Instrument.update(now, events)
 
-        if self.show_latency and self.frame % 60 == 0:
+        # Updates
+        if not self.paused:
+            if self.inputrecorder is not None:
+                self.inputrecorder.update(now)
+            if self.inputdebug is not None:
+                self.inputdebug.update(now)
+            if self.scorecalculator is not None:
+                self.score = self.scorecalculator.get_score(now)
+            if self.videoplayer is not None:
+                self.videoplayer.update(now)
+        self.lyricanimator.update(now)
+        self.hyperloop.update(now)
+        self.songdata.update(now)
 
-            self.latencydisplay.reset()
-            # Updates
-            if not self.paused:
-                if self.inputrecorder is not None:
-                    self.inputrecorder.update(now)
-                    self.latencydisplay.add_data("Input Recorder")
-                if self.inputdebug is not None:
-                    self.inputdebug.update(now)
-                    self.latencydisplay.add_data("Input Debug")
-                if self.scorecalculator is not None:
-                    self.score = self.scorecalculator.get_score(now)
-                    self.latencydisplay.add_data("Input Recorder")
-                if self.videoplayer is not None:
-                    self.videoplayer.update(now)
-                    self.latencydisplay.add_data("Video Player")
-            self.lyricanimator.update(now)
-            self.latencydisplay.add_data("Lyric Animator")
-            self.hyperloop.update(now)
-            self.latencydisplay.add_data("Hyperloop")
-            self.songdata.update(now)
-            self.latencydisplay.add_data("Song Data")
-
-            # Draws
-            self.render_logo()
-            self.latencydisplay.add_data("Render Logo")
-            self.render_notes()
-            self.latencydisplay.add_data("Render Hyperloop")
-            self.render_debug()
-            self.latencydisplay.add_data("Render Debug")
-            if self.chart.song.lyrics:
-                self.render_lyrics()
-                self.latencydisplay.add_data("Render Lyrics")
-            if self.videoplayer:
-                self.render_video()
-                self.latencydisplay.add_data("Render Video")
-            self.render_pause()
-            self.render_section(now)
-            self.latencydisplay.add_data("Render Section")
-            self.render_title(now)
-            self.render_loading()
-            self.latencydisplay.update()
-            self.render_songdata()
-
-        else:
-
-            # Updates
-            if not self.paused:
-                if self.inputrecorder is not None:
-                    self.inputrecorder.update(now)
-                if self.inputdebug is not None:
-                    self.inputdebug.update(now)
-                if self.scorecalculator is not None:
-                    self.score = self.scorecalculator.get_score(now)
-                if self.videoplayer is not None:
-                    self.videoplayer.update(now)
-            self.lyricanimator.update(now)
-            self.hyperloop.update(now)
-            self.songdata.update(now)
-
-            # Draws
-            self.render_logo()
-            self.render_notes()
-            self.render_debug()
-            if self.chart.song.lyrics:
-                self.render_lyrics()
-            if self.videoplayer:
-                self.render_video()
-            self.render_songdata()
-            self.render_pause()
-            self.render_section(now)
-            self.render_title(now)
-            self.render_loading()
+        # Draws
+        self.render_logo()
+        self.render_notes()
+        self.render_debug()
+        if self.chart.song.lyrics:
+            self.render_lyrics()
+        if self.videoplayer:
+            self.render_video()
+        self.render_songdata()
+        self.render_pause()
+        self.render_section(now)
+        self.render_title(now)
+        self.render_loading()
 
         # Chart loading
         if self.loading_queued:
