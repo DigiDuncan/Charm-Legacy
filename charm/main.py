@@ -114,8 +114,6 @@ class SongDataDisplay:
                 data.append(self.render_phrase())
         if self.game.scorecalculator:
             data.append(self.render_score(time))
-        if self.game.show_latency:
-            data.append(self.game.latencydisplay.image)
         datasurf = stacksurfs(data, 5)
         self.image.blit(datasurf, (0, 22))
 
@@ -175,7 +173,6 @@ class Game(nygame.Game):
 
         self.paused = False
         self.volume = 6
-        self.show_latency = False
         self.loading_timer = 0
         self.loading_queued = None
         self.frame = 0
