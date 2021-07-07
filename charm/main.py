@@ -1,10 +1,7 @@
 import time
-from datetime import timedelta
 from enum import Enum
 from itertools import cycle
 from pathlib import Path
-
-import arrow
 
 import nygame
 import pygame
@@ -16,6 +13,7 @@ from pygame.surface import Surface
 
 from charm.lib import instruments
 from charm.lib.args import InvalidArgException, tryint
+from charm.lib.dumbutils import beatbounce
 from charm.lib.nargs import nargs
 from charm.lib.pgutils import stacksurfs
 from charm.lib.utils import clamp, linear_one_to_zero, nice_time, truncate
@@ -289,7 +287,7 @@ class Game(nygame.Game):
         self.songdata.update(now)
 
         # Draws
-        self.render_logo()
+        self.render_logo(now)
         self.render_notes()
         self.render_debug()
         if self.chart.song.lyrics:
@@ -346,8 +344,9 @@ class Game(nygame.Game):
             rect.center = self.surface.get_rect().center
             self.surface.blit(self.loading_image, rect)
 
-    def render_logo(self):
+    def render_logo(self, time):
         logo = self.logo
+        logo = beatbounce(logo, self.song, time)
         logo_rect = logo.get_rect()
         logo_rect.bottomright = self.surface.get_rect().bottomright
         self.surface.blit(logo, logo_rect)
