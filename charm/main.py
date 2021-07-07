@@ -212,8 +212,10 @@ class Game(nygame.Game):
             if musicfile.exists():
                 musicstream = musicfile
 
-        videofile = songfolder / "video.mp4"
-        if videofile.exists():
+        videolist = list(songfolder.glob('*.mp4'))
+        # videofile = songfolder / "video.mp4"
+        if videolist:
+            videofile = videolist[0]
             self.videoplayer = VideoPlayer(str(videofile.absolute()), width = 400)
         else:
             self.videoplayer = None

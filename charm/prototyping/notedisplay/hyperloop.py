@@ -1,3 +1,4 @@
+from charm.lib.dumbutils import beatbounce
 from charm.lib.instruments.guitar import Guitar
 from importlib import resources as pkg_resources
 from itertools import count, takewhile
@@ -34,7 +35,7 @@ def init():
 
 
 class HyperloopDisplay:
-    def __init__(self, chart: Chart, instrument: Optional[Instrument], *, size: Tuple[int, int] = (400, 400), lefty: bool = False, hitwindow_vis: bool = False, bg: Optional[str] = None):
+    def __init__(self, chart: Chart, instrument: Optional[Instrument], *, size: Tuple[int, int] = (400, 400), lefty: bool = False, hitwindow_vis: bool = False, beatbounce: bool = True, bg: Optional[str] = None):
         self.chart = chart
         self.instrument = instrument
         self.secs_to_ticks: Callable[[float], int] = self.chart.song.tempo_calc.secs_to_ticks
@@ -55,6 +56,7 @@ class HyperloopDisplay:
         self.tilt: bool = False
         self.sp: bool = False
         self.hitwindow_vis = hitwindow_vis
+        self.beatbounce = beatbounce
 
         self.create_bg()
         input_init()
@@ -236,8 +238,8 @@ class HyperloopDisplay:
         spnote = False if spnote is None else True
         sprite = sprite_sheet.get(fretnum=fretnum, mode=mode, spact=spact, spnote=spnote)
         # Center fret sprites
-        x -= sprite.get_width() / 2
-        y -= sprite.get_height() / 2
+        # x -= sprite.get_width() / 2
+        # y -= sprite.get_height() / 2
         sprite.set_alpha(255 * fade)
         if length != 0:
             sustain_img = sprite_sheet.get(fretnum=fretnum, mode="sustainbody", spact=spact)
@@ -258,7 +260,10 @@ class HyperloopDisplay:
             self._image.blit(sustain_img, sustain_dest)
             self._image.blit(sustaincap_img, sustaincap_dest)
         if secs >= self.tracktime:
-            self._image.blit(sprite, (x, y))
+            sprite = beatbounce(sprite, self.chart.song, self.tracktime, 1.1)
+            rect = sprite.get_rect()
+            rect.center = (x, y)
+            self._image.blit(sprite, rect)
 
     def draw_bg(self, bg_image: Surface):
         bg_rect = bg_image.get_rect()

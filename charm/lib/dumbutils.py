@@ -1,4 +1,3 @@
-from charm.prototyping.notedisplay.inputdebug import CHARM
 from charm.song import Song
 
 import pygame.transform
