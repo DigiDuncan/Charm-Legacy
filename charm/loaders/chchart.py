@@ -186,7 +186,7 @@ def parse_synctrack(song, lines: List[RawTempo, RawTS]) -> Tuple[TempoCalculator
     tempos = []
     for raw_tempo in raw_tempos:
         ticks_per_second = song.resolution * raw_tempo.mbpm / 1000 / 60
-        tempo = TempoEvent(song, raw_tempo.tick_start, ticks_per_second)
+        tempo = TempoEvent(song, raw_tempo.tick_start, ticks_per_second, raw_tempo.mbpm)
         tempos.append(tempo)
     tempo_calc = TempoCalculator(tempos)
 

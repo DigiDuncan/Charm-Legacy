@@ -281,9 +281,10 @@ class TSEvent(SongEvent):
 
 
 class TempoEvent(SongEvent):
-    def __init__(self, song: Song, tick_start: int, ticks_per_sec: int):
+    def __init__(self, song: Song, tick_start: int, ticks_per_sec: int, mbpm: float):
         super().__init__(song, tick_start)
         self.ticks_per_sec = ticks_per_sec
+        self.mbpm = mbpm
 
 
 class TempoCalculator:
