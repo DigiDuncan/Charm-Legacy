@@ -24,8 +24,12 @@ class LyricAnimator:
         return self.ticks_to_secs(self.track_ticks)
 
     @property
+    def song(self):
+        return self.chart.song
+
+    @property
     def phrase_index(self):
-        return self.chart.song.lyric_by_ticks.index(self.track_ticks)
+        return self.chart.song.lyric_by_ticks.lteq_index(self.track_ticks)
 
     @property
     def prev_phrase_index(self):
@@ -47,7 +51,7 @@ class LyricAnimator:
 
     @property
     def curr_phrase(self):
-        return self.chart.song.lyric_by_ticks[self.track_ticks]
+        return self.chart.song.lyric_by_ticks.lteq(self.track_ticks)
 
     @property
     def next_phrase(self):

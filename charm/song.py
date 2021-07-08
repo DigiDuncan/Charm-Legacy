@@ -107,6 +107,7 @@ class LyricPhrase(SongEvent):
 
     def get_on_text(self, track_ticks: int) -> str:
         return "".join(w.text for w in self.word_by_ticks[:track_ticks + 1])
+        # return "".join(w.text for w in self.words[:self.word_by_ticks.gt_index(track_ticks)])
 
     def get_off_text(self, track_ticks: int) -> str:
         return "".join(w.text for w in self.word_by_ticks[track_ticks + 1:])
@@ -174,9 +175,9 @@ class Chart:
 
     def hopo_calc(self, song: Song):
         for chord, prev_chord in zip(self.chords[1:], self.chords[:-1]):
-            tempo = song.tempo_calc.tempo_by_ticks[prev_chord.tick_start]
+            tempo = song.tempo_calc.tempo_by_ticks.lteq(prev_chord.tick_start)
             tempo.ticks_per_sec
-            timesig = song.timesig_by_ticks[prev_chord.tick_start]
+            timesig = song.timesig_by_ticks.lteq(prev_chord.tick_start)
             if timesig is None:
                 pass
 
@@ -307,7 +308,7 @@ class TempoCalculator:
         if ticks < 0:
             curr_tempo = self.tempos[0]
         else:
-            curr_tempo = self.tempo_by_ticks[ticks - 1]
+            curr_tempo = self.tempo_by_ticks.lteq(ticks - 1)
 
         diff_ticks = ticks - curr_tempo.tick_start
         diff_seconds = diff_ticks / curr_tempo.ticks_per_sec
@@ -322,7 +323,7 @@ class TempoCalculator:
         if secs < 0:
             curr_tempo = self.tempos[0]
         else:
-            curr_tempo = self.tempo_by_secs[secs]
+            curr_tempo = self.tempo_by_secs.lteq(secs)
 
         diff_seconds = secs - curr_tempo.start
         diff_ticks = int(diff_seconds * curr_tempo.ticks_per_sec)

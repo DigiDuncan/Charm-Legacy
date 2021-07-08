@@ -3,7 +3,7 @@ pillow==8.1.0
 emoji==1.2.0
 twemoji-parser==0.4.3
 pygame==2.0.1
-git+git://github.com/nfearnley/nygame
+nygame==1.2.1
 digiformatter==0.5.7.2
 git+git://github.com/DigiDuncan/DigiColor
 addict==2.4.0

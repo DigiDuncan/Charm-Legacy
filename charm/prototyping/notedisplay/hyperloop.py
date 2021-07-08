@@ -78,7 +78,7 @@ class HyperloopDisplay:
 
     def get_visible_beats(self) -> Tuple[List[float], List[float], List[float]]:
         # This needs to be updated to handle multiple timesigs
-        timesig = self.chart.song.timesig_by_ticks[self.track_ticks]
+        timesig = self.chart.song.timesig_by_ticks.lteq(self.track_ticks)
         if timesig is None:
             return [], [], []
 

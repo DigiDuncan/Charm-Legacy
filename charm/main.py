@@ -75,8 +75,8 @@ class SongDataDisplay:
         return text.render()
 
     def render_bpm(self, time):
-        tempo = self.game.song.tempo_calc.tempo_by_secs[time]
-        ts = self.game.song.timesig_by_ticks[self.game.song.tempo_calc.secs_to_ticks(time)]
+        tempo = self.game.song.tempo_calc.tempo_by_secs.lteq(time)
+        ts = self.game.song.timesig_by_ticks.lteq(self.game.song.tempo_calc.secs_to_ticks(time))
         ticks_per_quarternote = self.game.song.resolution
         ticks_per_wholenote = ticks_per_quarternote * 4
         beats_per_wholenote = ts.denominator
@@ -130,8 +130,8 @@ class Game(nygame.Game):
 
         # Cycle of charts.
         self.charts = cycle([
-            Path("./charm/data/charts/chopsuey"),
-            Path("./charm/data/charts/notes"),
+            # Path("./charm/data/charts/chopsuey"),
+            # Path("./charm/data/charts/notes"),
             Path("./charm/data/charts/run_around_the_character_code"),
             Path("./charm/data/charts/soulless5"),
             Path("./charm/data/charts/soflan"),
@@ -356,7 +356,7 @@ class Game(nygame.Game):
     def render_section(self, time):
         current_tick = self.song.tempo_calc.secs_to_ticks(time)
         current_section = ""
-        if cs := self.song.section_by_ticks[current_tick]:
+        if cs := self.song.section_by_ticks.lteq(current_tick):
             current_section = cs.text
 
         text = T(truncate(emojize(current_section.replace("=", "-")), 32), font="Segoe UI Emoji", size=24, color="yellow")
