@@ -17,7 +17,7 @@ Slap notes (`N 255`) are a new "fret" altogether, utilizing the whammy bar of th
 
 Due to the activation method, "Tap" or "HOPO" slap notes are invalid, as are most other modifiers (other than Charm Power.)
 
-Slap notes appear visually as white, thin bars across the entire highway, like an open note but thinner.
+Slap notes appear visually as white and yellow, thin bars across the entire highway, like an open note but thinner.
 
 ### Directional Notes (Up-Notes and Down-Notes)
 Up-Notes and Down-Notes (`N 272` and `N 273` flags, respectively) are notes that must be strummed in that direction or fail activation.
@@ -26,7 +26,13 @@ These can not be mixed with the "Tap" or "HOPO" flags, as in some or all cases, 
 
 They visually appear as similar to their standard note counterparts, but in the shape of an arrow pointing up or down.
 
-## New Kinds Of Event
+### "Bomb"<sup id="a2">[2](#f2)</sup> Notes
+Bomb Notes (`N 274` flag) denote a note that if hit, breaks your combo. These notes should be avoided. They are activated the same way as tap notes. They visually appear as large colored Xs.
+
+### Fake Notes
+Fake Notes (`N 275` flag) are notes that are not real. There is no penalty for not hitting them, and no gain for hitting them. They do not add to combo and are strictly visual. They are rendered under all other notes and appear as the original note but in grayscale.
+
+## New Kinds Of Events
 Other than modchart events (pending), *Charm* adds a couple new events that modify gameplay.
 
 ### Precision Section
@@ -43,3 +49,5 @@ This is shown visually by the highway tinting green during this time.<sup id="a1
 
 ## Footnotes
 <b id="f1">1</b>: This might need to be changed to suit colorblind people, or at least get a secondary visual indicator. Also might look dumb with custom highways? A lot to think about here.[↩](#a1)
+
+<b id="f2">2</b>: Name not final. [↩](#a2)
