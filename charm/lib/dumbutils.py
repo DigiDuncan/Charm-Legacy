@@ -1,11 +1,17 @@
-from functools import wraps
+from functools import lru_cache, wraps
 from charm.song import Song
 
 import pygame.transform
 from pygame import Surface
 
 
+@lru_cache(2048)
+def zoom(surface: Surface, scale: float):
+    return pygame.transform.rotozoom(surface, 0, scale)
+
+
 def beatbounce(surface: Surface, song: Song, time: float, scale = 1.25):
+    # return surface
     tempo = song.tempo_calc.tempo_by_secs.lteq(time)
     start = tempo.start
     bpm = tempo.mbpm / 1000
@@ -21,9 +27,9 @@ def beatbounce(surface: Surface, song: Song, time: float, scale = 1.25):
     s = scale
 
     current_scale = (-((s - 1) / e) * x) + s
-    current_scale = max(current_scale, 1)
+    current_scale = round(max(current_scale, 1), 2)
 
-    return pygame.transform.rotozoom(surface, 0, current_scale)
+    return zoom(surface, current_scale)
 
 
 def beatbouncedeco(song = "song", time = "tracktime", scale = 1.25):
