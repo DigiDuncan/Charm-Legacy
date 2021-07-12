@@ -19,7 +19,6 @@ from charm.lib.pgutils import stacksurfs
 from charm.lib.utils import clamp, linear_one_to_zero, nice_time, truncate
 from charm.loaders import chchart
 from charm.prototyping import loader_test
-from charm.prototyping.hitdetection.inputrecorder import InputRecorder
 # from charm.prototyping.hitdetection.scorecalculator import ScoreCalculator
 from charm.prototyping.menu import menu2
 from charm.prototyping.notedisplay.hyperloop import HyperloopDisplay, init as hyperloop_init
@@ -138,9 +137,8 @@ class Game(nygame.Game):
             Path("./charm/data/charts/hopotest")
         ])
 
-        # Set up guitar and InputRecorder.
+        # Set up guitar.
         self.guitar = None
-        self.inputrecorder = None
         self.inputdebug = None
         if instruments.Instrument.get_count() > 0:
             self.guitar = instruments.Wiitar.connect(0)
@@ -148,7 +146,6 @@ class Game(nygame.Game):
         else:
             self.guitar = instruments.Keyguitar.connect()
             print("Connection to Keyboard")
-        self.inputrecorder = InputRecorder(self.guitar)
         self.inputdebug = InputDebug(self.guitar)
 
         # Initialize class variables.
@@ -197,7 +194,6 @@ class Game(nygame.Game):
 
         self.chart = self.song.charts[(difficulty, 'Single')]
 
-        # self.sc = ScoreCalculator(self.chart, self.ir)
         self.lyricanimator = LyricAnimator(self.chart)   # TODO: Update to take Song object
         self.hyperloop = HyperloopDisplay(self.chart, self.guitar, size=(400, 620), hitwindow_vis = False, bg = self.highway)
         musicstream = None
@@ -276,8 +272,6 @@ class Game(nygame.Game):
 
         # Updates
         if not self.paused:
-            if self.inputrecorder is not None:
-                self.inputrecorder.update(now)
             if self.inputdebug is not None:
                 self.inputdebug.update(now)
             if self.scorecalculator is not None:
