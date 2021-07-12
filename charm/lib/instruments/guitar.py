@@ -3,6 +3,7 @@ from charm.lib.utils import onoff
 from nygame import Coord
 from .instrument import Instrument, InstrumentEvent
 
+Tristate = Literal[-1, 0, 1]
 
 arrows = " ←→↑↓↖↗↘↙"
 dir2arrow = {
@@ -36,31 +37,31 @@ class Guitar(Instrument):
         self._whammy_pos = 0
 
     @property
-    def fret1(self):
+    def fret1(self) -> bool:
         return self._frets[0]
 
     green = fret1
 
     @property
-    def fret2(self):
+    def fret2(self) -> bool:
         return self._frets[1]
 
     red = fret2
 
     @property
-    def fret3(self):
+    def fret3(self) -> bool:
         return self._frets[2]
 
     yellow = fret3
 
     @property
-    def fret4(self):
+    def fret4(self) -> bool:
         return self._frets[3]
 
     blue = fret4
 
     @property
-    def fret5(self):
+    def fret5(self) -> bool:
         return self._frets[4]
 
     orange = fret5
@@ -70,31 +71,31 @@ class Guitar(Instrument):
         return (self.fret1, self.fret2, self.fret3, self.fret4, self.fret5)
 
     @property
-    def star(self):
+    def star(self) -> bool:
         return self._star
 
     @property
-    def start(self):
+    def start(self) -> bool:
         return self._start
 
     @property
-    def strumbar(self):
+    def strumbar(self) -> Tristate:
         return self._joy[1]
 
     @property
-    def strumup(self):
+    def strumup(self) -> bool:
         return self.strumbar == 1
 
     @property
-    def strumdown(self):
+    def strumdown(self) -> bool:
         return self.strumbar == -1
 
     @property
-    def joy(self):
+    def joy(self) -> Coord:
         return self._joy
 
     @property
-    def whammy(self):
+    def whammy(self) -> bool:
         return self._whammy
 
     @property
