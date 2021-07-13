@@ -35,6 +35,13 @@ Along with these, any note can also be "sustained", or meant to be held down lon
 
 For all these, the frets themselves can be depressed long before the actual note appears on the strikeline, so long as the strum is pressed within the timing window for that note. This has the consequence of meaning tap notes can be held down an arbitrarily long time before their timing window, and still be hit so long as the fret is still pressed by the time the note is within the window.
 
+Hitting a note is detected in the following way:
+* In order to "hit" a note, a correct button or sequence of buttons must be hit within a timing window.
+* In order to "hit" a chord, all notes in the chord must be hit during the same timing window. [not necessarily at the same time]
+* As long as you are within a notes timing window, hitting it is valid and retains combo.
+* A note is missed once it leaves it own timing window.
+* Inputs are "used" and cannot be used to hit another note/chord once it's been used to hit a note/chord already.
+
 The timing window varies from game to game. In *Clone Hero,* the timing window is 140ms (70 before the time indicated by the note, and 70 after.) This is widely considered to be huge.
 
 ### Open Notes Are Weird
