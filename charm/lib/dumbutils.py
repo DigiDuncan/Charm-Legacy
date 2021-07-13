@@ -28,6 +28,8 @@ def beatbounce(surface: Surface, song: Song, time: float, scale = 1.25):
 
     current_scale = (-((s - 1) / e) * x) + s
     current_scale = round(max(current_scale, 1), 2)
+    if current_scale == 1:
+        return surface
 
     return zoom(surface, current_scale)
 
