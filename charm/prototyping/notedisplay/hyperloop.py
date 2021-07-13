@@ -43,6 +43,7 @@ class HyperloopDisplay:
         self.size = size
         self.lefty = lefty
         self.bg: Optional[Path] = None if bg is None else Path(bg)
+        self.tracktime: float = 0.0
         self.track_ticks: int = 0
         self.length: float = 0.75
         self.lanes = 5  # TODO: HARDCODE
@@ -67,10 +68,6 @@ class HyperloopDisplay:
     @property
     def px_per_sec(self):
         return self.size[1] / self.length
-
-    @property
-    def tracktime(self):
-        return self.ticks_to_secs(self.track_ticks)
 
     @property
     def end(self):
@@ -144,6 +141,7 @@ class HyperloopDisplay:
             self.bg_image_sp.blit(bg_tile_sp, rect)
 
     def update(self, tracktime: float):
+        self.tracktime = tracktime
         self.track_ticks = self.secs_to_ticks(tracktime)
         important_chords = list(c for c in self.chart.chord_by_ticks[0:self.end] if c.tick_end >= self.track_ticks)
         earliest_visible_tick = min(c.tick_start for c in important_chords) if important_chords else self.track_ticks
@@ -260,7 +258,7 @@ class HyperloopDisplay:
             self._image.blit(sustain_img, sustain_dest)
             self._image.blit(sustaincap_img, sustaincap_dest)
         if secs >= self.tracktime:
-            sprite = beatbounce(sprite, self.chart.song, self.tracktime, 1.1)
+            # sprite = beatbounce(sprite, self.chart.song, self.tracktime, 1.1)
             rect = sprite.get_rect()
             rect.center = (x, y)
             self._image.blit(sprite, rect)
