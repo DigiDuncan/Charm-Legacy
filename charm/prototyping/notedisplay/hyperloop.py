@@ -1,4 +1,3 @@
-from charm.lib.dumbutils import beatbounce
 from charm.lib.instruments.guitar import Guitar
 from importlib import resources as pkg_resources
 from itertools import count, takewhile
@@ -258,7 +257,6 @@ class HyperloopDisplay:
             self._image.blit(sustain_img, sustain_dest)
             self._image.blit(sustaincap_img, sustaincap_dest)
         if secs >= self.tracktime:
-            # sprite = beatbounce(sprite, self.chart.song, self.tracktime, 1.1)
             rect = sprite.get_rect()
             rect.center = (x, y)
             self._image.blit(sprite, rect)
