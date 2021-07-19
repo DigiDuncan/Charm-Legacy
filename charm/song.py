@@ -3,7 +3,7 @@ from __future__ import annotations
 from functools import cache, total_ordering
 from typing import Dict, List, Optional
 
-from nygame import Index
+from nindex import Index
 
 
 # Abstract class
