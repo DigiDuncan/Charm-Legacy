@@ -47,8 +47,6 @@ def draw_loading():
 
 def draw_logo():
     surf = pygame.image.load("./docs/images/logo.png")
-    surf.convert_alpha()
-    surf.set_alpha(128)
     surf = pygame.transform.scale(surf, (137, 50))
     return surf
 
@@ -362,6 +360,8 @@ class Game(nygame.Game):
     def render_title(self, time):
         # https://www.desmos.com/calculator/h0tyxihzzq
         opacity = linear_one_to_zero(3, 1, time)
+        if opacity == 0:
+            return
         titletext = T(self.song.title, font = "Lato Medium", size = 72)
         artisttext = T(self.song.artists, font = "Lato Medium", size = 48)
         rect = titletext.get_rect()
