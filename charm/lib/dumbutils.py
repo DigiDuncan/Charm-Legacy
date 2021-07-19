@@ -6,11 +6,14 @@ from pygame import Surface
 
 
 @lru_cache(2048)
-def zoom(surface: Surface, scale: float):
-    return pygame.transform.rotozoom(surface, 0, scale)
+def zoom(surface: Surface, scale: float, alpha = 255):
+    surf = pygame.transform.rotozoom(surface, 0, scale)
+    surf.convert_alpha()
+    surf.set_alpha(alpha)
+    return surf
 
 
-def beatbounce(surface: Surface, song: Song, time: float, scale = 1.25):
+def beatbounce(surface: Surface, song: Song, time: float, scale = 1.25, alpha = 255):
     # return surface
     tempo = song.tempo_calc.tempo_by_secs.lteq(time)
     start = tempo.start
@@ -31,7 +34,7 @@ def beatbounce(surface: Surface, song: Song, time: float, scale = 1.25):
     if current_scale == 1:
         return surface
 
-    return zoom(surface, current_scale)
+    return zoom(surface, current_scale, alpha)
 
 
 def beatbouncedeco(song = "song", time = "tracktime", scale = 1.25):
