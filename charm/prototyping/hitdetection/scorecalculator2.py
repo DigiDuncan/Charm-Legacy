@@ -1,36 +1,61 @@
-from nindex import Index
-from charm.song import Chart, TempoCalculator
+from typing import List
+
+from nindex.index import Index
+from charm.song import Chart, Chord
 from charm.lib.instruments.guitar import Guitar
 
 
-class TempoTape:
-    def __init__(self, index: Index, tempo_calc: TempoCalculator, scanner_width: float) -> None:
-        self._index = index
-        self._tempo_calc = tempo_calc
+class Tape:
+    def __init__(self, items: List, tapeattr: str) -> None:
+        self.items = items
+        self.tapeattr = tapeattr
+
+        self._index = Index(items, self.tapeattr)
+
+        self.current_index = 0
+        self.current_position = 0
+
+    def get_items(self, position: float):
+        if position < self.current_position:
+            self.jump_to(position)
+        new_items = []
+        self.current_position = position
+        try:
+            while getattr(self.items[self.current_index], self.tapeattr) <= position:
+                new_items.append(self.items[self.current_index])
+                self.current_index += 1
+        except IndexError:
+            pass
+        return new_items
+
+    def jump_to(self, position: float):
+        self.current_index = self._index.lteq_index(position)
+
+
+class BufferedTape:
+    def __init__(self, items: List, tapeattr: str, scanner_width: float) -> None:
+        self.items = items
+        self.tapeattr = tapeattr
         self.scanner_width = scanner_width
 
-        self.current_position = 0  # seconds
+        self.tape = Tape(self.items, self.tapeattr)
 
         self.current_items = []
-        self.dirty_ids = []
-
-    @property
-    def timeslice(self):
-        offset = self.scanner_width / 2
-        end = self._tempo_calc.secs_to_ticks(self.current_position + offset)
-        start = self._tempo_calc.secs_to_ticks(self.current_position - offset)
-        start = max(0, start)
-        return slice(start, end, 1)
-
-    def scan(self):
-        self.current_items = self._index[self.timeslice]
-        self.current_items = [i for i in self.current_items if i.id not in self.dirty_ids]
+        self.current_position = 0
+        self.set_position(self.current_position)
 
     def set_position(self, position: float):
+        if position < self.current_position:
+            self.jump_to(position - self.scanner_width)
         self.current_position = position
+        self.current_items.extend(self.tape.get_items(position + self.scanner_width))
+        while self.current_items and self.current_position - self.scanner_width > getattr(self.current_items[0], "start"):
+            self.current_items.pop(0)
 
-    def scroll(self, amount: float):
-        self.current_position += amount
+    def jump_to(self, position: float):
+        self.current_position = position
+        self.current_items = []
+        self.tape.jump_to(position)
 
 
 class ScoreCalculator:
@@ -38,9 +63,9 @@ class ScoreCalculator:
         self.chart = chart
         self.song = self.chart.song
         self.guitar = guitar
-        self._hitwindow = 0.140
+        self._hitwindow = 0.07
 
-        self.chord_tape = TempoTape(self.chart.chord_by_ticks, self.song.tempo_calc, self._hitwindow)
+        self.chord_tape = BufferedTape(self.chart.chords, "start", self._hitwindow)
 
         self._events = []
 
