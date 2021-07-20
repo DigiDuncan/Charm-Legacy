@@ -1,7 +1,8 @@
+from charm.lib.instruments.instrument import Instrument, InstrumentEvent
 from typing import List
 
 from nindex.index import Index
-from charm.song import Chart, Chord
+from charm.song import Chart
 from charm.lib.instruments.guitar import Guitar
 
 
@@ -58,6 +59,25 @@ class BufferedTape:
         self.tape.jump_to(position)
 
 
+class InputTape:
+    def __init__(self, instrument: Instrument, scanner_width: float) -> None:
+        self.instrument = instrument
+        self.scanner_width = scanner_width
+        self.current_events: List[InstrumentEvent] = []
+        self.current_position = 0
+
+    def set_position(self, position: float):
+        self.current_position = position
+        self.current_events.extend(self.instrument.get_events())
+        while self.current_events and self.current_position - self.scanner_width > getattr(self.current_events[0], "tracktime"):
+            self.current_events.pop(0)
+
+    def jump_to(self, position: float):
+        self.current_position = position
+        self.current_events = []
+        self.instrument.get_events()  # dump
+
+
 class ScoreCalculator:
     def __init__(self, chart: Chart, guitar: Guitar):
         self.chart = chart
@@ -66,6 +86,7 @@ class ScoreCalculator:
         self._hitwindow = 0.07
 
         self.chord_tape = BufferedTape(self.chart.chords, "start", self._hitwindow)
+        self.input_tape = InputTape(self.guitar, self._hitwindow)
 
         self._events = []
 
