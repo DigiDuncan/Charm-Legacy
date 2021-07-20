@@ -210,6 +210,12 @@ class Chart:
             for chord in self.chord_by_ticks[sp_phrase.tick_start:sp_phrase.tick_end]:
                 chord.sp_phrase = i
 
+    def add_chord_ids(self):
+        id_ = -1
+        for chord in self.chords:
+            id_ += 1
+            chord.id = id_
+
     def __hash__(self):
         return hash((
             tuple(self.notes),
@@ -262,6 +268,7 @@ class Song:
             chart.hopo_calc(self)
             chart.calculate_countdowns()
             chart.sp_phrase_calc()
+            chart.add_chord_ids()
 
     def __hash__(self):
         return hash((
