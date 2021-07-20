@@ -77,13 +77,12 @@ class Instrument:
 
 
 class InstrumentEvent:
-    eid = 0
-
-    def __init__(self, ticks, name):
-        self.ticks = ticks
+    def __init__(self, name, tracktime) -> None:
         self.name = name
-        self.id = self.__class__.eid
-        self.__class__.eid += 1
+        self.tracktime = tracktime
 
     def __str__(self):
         return self.name
+
+    def __repr__(self) -> str:
+        return f"<{self.name} : {self.tracktime:.4f}>"

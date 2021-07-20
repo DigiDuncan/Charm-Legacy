@@ -114,8 +114,8 @@ class Guitar(Instrument):
 
 class ToggleEvent(InstrumentEvent):
     def __init__(self, tracktime: float, state: bool):
-        self.name = f"{self._prefix}_{onoff(state)}"
-        self.tracktime = tracktime
+        name = f"{self._prefix}_{onoff(state)}"
+        super().__init__(name, tracktime)
 
 
 class FretEvent(ToggleEvent):
@@ -162,8 +162,7 @@ class JoyEvent(ToggleEvent):
 
 class WhammyMotion(InstrumentEvent):
     def __init__(self, tracktime: float, position: float):
-        self.name = "WHAMMY_MOTION"
-        self.tracktime = tracktime
+        super().__init__("WHAMMY_MOTION", tracktime)
         self.position = position
 
     def __str__(self):
