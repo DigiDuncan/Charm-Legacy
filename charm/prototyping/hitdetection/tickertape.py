@@ -70,7 +70,6 @@ def process_input(time, events, strums, taps):
         events.remove(e)
 
 
-
 chart_events = load_events()
 
 event_index = 0

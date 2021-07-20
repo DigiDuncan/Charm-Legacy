@@ -1,133 +1,97 @@
+from charm.lib.instruments.instrument import Instrument, InstrumentEvent
+from typing import List
+
 from charm.song import Chart
-from charm.prototyping.hitdetection.inputrecorder import InputRecorder
+from charm.lib.instruments.guitar import Guitar
+from charm.lib.tape import BufferedTape
 
 
-class ScoreCounter:
-    def __init__(self):
-        self.score = 0
-        self.streak = 0
-        self._sp_amount = 0
-        self._sp_on = False
+class InputTape:
+    def __init__(self, instrument: Instrument, scanner_width: float) -> None:
+        self.instrument = instrument
+        self.scanner_width = scanner_width
+        self.current_events: List[InstrumentEvent] = []
+        self.current_position = 0
 
-    @property
-    def multiplier(self):
-        mult = 0
-        if self.streak < 10:
-            mult = 1
-        elif 10 <= self.streak < 20:
-            mult = 2
-        elif 20 <= self.streak < 30:
-            mult = 3
-        elif 30 <= self.streak:
-            mult = 4
+    def set_position(self, position: float):
+        self.current_position = position
+        self.current_events.extend(self.instrument.get_events())
+        while self.current_events and self.current_position - self.scanner_width > getattr(self.current_events[0], "tracktime"):
+            self.current_events.pop(0)
 
-        if self._sp_on:
-            mult *= 2
-
-        return mult
-
-    def hit_note(self):
-        self.streak += 1
-        self.score += (50 * self.multiplier)
-
-    def miss_note(self):
-        self.streak = 0
+    def jump_to(self, position: float):
+        self.current_position = position
+        self.current_events = []
+        self.instrument.get_events()  # dump
 
 
 class ScoreCalculator:
-    def __init__(self, chart: Chart, input_recorder: InputRecorder):
+    def __init__(self, chart: Chart, guitar: Guitar):
         self.chart = chart
-        self.input_recorder = input_recorder
+        self.song = self.chart.song
+        self.guitar = guitar
+        self._hitwindow = 0.07
 
+        self.chord_tape = BufferedTape(self.chart.chords, "start", self._hitwindow)
+        self.input_tape = InputTape(self.guitar, self._hitwindow)
+
+        self._events = []
+
+        self.score = 0
         self.streak = 0
+        self.accuracies = []
         self.multiplier = 1
 
-    def get_score(self, tracktime):
-        # Reset the score every calculation
-        counter = ScoreCounter()
-        inputs = InputTracker(self.input_recorder.inputs)
+    def update(self, time):
+        pass
 
-        current_tick = self.chart.song.tempo_calc.secs_to_ticks(tracktime)
-
-        for chord in self.chart.chord_by_ticks[:current_tick]:
-            if chord.flag != "note":
-                continue
-            chord_min = chord.start - 0.07
-            chord_max = chord.start + 0.07
-
-            inputs.update(chord_min, chord_max)
-
-            if is_hit(inputs.active, chord):
-                counter.hit_note()
-            else:
-                counter.miss_note()
-
-            self.streak = counter.streak
-            self.multiplier = counter.multiplier
-
-        return counter.score
+# --- EVENTS ---
 
 
-class InputTracker:
-    def __init__(self, inputs):
-        self.inputs = iter(inputs)
-        self.active = []
-        self.next_input = None
-        self.next()
+class ScoreEvent:
+    def __init__(self, ticks: int):
+        self.ticks = ticks
 
-    def next(self):
-        try:
-            self.next_input = next(self.inputs)
-        except StopIteration:
-            self.next_input = None
+    def __lt__(self, other):
+        self.ticks < other.ticks
 
-    def update(self, min, max):
-        # Remove stale inputs
-        while self.active and self.active[0].start < min:
-            del self.active[0]
+    def __eq__(self, other):
+        self.ticks == other.ticks
 
-        # Fetch new inputs
-        while self.next_input and self.next_input.start <= max:
-            if "strum_on" in self.next_input.events:
-                self.active.append(self.next_input)
-            self.next()
+    def __str__(self) -> str:
+        return f"<{self.__class__.__name__}: {self.ticks}>"
 
 
-def is_hit(active_inputs, chord):
-    if not active_inputs:
-        return False
+class AccurateScoreEvent(ScoreEvent):
+    def __init__(self, ticks: int, target: int):
+        super().__init__(ticks)
+        self.target = target
 
-    shape = [
-        0 in chord.frets,
-        1 in chord.frets,
-        2 in chord.frets,
-        3 in chord.frets,
-        4 in chord.frets
-    ]
-
-    for i, strum in enumerate(active_inputs):
-        # One note strum, can be anchored
-        held_chord = [
-            strum.state["green"],
-            strum.state["red"],
-            strum.state["yellow"],
-            strum.state["blue"],
-            strum.state["orange"]
-        ]
-        if len(chord.frets) == 1:
-            held_chord = anchor_chord(held_chord)
-
-        if shape == held_chord:
-            del active_inputs[i]
-            return True
-
-    return False
+    @property
+    def offset(self):
+        return self.ticks - self.target
 
 
-def anchor_chord(frets):
-    anchored = []
-    for f in frets[::-1]:
-        if any(anchored):
-            f = False
-        anchored.insert(0, f)
-    return anchored
+class ChordMissed(ScoreEvent):
+    def __init__(self, ticks: int):
+        super().__init__(ticks)
+
+
+class ChordHit(AccurateScoreEvent):
+    def __init__(self, ticks: int, target: int):
+        super().__init__(ticks, target)
+
+
+class SustainBreak(ScoreEvent):
+    def __init__(self, ticks: int):
+        super().__init__(ticks)
+
+
+class StarPowerActivate(ScoreEvent):
+    def __init__(self, ticks: int):
+        super().__init__(ticks)
+
+
+class ExtraneousInput(ScoreEvent):
+    def __init__(self, ticks: int):
+        super().__init__(ticks)

@@ -1,4 +1,4 @@
-from charm.prototyping.hitdetection.scorecalculator2 import BufferedTape, Tape
+from charm.lib.tape import BufferedTape, Tape
 
 
 class Event:
