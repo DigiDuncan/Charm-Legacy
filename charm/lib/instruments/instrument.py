@@ -77,9 +77,13 @@ class Instrument:
 
 
 class InstrumentEvent:
+    eid = 0
+
     def __init__(self, ticks, name):
         self.ticks = ticks
         self.name = name
+        self.id = self.__class__.eid
+        self.__class__.eid += 1
 
     def __str__(self):
         return self.name
