@@ -1,7 +1,7 @@
 toml==0.10.0
 pillow==8.1.0
 emoji==1.2.0
-twemoji-parser==0.4.3
+# twemoji-parser==0.4.3
 pygame==2.0.1
 nygame==1.3.0
 digiformatter==0.5.7.2
