@@ -51,7 +51,6 @@ class ScoreCalculator:
 
         self._events = []
 
-        self.streak_start = None
         self.streak_end = None
         self.streak_bucket = []
 
@@ -76,23 +75,13 @@ class ScoreCalculator:
                 if self.is_hit(chord, strum_shape):
                     remove_chords.append(c)
                     self.input_tape.current_events.pop(i)
+                    self._events.append(ChordHit(inp.tracktime, chord.start))
                     self.score += 1
                     self.streak_bucket.append(chord.id)
                     break
 
         for chordindex in reversed(remove_chords):
             self.chord_tape.current_items.pop(chordindex)
-
-        if len(self.chord_tape.current_items) == 0:
-            self.streak += len(self.streak_bucket)
-            self.streak_bucket = []
-        else:
-            for i in self.streak_bucket:
-                if i < self.chord_tape.current_items[0].id:
-                    self.streak += 1
-                    self.streak_bucket.remove(i)
-                else:
-                    break
 
     def is_hit(self, chord, input_shape):
         if chord.flag == "note":
@@ -113,49 +102,49 @@ def anchored_shape(shape: Tuple[bool]):
 
 
 class ScoreEvent:
-    def __init__(self, ticks: int):
-        self.ticks = ticks
+    def __init__(self, seconds):
+        self.seconds = seconds
 
     def __lt__(self, other):
-        self.ticks < other.ticks
+        self.seconds < other.seconds
 
     def __eq__(self, other):
-        self.ticks == other.ticks
+        self.seconds == other.seconds
 
     def __str__(self) -> str:
-        return f"<{self.__class__.__name__}: {self.ticks}>"
+        return f"<{self.__class__.__name__}: {self.seconds}>"
 
 
 class AccurateScoreEvent(ScoreEvent):
-    def __init__(self, ticks: int, target: int):
-        super().__init__(ticks)
+    def __init__(self, seconds, target: int):
+        super().__init__(seconds)
         self.target = target
 
     @property
     def offset(self):
-        return self.ticks - self.target
+        return self.seconds - self.target
 
 
 class ChordMissed(ScoreEvent):
-    def __init__(self, ticks: int):
-        super().__init__(ticks)
+    def __init__(self, seconds):
+        super().__init__(seconds)
 
 
 class ChordHit(AccurateScoreEvent):
-    def __init__(self, ticks: int, target: int):
-        super().__init__(ticks, target)
+    def __init__(self, seconds, target: int):
+        super().__init__(seconds, target)
 
 
 class SustainBreak(ScoreEvent):
-    def __init__(self, ticks: int):
-        super().__init__(ticks)
+    def __init__(self, seconds):
+        super().__init__(seconds)
 
 
 class StarPowerActivate(ScoreEvent):
-    def __init__(self, ticks: int):
-        super().__init__(ticks)
+    def __init__(self, seconds):
+        super().__init__(seconds)
 
 
 class ExtraneousInput(ScoreEvent):
-    def __init__(self, ticks: int):
-        super().__init__(ticks)
+    def __init__(self, seconds):
+        super().__init__(seconds)
