@@ -1,5 +1,5 @@
 from functools import wraps
-from typing import Tuple, Iterator, TypeVar, Optional
+from typing import Callable, Iterable, Tuple, Iterator, TypeVar, Optional
 
 
 def nice_time(seconds: float, milliseconds = False):
@@ -85,6 +85,28 @@ T = TypeVar("T")
 def getone(items: Iterator[T]) -> Optional[T]:
     try:
         return next(items)
+    except StopIteration:
+        return None
+
+
+def findone(items: Iterator[T], predicate: Callable[[T], bool]) -> Optional[T]:
+    try:
+        return next(filter(predicate, items))
+    except StopIteration:
+        return None
+
+
+def denumerate(fn: Callable):
+    def wrapped(args):
+        i, item = args
+        return fn(item)
+    return wrapped
+
+
+def findindex(items: Iterator[T], predicate: Callable[[T], bool]) -> Optional[T]:
+    try:
+        i, _ = next(filter(denumerate(predicate), enumerate(items)))
+        return i
     except StopIteration:
         return None
 
