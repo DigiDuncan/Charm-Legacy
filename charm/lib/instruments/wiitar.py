@@ -45,7 +45,7 @@ class Wiitar(Guitar):
                 if btn in (0, 1, 2, 3, 4):
                     btn = [0, 1, 3, 2, 4][btn]
                     self._frets[btn] = state
-                    self.add_event(FretEvent(tracktime, state, btn + 1))
+                    self.add_event(FretEvent(tracktime, state, btn + 1, self.shape))
                 elif btn == 6:
                     self._star = state
                 elif btn == 7:

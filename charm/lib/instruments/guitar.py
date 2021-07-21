@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Literal, Tuple
 from charm.lib.utils import onoff
 from nygame import Coord
 from .instrument import Instrument, InstrumentEvent
@@ -121,9 +121,10 @@ class ToggleEvent(InstrumentEvent):
 class FretEvent(ToggleEvent):
     _prefix = "FRET"
 
-    def __init__(self, tracktime: float, state: bool, fretnum: int):
+    def __init__(self, tracktime: float, state: bool, fretnum: int, shape: Tuple[bool]):
         super().__init__(tracktime, state)
         self.fretnum = fretnum
+        self.shape = shape
 
     @property
     def fretcolor(self) -> str:
