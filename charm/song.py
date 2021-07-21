@@ -140,6 +140,7 @@ class Chord(ChartEvent):
         self.notes = notes
         self.frets = tuple(n.fret for n in notes)
         self.sp_phrase = None
+        self.shape = [True if (i in self.frets) else False for i in range(5)]
 
     def __repr__(self):
         return f"<{self.__class__.__name__}(start = {self.start}, frets = {self.frets}, length = {self.length})>"
