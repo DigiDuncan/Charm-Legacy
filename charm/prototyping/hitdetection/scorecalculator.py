@@ -1,8 +1,8 @@
 from charm.lib.instruments.instrument import Instrument, InstrumentEvent
-from typing import List
+from typing import List, Tuple
 
-from charm.song import Chart
-from charm.lib.instruments.guitar import Guitar
+from charm.song import Chart, Chord
+from charm.lib.instruments.guitar import FretEvent, Guitar, ToggleEvent
 from charm.lib.tape import BufferedTape
 
 
@@ -25,6 +25,20 @@ class InputTape:
         self.instrument.get_events()  # dump
 
 
+class ChordTape(BufferedTape):
+    def __init__(self, items: List, tapeattr: str, scanner_width: float) -> None:
+        super().__init__(items, tapeattr, scanner_width)
+        self.missed_events = []
+
+    def set_position(self, position: float):
+        if position < self.current_position:
+            self.jump_to(position - self.scanner_width)
+        self.current_position = position
+        self.current_items.extend(self.tape.get_items(position + self.scanner_width))
+        while self.current_items and self.current_position - self.scanner_width > getattr(self.current_items[0], "start"):
+            self.missed_events.append(self.current_items.pop(0))
+
+
 class ScoreCalculator:
     def __init__(self, chart: Chart, guitar: Guitar):
         self.chart = chart
@@ -32,7 +46,7 @@ class ScoreCalculator:
         self.guitar = guitar
         self._hitwindow = 0.07
 
-        self.chord_tape = BufferedTape(self.chart.chords, "start", self._hitwindow)
+        self.chord_tape = ChordTape(self.chart.chords, "start", self._hitwindow)
         self.input_tape = InputTape(self.guitar, self._hitwindow)
 
         self._events = []
@@ -43,7 +57,22 @@ class ScoreCalculator:
         self.multiplier = 1
 
     def update(self, time):
-        pass
+        self.chord_tape.set_position(time)
+        self.input_tape.set_position(time)
+
+        for chord in self.chord_tape.current_items:
+            for inp in self.input_tape.current_events:
+                pass
+
+# --- FUNCTIONS ---
+
+
+def anchored_shape(shape: Tuple[bool]):
+    for i, k in enumerate(reversed(shape)):
+        if k:
+            return (len(shape) - 1) - i
+    return None
+
 
 # --- EVENTS ---
 
