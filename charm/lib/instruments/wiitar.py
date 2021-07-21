@@ -34,7 +34,7 @@ class Wiitar(Guitar):
                     dirnum = self._joy.y if state else old_joy.y
                     dirname = {-1: "DOWN", 1: "UP"}[dirnum]
                     self.add_event(JoyEvent(tracktime, state, dirname))
-                    self.add_event(StrumEvent(tracktime, state))
+                    self.add_event(StrumEvent(tracktime, state, self.shape))
                 # STRUM_ON EVENT {direction=up/down}
                 # STRUM_OFF EVENT
                 # JOY_ON {direction=up/down/left/right}

@@ -149,6 +149,10 @@ class StartEvent(ToggleEvent):
 class StrumEvent(ToggleEvent):
     _prefix = "STRUM"
 
+    def __init__(self, tracktime: float, state: bool, shape: Tuple[bool]):
+        super().__init__(tracktime, state)
+        self.shape = shape
+
 
 class JoyEvent(ToggleEvent):
     _prefix = "JOY"
