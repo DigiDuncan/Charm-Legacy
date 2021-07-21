@@ -27,7 +27,7 @@ class Tape:
         return new_items
 
     def jump_to(self, position: float):
-        self.current_index = self._index.lteq_index(position)
+        self.current_index = self._index.lteq_index(position) if self._index.lteq_index(position) is not None else 0
 
 
 class BufferedTape:
