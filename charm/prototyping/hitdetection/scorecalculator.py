@@ -1,8 +1,8 @@
 from charm.lib.instruments.instrument import Instrument, InstrumentEvent
 from typing import List, Tuple
 
-from charm.song import Chart, Chord
-from charm.lib.instruments.guitar import FretEvent, Guitar, ToggleEvent
+from charm.song import Chart
+from charm.lib.instruments.guitar import Guitar
 from charm.lib.tape import BufferedTape
 
 
@@ -51,6 +51,10 @@ class ScoreCalculator:
 
         self._events = []
 
+        self.streak_start = None
+        self.streak_end = None
+        self.streak_bucket = []
+
         self.score = 0
         self.streak = 0
         self.accuracies = []
@@ -60,11 +64,42 @@ class ScoreCalculator:
         self.chord_tape.set_position(time)
         self.input_tape.set_position(time)
 
-        for chord in self.chord_tape.current_items:
-            for inp in self.input_tape.current_events:
-                pass
+        bad_indexes = [i for i, n in enumerate(self.input_tape.current_events) if n.name != "STRUM_ON"]
+        for index in reversed(bad_indexes):
+            self.input_tape.current_events.pop(index)
 
-# --- FUNCTIONS ---
+        remove_chords = []
+
+        for c, chord in enumerate(self.chord_tape.current_items):
+            for i, inp in enumerate(self.input_tape.current_events):
+                strum_shape = inp.shape
+                if self.is_hit(chord, strum_shape):
+                    remove_chords.append(c)
+                    self.input_tape.current_events.pop(i)
+                    self.score += 1
+                    self.streak_bucket.append(chord.id)
+                    break
+
+        for chordindex in reversed(remove_chords):
+            self.chord_tape.current_items.pop(chordindex)
+
+        if len(self.chord_tape.current_items) == 0:
+            self.streak += len(self.streak_bucket)
+            self.streak_bucket = []
+        else:
+            for i in self.streak_bucket:
+                if i < self.chord_tape.current_items[0].id:
+                    self.streak += 1
+                    self.streak_bucket.remove(i)
+                else:
+                    break
+
+    def is_hit(self, chord, input_shape):
+        if chord.flag == "note":
+            if len(chord.notes) > 1:
+                return input_shape == tuple(chord.shape)
+            else:
+                return chord.notes[0].fret == anchored_shape(input_shape)
 
 
 def anchored_shape(shape: Tuple[bool]):
