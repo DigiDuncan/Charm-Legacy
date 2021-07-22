@@ -1,3 +1,6 @@
+from collections import deque
+from math import ceil
+from charm.lib.utils import clamp
 from charm.prototyping.hitdetection.accuracyviewer import AccuracyViewer
 from charm.lib.instruments.instrument import Instrument, InstrumentEvent
 from typing import List, Tuple
@@ -7,90 +10,7 @@ from charm.lib.instruments.guitar import Guitar
 from charm.lib.tape import BufferedTape
 
 
-class InputTape:
-    def __init__(self, instrument: Instrument, scanner_width: float) -> None:
-        self.instrument = instrument
-        self.scanner_width = scanner_width
-        self.current_events: List[InstrumentEvent] = []
-        self.current_position = 0
-
-    def set_position(self, position: float):
-        self.current_position = position
-        self.current_events.extend(self.instrument.get_events())
-        while self.current_events and self.current_position - self.scanner_width > getattr(self.current_events[0], "tracktime"):
-            self.current_events.pop(0)
-
-    def jump_to(self, position: float):
-        self.current_position = position
-        self.current_events = []
-        self.instrument.get_events()  # dump
-
-
-class ChordTape(BufferedTape):
-    def __init__(self, items: List, tapeattr: str, scanner_width: float) -> None:
-        super().__init__(items, tapeattr, scanner_width)
-        self.missed_events = []
-
-    def set_position(self, position: float):
-        if position < self.current_position:
-            self.jump_to(position - self.scanner_width)
-        self.current_position = position
-        self.current_items.extend(self.tape.get_items(position + self.scanner_width))
-        while self.current_items and self.current_position - self.scanner_width > getattr(self.current_items[0], "start"):
-            self.missed_events.append(self.current_items.pop(0))
-
-
-class HitManager:
-    def __init__(self, chart: Chart, guitar: Guitar):
-        self.chart = chart
-        self.guitar = guitar
-        self._hitwindow = 0.07
-
-        self.chord_tape = ChordTape(self.chart.chords, "start", self._hitwindow)
-        self.input_tape = InputTape(self.guitar, self._hitwindow)
-
-        self._events = []
-
-        self.score = 0  # TODO: Temp
-        self.accuracies = []
-
-        self.accuracyviewer = AccuracyViewer()
-
-    def update(self, time):
-        self.chord_tape.set_position(time)
-        self.input_tape.set_position(time)
-
-        # TODO: This is super temporary and assumes strums are like finalizers
-        bad_indexes = [i for i, n in enumerate(self.input_tape.current_events) if n.name != "STRUM_ON"]
-        for index in reversed(bad_indexes):
-            self.input_tape.current_events.pop(index)
-
-        remove_chords = []
-
-        for c, chord in enumerate(self.chord_tape.current_items):
-            for i, inp in enumerate(self.input_tape.current_events):
-                strum_shape = inp.shape
-                if self.is_hit(chord, strum_shape):
-                    remove_chords.append(c)
-                    self.input_tape.current_events.pop(i)
-                    event = ChordHit(inp.tracktime, chord.start)
-                    self._events.append(event)
-                    self.accuracies.append(event.offset)
-                    self.accuracyviewer.hit(event.offset)
-                    self.score += 1  # TODO: Temp
-                    break
-
-        for chordindex in reversed(remove_chords):
-            self.chord_tape.current_items.pop(chordindex)
-
-    def is_hit(self, chord, input_shape):
-        # if chord.flag == "note":  TODO: all notes are strum rn
-        if len(chord.notes) > 1:
-            return input_shape == tuple(chord.shape)
-        else:
-            return chord.notes[0].fret == anchored_shape(input_shape)
-
-
+# --- FUNCTIONS ---
 def anchored_shape(shape: Tuple[bool]):
     for i, k in enumerate(reversed(shape)):
         if k:
@@ -99,8 +19,6 @@ def anchored_shape(shape: Tuple[bool]):
 
 
 # --- EVENTS ---
-
-
 class ScoreEvent:
     def __init__(self, seconds):
         self.seconds = seconds
@@ -171,3 +89,134 @@ class WhammyStart(ScoreEvent):
 class WhammyEnd(ScoreEvent):
     def __init__(self, seconds):
         super().__init__(seconds)
+
+
+# --- OBJECTS ---
+class InputTape:
+    def __init__(self, instrument: Instrument, scanner_width: float) -> None:
+        self.instrument = instrument
+        self.scanner_width = scanner_width
+        self.current_events: List[InstrumentEvent] = []
+        self.current_position = 0
+
+    def set_position(self, position: float):
+        self.current_position = position
+        self.current_events.extend(self.instrument.get_events())
+        while self.current_events and self.current_position - self.scanner_width > getattr(self.current_events[0], "tracktime"):
+            self.current_events.pop(0)
+
+    def jump_to(self, position: float):
+        self.current_position = position
+        self.current_events = []
+        self.instrument.get_events()  # dump
+
+
+class ChordTape(BufferedTape):
+    def __init__(self, items: List, tapeattr: str, scanner_width: float) -> None:
+        super().__init__(items, tapeattr, scanner_width)
+        self.missed_events = []
+
+    def set_position(self, position: float):
+        if position < self.current_position:
+            self.jump_to(position - self.scanner_width)
+        self.current_position = position
+        self.current_items.extend(self.tape.get_items(position + self.scanner_width))
+        while self.current_items and self.current_position - self.scanner_width > getattr(self.current_items[0], "start"):
+            self.missed_events.append(self.current_items.pop(0))
+
+
+class HitManager:
+    def __init__(self, chart: Chart, guitar: Guitar):
+        self.chart = chart
+        self.guitar = guitar
+        self._hitwindow = 0.07
+
+        self.chord_tape = ChordTape(self.chart.chords, "start", self._hitwindow)
+        self.input_tape = InputTape(self.guitar, self._hitwindow)
+
+        self._events = []
+
+        self.accuracyviewer = AccuracyViewer()
+
+    def update(self, time):
+        self.chord_tape.set_position(time)
+        self.input_tape.set_position(time)
+
+        # TODO: This is super temporary and assumes strums are like finalizers
+        bad_indexes = [i for i, n in enumerate(self.input_tape.current_events) if n.name != "STRUM_ON"]
+        for index in reversed(bad_indexes):
+            self.input_tape.current_events.pop(index)
+
+        remove_chords = []
+
+        for c, chord in enumerate(self.chord_tape.current_items):
+            for i, inp in enumerate(self.input_tape.current_events):
+                strum_shape = inp.shape
+                if self.is_hit(chord, strum_shape):
+                    remove_chords.append(c)
+                    self.input_tape.current_events.pop(i)
+                    event = ChordHit(inp.tracktime, chord.start)
+                    self._events.append(event)
+                    self.accuracyviewer.hit(event.offset)
+                    break
+
+        for chordindex in reversed(remove_chords):
+            self.chord_tape.current_items.pop(chordindex)
+
+    def is_hit(self, chord, input_shape):
+        # if chord.flag == "note":  TODO: all notes are strum rn
+        if len(chord.notes) > 1:
+            return input_shape == tuple(chord.shape)
+        else:
+            return chord.notes[0].fret == anchored_shape(input_shape)
+
+    def get_events(self) -> List[ScoreEvent]:
+        events = self._events.copy()
+        self._events.clear()
+        return events
+
+
+class ScoreCalculator:
+    def __init__(self, hitmanager: HitManager) -> None:
+        self.hitmanager = hitmanager
+        self.last_time = 0
+
+        self.base_score = 25
+
+        self.score = 0
+        self.streak = 0
+        self.current_sp_phrase = None
+        self.star_power = 0.0
+        self.star_power_active = False
+
+        self.states: deque[tuple] = deque([(0, 0, 0)])
+
+    @property
+    def multiplier(self):
+        m = clamp(1, ceil(self.streak / 10), 4)
+        return m * 2 if self.star_power_active else m
+
+    def update(self, tracktime):
+        events = self.hitmanager.get_events()
+
+        # rewinding
+        if tracktime < self.last_time:
+            events = []
+            while self.states[-1][0] > tracktime:
+                self.states.pop()
+            _, self.score, self.streak = self.states[-1]
+
+        # score new events in order
+        for event in events:
+            if isinstance(event, ChordHit):
+                self.streak += 1
+                self.score += self.base_score * self.multiplier
+            elif isinstance(event, ChordMissed):
+                self.streak = 0
+
+        # save novel states
+        _, oldscore, oldstreak = self.states[-1]
+        if oldscore != self.score or oldstreak != self.streak:
+            self.states.append((tracktime, self.score, self.streak))
+
+        self.last_time = tracktime

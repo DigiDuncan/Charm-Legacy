@@ -20,7 +20,7 @@ from charm.lib.pgutils import stacksurfs
 from charm.lib.utils import clamp, linear_one_to_zero, nice_time, truncate
 from charm.loaders import chchart
 from charm.prototyping import loader_demo
-from charm.prototyping.hitdetection.scorecalculator import HitManager
+from charm.prototyping.hitdetection.scorecalculator import HitManager, ScoreCalculator
 from charm.prototyping.menu import menu2
 from charm.prototyping.notedisplay.hyperloop import HyperloopDisplay, init as hyperloop_init
 from charm.prototyping.notedisplay.inputdebug import InputDebug
@@ -87,7 +87,9 @@ class SongDataDisplay:
     def render_score(self):
         text = T(f"Score: {self.game.scorecalculator.score}", font="Lato Medium", size=24, color="green")
         renderedtext = text.render()
-        return renderedtext
+        extratext = T(f"Streak: {self.game.scorecalculator.streak} | {self.game.scorecalculator.multiplier}x", font="Lato Medium", size=24, color="green")
+        extrarenderedtext = extratext.render()
+        return stacksurfs([renderedtext, extrarenderedtext], 5)
 
     def render_notespeed(self):
         text = T(f"Note Speed: {self.game.hyperloop.length} sec/screen", font="Lato Medium", size=24, color="green")
@@ -107,7 +109,7 @@ class SongDataDisplay:
                 data.append(self.render_phrase())
         if self.game.scorecalculator:
             data.append(self.render_score())
-            data.append(self.game.scorecalculator.accuracyviewer.image)
+            data.append(self.game.hitmanager.accuracyviewer.image)
         datasurf = stacksurfs(data, 5)
         self.image.blit(datasurf, (0, 22))
 
@@ -148,6 +150,7 @@ class Game(nygame.Game):
         # Initialize class variables.
         self.chart = None
         self.song = None
+        self.hitmanager = None
         self.scorecalculator = None
         self.lyricanimator = None
         self.hyperloop = None
@@ -192,7 +195,8 @@ class Game(nygame.Game):
         self.chart = self.song.charts[(difficulty, 'Single')]
 
         self.lyricanimator = LyricAnimator(self.chart)   # TODO: Update to take Song object
-        self.scorecalculator = HitManager(self.chart, self.guitar)
+        self.hitmanager = HitManager(self.chart, self.guitar)
+        self.scorecalculator = ScoreCalculator(self.hitmanager)
         self.hyperloop = HyperloopDisplay(self.chart, self.guitar, size=(400, 620), hitwindow_vis = False, bg = self.highway)
         musicstream = None
 
@@ -273,6 +277,7 @@ class Game(nygame.Game):
             if self.inputdebug is not None:
                 self.inputdebug.update(now)
             if self.scorecalculator is not None:
+                self.hitmanager.update(now)
                 self.scorecalculator.update(now)
             if self.videoplayer is not None:
                 self.videoplayer.update(now)
