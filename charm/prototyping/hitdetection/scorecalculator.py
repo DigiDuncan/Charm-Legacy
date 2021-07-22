@@ -81,7 +81,7 @@ class ScoreCalculator:
                     event = ChordHit(inp.tracktime, chord.start)
                     self._events.append(event)
                     self.accuracies.append(event.offset)
-                    self.accuracyviewer.update(event.offset)
+                    self.accuracyviewer.hit(event.offset)
                     self.score += 1
                     self.streak_bucket.append(chord.id)
                     break

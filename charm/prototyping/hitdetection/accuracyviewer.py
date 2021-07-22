@@ -30,9 +30,16 @@ class AccuracyViewer:
                 index += 1
         return self.judgementnames[-1]
 
-    def update(self, offset):
+    def hit(self, offset):
         self.image.fill((0, 0, 0, 0))
         sprite = self.judgements[self.get_judgement_name(offset)]
+        rect = sprite.get_rect()
+        rect.center = self.image.get_rect().center
+        self.image.blit(sprite, rect)
+
+    def miss(self):
+        self.image.fill((0, 0, 0, 0))
+        sprite = self.judgements["miss"]
         rect = sprite.get_rect()
         rect.center = self.image.get_rect().center
         self.image.blit(sprite, rect)
