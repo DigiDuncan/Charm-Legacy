@@ -1,3 +1,4 @@
+from charm.prototyping.hitdetection.accuracyviewer import AccuracyViewer
 from charm.lib.instruments.instrument import Instrument, InstrumentEvent
 from typing import List, Tuple
 
@@ -59,6 +60,8 @@ class ScoreCalculator:
         self.accuracies = []
         self.multiplier = 1
 
+        self.accuracyviewer = AccuracyViewer()
+
     def update(self, time):
         self.chord_tape.set_position(time)
         self.input_tape.set_position(time)
@@ -75,7 +78,10 @@ class ScoreCalculator:
                 if self.is_hit(chord, strum_shape):
                     remove_chords.append(c)
                     self.input_tape.current_events.pop(i)
-                    self._events.append(ChordHit(inp.tracktime, chord.start))
+                    event = ChordHit(inp.tracktime, chord.start)
+                    self._events.append(event)
+                    self.accuracies.append(event.offset)
+                    self.accuracyviewer.update(event.offset)
                     self.score += 1
                     self.streak_bucket.append(chord.id)
                     break
@@ -116,7 +122,7 @@ class ScoreEvent:
 
 
 class AccurateScoreEvent(ScoreEvent):
-    def __init__(self, seconds, target: int):
+    def __init__(self, seconds, target: float):
         super().__init__(seconds)
         self.target = target
 

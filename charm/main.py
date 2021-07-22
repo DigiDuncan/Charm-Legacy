@@ -110,6 +110,7 @@ class SongDataDisplay:
                 data.append(self.render_phrase())
         if self.game.scorecalculator:
             data.append(self.render_score())
+            data.append(self.game.scorecalculator.accuracyviewer.image)
         datasurf = stacksurfs(data, 5)
         self.image.blit(datasurf, (0, 22))
 
