@@ -43,7 +43,6 @@ class ChordTape(BufferedTape):
 class HitManager:
     def __init__(self, chart: Chart, guitar: Guitar):
         self.chart = chart
-        self.song = self.chart.song
         self.guitar = guitar
         self._hitwindow = 0.07
 
@@ -61,6 +60,7 @@ class HitManager:
         self.chord_tape.set_position(time)
         self.input_tape.set_position(time)
 
+        # TODO: This is super temporary and assumes strums are like finalizers
         bad_indexes = [i for i, n in enumerate(self.input_tape.current_events) if n.name != "STRUM_ON"]
         for index in reversed(bad_indexes):
             self.input_tape.current_events.pop(index)
@@ -146,5 +146,28 @@ class StarPowerActivate(ScoreEvent):
 
 
 class ExtraneousInput(ScoreEvent):
+    def __init__(self, seconds):
+        super().__init__(seconds)
+
+
+class SPChordHit(ChordHit):
+    def __init__(self, seconds, target, phrase_num: int, marker: str):
+        super().__init__(seconds, target)
+        self.phrase_num = phrase_num
+        self.marker = marker
+
+
+class SPChordMissed(ChordMissed):
+    def __init__(self, seconds, phrase_num: int):
+        super().__init__(seconds)
+        self.phrase_num = phrase_num
+
+
+class WhammyStart(ScoreEvent):
+    def __init__(self, seconds):
+        super().__init__(seconds)
+
+
+class WhammyEnd(ScoreEvent):
     def __init__(self, seconds):
         super().__init__(seconds)

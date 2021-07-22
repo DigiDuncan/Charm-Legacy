@@ -139,7 +139,8 @@ class Chord(ChartEvent):
         self.flag = flag
         self.notes = notes
         self.frets = tuple(n.fret for n in notes)
-        self.sp_phrase = None
+        self.sp_phrase: int = None
+        self.sp_marker: str = None
         self.shape = [True if (i in self.frets) else False for i in range(5)]
 
     def __repr__(self):
@@ -208,8 +209,12 @@ class Chart:
 
     def sp_phrase_calc(self):
         for i, sp_phrase in enumerate(self.star_powers):
-            for chord in self.chord_by_ticks[sp_phrase.tick_start:sp_phrase.tick_end]:
+            for c, chord in enumerate(self.chord_by_ticks[sp_phrase.tick_start:sp_phrase.tick_end]):
                 chord.sp_phrase = i
+                if c == 0:
+                    chord.sp_marker = "start"
+                if c == len(self.chord_by_ticks[sp_phrase.tick_start:sp_phrase.tick_end]) - 1:
+                    chord.sp_marker = "end"
 
     def add_chord_ids(self):
         id_ = -1
