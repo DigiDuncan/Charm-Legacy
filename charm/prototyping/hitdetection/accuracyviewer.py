@@ -24,7 +24,7 @@ class AccuracyViewer:
         index = 0
         offset = abs(offset)
         for o in self.offsets:
-            if o >= offset:
+            if o > offset:
                 return self.judgementnames[index]
             else:
                 index += 1

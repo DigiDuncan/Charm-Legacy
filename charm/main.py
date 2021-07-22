@@ -1,4 +1,4 @@
-from charm.prototyping.hitdetection.scorecalculator import ScoreCalculator
+
 import time
 from enum import Enum
 from itertools import cycle
@@ -20,7 +20,7 @@ from charm.lib.pgutils import stacksurfs
 from charm.lib.utils import clamp, linear_one_to_zero, nice_time, truncate
 from charm.loaders import chchart
 from charm.prototyping import loader_demo
-# from charm.prototyping.hitdetection.scorecalculator import ScoreCalculator
+from charm.prototyping.hitdetection.scorecalculator import HitManager
 from charm.prototyping.menu import menu2
 from charm.prototyping.notedisplay.hyperloop import HyperloopDisplay, init as hyperloop_init
 from charm.prototyping.notedisplay.inputdebug import InputDebug
@@ -85,12 +85,9 @@ class SongDataDisplay:
         return text.render()
 
     def render_score(self):
-        multmap = {1: "green", 2: "yellow", 3: "blue", 4: "purple"}
         text = T(f"Score: {self.game.scorecalculator.score}", font="Lato Medium", size=24, color="green")
-        extra_text = T(f"{self.game.scorecalculator.multiplier}x", font="Lato Medium", size=24, color="cyan" if self.game.hyperloop.sp else multmap[self.game.scorecalculator.multiplier]) + T(f" | {self.game.scorecalculator.streak} streak", font="Lato Medium", size=24, color="green")
         renderedtext = text.render()
-        renderedextratext = extra_text.render()
-        return stacksurfs((renderedtext, renderedextratext), 5)
+        return renderedtext
 
     def render_notespeed(self):
         text = T(f"Note Speed: {self.game.hyperloop.length} sec/screen", font="Lato Medium", size=24, color="green")
@@ -195,7 +192,7 @@ class Game(nygame.Game):
         self.chart = self.song.charts[(difficulty, 'Single')]
 
         self.lyricanimator = LyricAnimator(self.chart)   # TODO: Update to take Song object
-        self.scorecalculator = ScoreCalculator(self.chart, self.guitar)
+        self.scorecalculator = HitManager(self.chart, self.guitar)
         self.hyperloop = HyperloopDisplay(self.chart, self.guitar, size=(400, 620), hitwindow_vis = False, bg = self.highway)
         musicstream = None
 

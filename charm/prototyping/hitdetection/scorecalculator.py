@@ -40,7 +40,7 @@ class ChordTape(BufferedTape):
             self.missed_events.append(self.current_items.pop(0))
 
 
-class ScoreCalculator:
+class HitManager:
     def __init__(self, chart: Chart, guitar: Guitar):
         self.chart = chart
         self.song = self.chart.song
@@ -52,13 +52,8 @@ class ScoreCalculator:
 
         self._events = []
 
-        self.streak_end = None
-        self.streak_bucket = []
-
-        self.score = 0
-        self.streak = 0
+        self.score = 0  # TODO: Temp
         self.accuracies = []
-        self.multiplier = 1
 
         self.accuracyviewer = AccuracyViewer()
 
@@ -82,19 +77,18 @@ class ScoreCalculator:
                     self._events.append(event)
                     self.accuracies.append(event.offset)
                     self.accuracyviewer.hit(event.offset)
-                    self.score += 1
-                    self.streak_bucket.append(chord.id)
+                    self.score += 1  # TODO: Temp
                     break
 
         for chordindex in reversed(remove_chords):
             self.chord_tape.current_items.pop(chordindex)
 
     def is_hit(self, chord, input_shape):
-        if chord.flag == "note":
-            if len(chord.notes) > 1:
-                return input_shape == tuple(chord.shape)
-            else:
-                return chord.notes[0].fret == anchored_shape(input_shape)
+        # if chord.flag == "note":  TODO: all notes are strum rn
+        if len(chord.notes) > 1:
+            return input_shape == tuple(chord.shape)
+        else:
+            return chord.notes[0].fret == anchored_shape(input_shape)
 
 
 def anchored_shape(shape: Tuple[bool]):
