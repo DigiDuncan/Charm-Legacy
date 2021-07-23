@@ -6,7 +6,7 @@ from charm.lib.instruments.instrument import Instrument, InstrumentEvent
 from typing import List, Tuple
 
 from charm.song import Chart
-from charm.lib.instruments.guitar import Guitar
+from charm.lib.instruments.guitar import Guitar, StrumEvent
 from charm.lib.tape import BufferedTape
 
 
@@ -98,12 +98,13 @@ class InputTape:
         self.scanner_width = scanner_width * 2
         self.current_events: List[InstrumentEvent] = []
         self.current_position = 0
+        self.missed_events = []
 
     def set_position(self, position: float):
         self.current_position = position
         self.current_events.extend(self.instrument.get_events())
         while self.current_events and self.current_position - self.scanner_width > getattr(self.current_events[0], "tracktime"):
-            self.current_events.pop(0)
+            self.missed_events.append(self.current_events.pop(0))
 
     def jump_to(self, position: float):
         self.current_position = position
@@ -134,6 +135,7 @@ class HitManager:
         self.chord_tape = ChordTape(self.chart.chords, "start", self._hitwindow)
         self.input_tape = InputTape(self.guitar, self._hitwindow)
 
+        self._queued_events = []
         self._events = []
 
         self.accuracyviewer = AccuracyViewer()
@@ -149,18 +151,39 @@ class HitManager:
 
         remove_chords = []
 
+        # Match chords to inputs
         for c, chord in enumerate(self.chord_tape.current_items):
             for i, inp in enumerate(self.input_tape.current_events):
                 if self.is_hit(chord, inp):
                     remove_chords.append(c)
                     self.input_tape.current_events.pop(i)
                     event = ChordHit(inp.tracktime, chord.start)
-                    self._events.append(event)
+                    self._queued_events.append(event)
                     self.accuracyviewer.hit(event.offset)
                     break
 
+        # Remove hit chords
         for chordindex in reversed(remove_chords):
             self.chord_tape.current_items.pop(chordindex)
+
+        # Process missed notes
+        for missed_chord in reversed(self.chord_tape.missed_events):
+            self._queued_events.append(ChordMissed(time))
+            self.chord_tape.missed_events.remove(missed_chord)
+            self.accuracyviewer.miss()
+
+        # Process overstrums
+        for missed_strum in reversed(self.input_tape.missed_events):
+            if isinstance(missed_strum, StrumEvent):
+                self._queued_events.append(ExtraneousInput(time))
+            self.input_tape.missed_events.remove(missed_strum)
+
+        # Process queued events
+        self.process_queue()
+
+    def process_queue(self):
+        self._events = self._queued_events.copy()
+        self._queued_events.clear()
 
     def is_hit(self, chord, inp):
         # if chord.flag == "note":  TODO: all notes are strum rn
@@ -212,7 +235,7 @@ class ScoreCalculator:
             if isinstance(event, ChordHit):
                 self.streak += 1
                 self.score += self.base_score * self.multiplier
-            elif isinstance(event, ChordMissed):
+            elif isinstance(event, ChordMissed) or isinstance(event, ExtraneousInput):
                 self.streak = 0
 
         # save novel states
