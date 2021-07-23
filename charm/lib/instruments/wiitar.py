@@ -57,7 +57,6 @@ class Wiitar(Guitar):
                 # STAR_OFF EVENT
             elif e.type == JOYAXISMOTION:
                 if e.axis == 3:
-                    print(e)
                     tilt_pos = from_raw_tilt(e.value)
                     tilted = tilt_pos > 0.75
                     self._tilted = tilted
