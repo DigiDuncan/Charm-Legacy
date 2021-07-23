@@ -95,7 +95,7 @@ class WhammyEnd(ScoreEvent):
 class InputTape:
     def __init__(self, instrument: Instrument, scanner_width: float) -> None:
         self.instrument = instrument
-        self.scanner_width = scanner_width
+        self.scanner_width = scanner_width * 2
         self.current_events: List[InstrumentEvent] = []
         self.current_position = 0
 
@@ -121,7 +121,7 @@ class ChordTape(BufferedTape):
             self.jump_to(position - self.scanner_width)
         self.current_position = position
         self.current_items.extend(self.tape.get_items(position + self.scanner_width))
-        while self.current_items and self.current_position - self.scanner_width > getattr(self.current_items[0], "start"):
+        while self.current_items and self.current_position > getattr(self.current_items[0], "start") + self.scanner_width:
             self.missed_events.append(self.current_items.pop(0))
 
 
@@ -151,8 +151,7 @@ class HitManager:
 
         for c, chord in enumerate(self.chord_tape.current_items):
             for i, inp in enumerate(self.input_tape.current_events):
-                strum_shape = inp.shape
-                if self.is_hit(chord, strum_shape):
+                if self.is_hit(chord, inp):
                     remove_chords.append(c)
                     self.input_tape.current_events.pop(i)
                     event = ChordHit(inp.tracktime, chord.start)
@@ -163,12 +162,14 @@ class HitManager:
         for chordindex in reversed(remove_chords):
             self.chord_tape.current_items.pop(chordindex)
 
-    def is_hit(self, chord, input_shape):
+    def is_hit(self, chord, inp):
         # if chord.flag == "note":  TODO: all notes are strum rn
+        if abs(chord.start - inp.tracktime) > self._hitwindow:
+            return False
         if len(chord.notes) > 1:
-            return input_shape == tuple(chord.shape)
+            return inp.shape == tuple(chord.shape)
         else:
-            return chord.notes[0].fret == anchored_shape(input_shape)
+            return chord.notes[0].fret == anchored_shape(inp.shape)
 
     def get_events(self) -> List[ScoreEvent]:
         events = self._events.copy()
