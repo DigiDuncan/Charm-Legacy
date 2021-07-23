@@ -69,10 +69,11 @@ class ExtraneousInput(ScoreEvent):
 
 
 class SPChordHit(ChordHit):
-    def __init__(self, seconds, target, phrase_num: int, marker: str):
+    def __init__(self, seconds, target, phrase_num: int, start: bool, end: bool):
         super().__init__(seconds, target)
         self.phrase_num = phrase_num
-        self.marker = marker
+        self.start = start
+        self.end = end
 
 
 class SPChordMissed(ChordMissed):
@@ -235,8 +236,18 @@ class ScoreCalculator:
             if isinstance(event, ChordHit):
                 self.streak += 1
                 self.score += self.base_score * self.multiplier
+                if isinstance(event, SPChordHit):
+                    if self.current_sp_phrase is None and event.start:
+                        self.current_sp_phrase = event.phrase_num
+                    if self.current_sp_phrase == event.phrase_num and event.end:
+                        self.current_sp_phrase = None
+                        self.star_power = max(self.star_power + 0.25, 1)
             elif isinstance(event, ChordMissed) or isinstance(event, ExtraneousInput):
                 self.streak = 0
+                self.current_sp_phrase = None
+            elif isinstance(event, StarPowerActivate):
+                if self.star_power >= 0.5:
+                    self.star_power_active = True
 
         # save novel states
         _, oldscore, oldstreak = self.states[-1]
