@@ -206,7 +206,7 @@ class ScoreCalculator:
         self.hitmanager = hitmanager
         self.last_time = 0
 
-        self.base_score = 25
+        self.base_score = 50
 
         self.score = 0
         self.streak = 0
