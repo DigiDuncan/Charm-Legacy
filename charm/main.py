@@ -300,6 +300,7 @@ class Game(nygame.Game):
         self.render_loading()
 
         # Chart loading
+        # TODO: WOW this is jank and is ignoring the fact async exists good job duncan
         if self.loading_queued:
             if self.loading_timer > 0:
                 self.loading_timer -= 1
