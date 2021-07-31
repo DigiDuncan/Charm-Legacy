@@ -45,6 +45,7 @@ class HyperloopDisplay:
         self.tracktime: float = 0.0
         self.track_ticks: int = 0
         self.length: float = 0.75
+        self.note_limit: int = 100
         self.lanes = 5  # TODO: HARDCODE
         self.strike_fadetime = 0.5
         self.visible_chords: List[Chord] = []
@@ -208,9 +209,13 @@ class HyperloopDisplay:
             self.draw_fret(fret, "strike", self.tracktime, fade=fade, spact=self.sp)
 
     def draw_chords(self):
+        count = 0
         for chord in self.visible_chords[::-1]:
             for note in chord.notes:
+                if count >= self.note_limit:
+                    break
                 self.draw_fret(note.fret, chord.flag, chord.start, spnote=chord.sp_phrase, spact=self.sp, length=note.length)
+                count += 1
 
     def draw_zero(self):
         y = self.gety(self.tracktime)
