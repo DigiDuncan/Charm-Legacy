@@ -50,7 +50,9 @@ class VideoPlayer:
         return self.frame
 
     def update(self, time):
-        pygame.surfarray.blit_array(self.image, self.get_frame(time))
+        frame = self.get_frame(time)
+        if frame is not None:
+            pygame.surfarray.blit_array(self.image, frame)
 
 
 class Game(nygame.Game):
