@@ -45,7 +45,7 @@ class HyperloopDisplay:
         self.tracktime: float = 0.0
         self.track_ticks: int = 0
         self.length: float = 0.75
-        self.note_limit: int = 100
+        self.note_limit: int = 150
         self.lanes = 5  # TODO: HARDCODE
         self.strike_fadetime = 0.5
         self.visible_chords: List[Chord] = []
