@@ -16,7 +16,7 @@ def tristate(a: bool, b: bool) -> Literal[-1, 0, 1]:
 
 class Keyguitar(Guitar):
     def __init__(self, joydev):
-        super().init(joydev)
+        super().__init__(joydev)
         self._Z = False
         self._UP = False
         self._X = False
